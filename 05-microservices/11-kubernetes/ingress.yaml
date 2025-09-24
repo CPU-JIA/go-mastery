@@ -1,0 +1,404 @@
+# ☸️ Ingress配置 - 外部流量管理
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: go-microservice-ingress
+  namespace: microservices
+  labels:
+    app: go-microservice
+    component: ingress
+  annotations:
+    # Ingress Controller类型
+    kubernetes.io/ingress.class: nginx
+
+    # SSL/TLS配置
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+
+    # 负载均衡配置
+    nginx.ingress.kubernetes.io/load-balance: "round_robin"
+    nginx.ingress.kubernetes.io/upstream-hash-by: "$request_uri"
+
+    # 限流配置
+    nginx.ingress.kubernetes.io/limit-rps: "100"
+    nginx.ingress.kubernetes.io/limit-rpm: "6000"
+    nginx.ingress.kubernetes.io/limit-connections: "20"
+
+    # 超时配置
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "30"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "60"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "60"
+
+    # 缓存配置
+    nginx.ingress.kubernetes.io/proxy-buffering: "on"
+    nginx.ingress.kubernetes.io/proxy-buffer-size: "4k"
+
+    # 健康检查
+    nginx.ingress.kubernetes.io/health-check-path: "/health"
+    nginx.ingress.kubernetes.io/health-check-interval: "30s"
+
+    # CORS配置
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "https://example.com,https://app.example.com"
+    nginx.ingress.kubernetes.io/cors-allow-methods: "GET,POST,PUT,DELETE,OPTIONS"
+    nginx.ingress.kubernetes.io/cors-allow-headers: "DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Authorization"
+
+    # 安全头
+    nginx.ingress.kubernetes.io/server-snippet: |
+      add_header X-Frame-Options "SAMEORIGIN" always;
+      add_header X-XSS-Protection "1; mode=block" always;
+      add_header X-Content-Type-Options "nosniff" always;
+      add_header Referrer-Policy "no-referrer-when-downgrade" always;
+      add_header Content-Security-Policy "default-src 'self' http: https: data: blob: 'unsafe-inline'" always;
+
+    # Prometheus监控
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "10254"
+
+spec:
+  # TLS配置
+  tls:
+  - hosts:
+    - api.example.com
+    - microservice.example.com
+    secretName: microservice-tls-secret
+
+  # 路由规则
+  rules:
+  # 生产域名
+  - host: api.example.com
+    http:
+      paths:
+      - path: /v1/microservice
+        pathType: Prefix
+        backend:
+          service:
+            name: go-microservice-svc
+            port:
+              number: 80
+      - path: /health
+        pathType: Exact
+        backend:
+          service:
+            name: go-microservice-svc
+            port:
+              number: 80
+      - path: /metrics
+        pathType: Exact
+        backend:
+          service:
+            name: go-microservice-svc
+            port:
+              number: 8080
+
+  # 微服务专用域名
+  - host: microservice.example.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: go-microservice-svc
+            port:
+              number: 80
+
+---
+# ==========================================
+# TLS证书 (Let's Encrypt)
+# ==========================================
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: microservice-tls-cert
+  namespace: microservices
+  labels:
+    app: go-microservice
+    component: certificate
+spec:
+  secretName: microservice-tls-secret
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  dnsNames:
+  - api.example.com
+  - microservice.example.com
+
+---
+# ==========================================
+# 中间件配置 (Traefik样式, 如果使用Traefik)
+# ==========================================
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: microservice-auth
+  namespace: microservices
+spec:
+  basicAuth:
+    secret: basic-auth-secret
+
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: microservice-ratelimit
+  namespace: microservices
+spec:
+  rateLimit:
+    average: 100
+    burst: 200
+    period: 1m
+
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: microservice-retry
+  namespace: microservices
+spec:
+  retry:
+    attempts: 3
+    initialInterval: 100ms
+
+---
+# ==========================================
+# Gateway API配置 (新一代Ingress)
+# ==========================================
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: Gateway
+metadata:
+  name: microservice-gateway
+  namespace: microservices
+  labels:
+    app: go-microservice
+    component: gateway
+spec:
+  gatewayClassName: nginx
+  listeners:
+  - name: http
+    port: 80
+    protocol: HTTP
+    hostname: "*.example.com"
+  - name: https
+    port: 443
+    protocol: HTTPS
+    hostname: "*.example.com"
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - name: microservice-tls-secret
+
+---
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: HTTPRoute
+metadata:
+  name: microservice-http-route
+  namespace: microservices
+  labels:
+    app: go-microservice
+    component: route
+spec:
+  parentRefs:
+  - name: microservice-gateway
+  hostnames:
+  - "api.example.com"
+  - "microservice.example.com"
+  rules:
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /v1/microservice
+    backendRefs:
+    - name: go-microservice-svc
+      port: 80
+      weight: 100
+    filters:
+    - type: RequestHeaderModifier
+      requestHeaderModifier:
+        add:
+        - name: X-Service-Version
+          value: v1.0.0
+  - matches:
+    - path:
+        type: Exact
+        value: /health
+    backendRefs:
+    - name: go-microservice-svc
+      port: 80
+  - matches:
+    - path:
+        type: Exact
+        value: /metrics
+    backendRefs:
+    - name: go-microservice-svc
+      port: 8080
+
+---
+# ==========================================
+# VirtualService (Istio Service Mesh)
+# ==========================================
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: go-microservice-vs
+  namespace: microservices
+  labels:
+    app: go-microservice
+    component: virtual-service
+spec:
+  hosts:
+  - api.example.com
+  - microservice.example.com
+  - go-microservice-svc.microservices.svc.cluster.local
+  gateways:
+  - microservice-gateway
+  - mesh
+  http:
+  # 健康检查路由
+  - match:
+    - uri:
+        exact: /health
+    route:
+    - destination:
+        host: go-microservice-svc.microservices.svc.cluster.local
+        port:
+          number: 80
+    timeout: 5s
+
+  # API路由 - 带重试和超时
+  - match:
+    - uri:
+        prefix: /v1/microservice
+    route:
+    - destination:
+        host: go-microservice-svc.microservices.svc.cluster.local
+        port:
+          number: 80
+    timeout: 30s
+    retries:
+      attempts: 3
+      perTryTimeout: 10s
+      retryOn: 5xx,reset,connect-failure,refused-stream
+    fault:
+      delay:
+        percentage:
+          value: 0.1
+        fixedDelay: 100ms
+
+  # 指标路由
+  - match:
+    - uri:
+        exact: /api/metrics
+    route:
+    - destination:
+        host: go-microservice-svc.microservices.svc.cluster.local
+        port:
+          number: 8080
+    timeout: 10s
+
+  # 默认路由
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: go-microservice-svc.microservices.svc.cluster.local
+        port:
+          number: 80
+    timeout: 30s
+
+---
+# ==========================================
+# DestinationRule (Istio流量策略)
+# ==========================================
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: go-microservice-dr
+  namespace: microservices
+  labels:
+    app: go-microservice
+    component: destination-rule
+spec:
+  host: go-microservice-svc.microservices.svc.cluster.local
+  trafficPolicy:
+    # 负载均衡
+    loadBalancer:
+      simple: LEAST_CONN
+    # 连接池
+    connectionPool:
+      tcp:
+        maxConnections: 100
+        connectTimeout: 30s
+        tcpKeepalive:
+          time: 7200s
+          interval: 75s
+      http:
+        http1MaxPendingRequests: 100
+        http2MaxRequests: 1000
+        maxRequestsPerConnection: 2
+        maxRetries: 3
+        consecutiveGatewayErrors: 5
+        interval: 30s
+        baseEjectionTime: 30s
+        maxEjectionPercent: 50
+    # 熔断器
+    outlierDetection:
+      consecutive5xxErrors: 3
+      consecutiveGatewayErrors: 3
+      interval: 30s
+      baseEjectionTime: 30s
+      maxEjectionPercent: 50
+      minHealthPercent: 30
+  # 端口级流量策略
+  portLevelSettings:
+  - port:
+      number: 80
+    connectionPool:
+      tcp:
+        maxConnections: 50
+  - port:
+      number: 8080
+    connectionPool:
+      tcp:
+        maxConnections: 20
+
+---
+# ==========================================
+# Gateway (Istio入口网关)
+# ==========================================
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: microservice-istio-gateway
+  namespace: microservices
+  labels:
+    app: go-microservice
+    component: istio-gateway
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  # HTTP端口 (重定向到HTTPS)
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - api.example.com
+    - microservice.example.com
+    tls:
+      httpsRedirect: true
+  # HTTPS端口
+  - port:
+      number: 443
+      name: https
+      protocol: HTTPS
+    hosts:
+    - api.example.com
+    - microservice.example.com
+    tls:
+      mode: SIMPLE
+      credentialName: microservice-tls-secret

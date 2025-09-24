@@ -1,0 +1,270 @@
+// 🚀 用户服务 Proto定义 - 现代化gRPC接口设计
+syntax = "proto3";
+
+package user_service.v1;
+
+option go_package = "github.com/go-mastery/microservices/grpc/user/v1;userv1";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+import "google/protobuf/field_mask.proto";
+
+// 用户服务接口定义
+service UserService {
+  // 创建用户
+  rpc CreateUser(CreateUserRequest) returns (CreateUserResponse);
+
+  // 获取用户信息
+  rpc GetUser(GetUserRequest) returns (GetUserResponse);
+
+  // 更新用户信息
+  rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse);
+
+  // 删除用户
+  rpc DeleteUser(DeleteUserRequest) returns (google.protobuf.Empty);
+
+  // 列出用户 (支持分页)
+  rpc ListUsers(ListUsersRequest) returns (ListUsersResponse);
+
+  // 批量获取用户
+  rpc BatchGetUsers(BatchGetUsersRequest) returns (BatchGetUsersResponse);
+
+  // 用户认证
+  rpc AuthenticateUser(AuthenticateUserRequest) returns (AuthenticateUserResponse);
+
+  // 流式接口 - 用户活动流
+  rpc StreamUserActivity(StreamUserActivityRequest) returns (stream UserActivityEvent);
+
+  // 双向流 - 用户聊天
+  rpc UserChat(stream ChatMessage) returns (stream ChatMessage);
+
+  // 健康检查
+  rpc HealthCheck(google.protobuf.Empty) returns (HealthCheckResponse);
+}
+
+// 用户模型
+message User {
+  string user_id = 1;
+  string username = 2;
+  string email = 3;
+  string full_name = 4;
+  string phone_number = 5;
+  UserStatus status = 6;
+  repeated string roles = 7;
+  map<string, string> metadata = 8;
+  google.protobuf.Timestamp created_at = 9;
+  google.protobuf.Timestamp updated_at = 10;
+}
+
+// 用户状态枚举
+enum UserStatus {
+  USER_STATUS_UNSPECIFIED = 0;
+  USER_STATUS_ACTIVE = 1;
+  USER_STATUS_INACTIVE = 2;
+  USER_STATUS_SUSPENDED = 3;
+  USER_STATUS_DELETED = 4;
+}
+
+// 创建用户请求
+message CreateUserRequest {
+  string username = 1;
+  string email = 2;
+  string password = 3;
+  string full_name = 4;
+  string phone_number = 5;
+  repeated string roles = 6;
+  map<string, string> metadata = 7;
+}
+
+// 创建用户响应
+message CreateUserResponse {
+  User user = 1;
+  string access_token = 2;
+  string refresh_token = 3;
+}
+
+// 获取用户请求
+message GetUserRequest {
+  oneof identifier {
+    string user_id = 1;
+    string username = 2;
+    string email = 3;
+  }
+  google.protobuf.FieldMask field_mask = 4; // 字段掩码，支持部分字段查询
+}
+
+// 获取用户响应
+message GetUserResponse {
+  User user = 1;
+}
+
+// 更新用户请求
+message UpdateUserRequest {
+  string user_id = 1;
+  User user = 2;
+  google.protobuf.FieldMask update_mask = 3;
+}
+
+// 更新用户响应
+message UpdateUserResponse {
+  User user = 1;
+}
+
+// 删除用户请求
+message DeleteUserRequest {
+  string user_id = 1;
+  bool hard_delete = 2; // 是否硬删除
+}
+
+// 列出用户请求
+message ListUsersRequest {
+  int32 page_size = 1;
+  string page_token = 2;
+  UserFilter filter = 3;
+  repeated string order_by = 4;
+}
+
+// 用户过滤器
+message UserFilter {
+  repeated UserStatus statuses = 1;
+  repeated string roles = 2;
+  google.protobuf.Timestamp created_after = 3;
+  google.protobuf.Timestamp created_before = 4;
+  string search_query = 5; // 支持模糊搜索
+}
+
+// 列出用户响应
+message ListUsersResponse {
+  repeated User users = 1;
+  string next_page_token = 2;
+  int32 total_count = 3;
+}
+
+// 批量获取用户请求
+message BatchGetUsersRequest {
+  repeated string user_ids = 1;
+  google.protobuf.FieldMask field_mask = 2;
+}
+
+// 批量获取用户响应
+message BatchGetUsersResponse {
+  map<string, User> users = 1;
+  repeated string not_found = 2;
+}
+
+// 用户认证请求
+message AuthenticateUserRequest {
+  oneof credential {
+    UsernamePasswordCredential username_password = 1;
+    TokenCredential token = 2;
+    OAuth2Credential oauth2 = 3;
+  }
+  string client_id = 4;
+  string client_ip = 5;
+  string user_agent = 6;
+}
+
+// 用户名密码凭证
+message UsernamePasswordCredential {
+  string username = 1;
+  string password = 2;
+}
+
+// Token凭证
+message TokenCredential {
+  string token = 1;
+  string token_type = 2; // JWT, API_KEY, etc.
+}
+
+// OAuth2凭证
+message OAuth2Credential {
+  string provider = 1;
+  string authorization_code = 2;
+  string redirect_uri = 3;
+}
+
+// 用户认证响应
+message AuthenticateUserResponse {
+  User user = 1;
+  AuthTokens tokens = 2;
+  AuthSession session = 3;
+}
+
+// 认证令牌
+message AuthTokens {
+  string access_token = 1;
+  string refresh_token = 2;
+  string token_type = 3;
+  int64 expires_in = 4;
+  repeated string scopes = 5;
+}
+
+// 认证会话
+message AuthSession {
+  string session_id = 1;
+  google.protobuf.Timestamp expires_at = 2;
+  map<string, string> metadata = 3;
+}
+
+// 流式用户活动请求
+message StreamUserActivityRequest {
+  string user_id = 1;
+  repeated ActivityType activity_types = 2;
+}
+
+// 活动类型枚举
+enum ActivityType {
+  ACTIVITY_TYPE_UNSPECIFIED = 0;
+  ACTIVITY_TYPE_LOGIN = 1;
+  ACTIVITY_TYPE_LOGOUT = 2;
+  ACTIVITY_TYPE_PROFILE_UPDATE = 3;
+  ACTIVITY_TYPE_PASSWORD_CHANGE = 4;
+  ACTIVITY_TYPE_ROLE_CHANGE = 5;
+}
+
+// 用户活动事件
+message UserActivityEvent {
+  string event_id = 1;
+  string user_id = 2;
+  ActivityType activity_type = 3;
+  map<string, string> details = 4;
+  google.protobuf.Timestamp timestamp = 5;
+  string client_ip = 6;
+  string user_agent = 7;
+}
+
+// 聊天消息
+message ChatMessage {
+  string message_id = 1;
+  string from_user_id = 2;
+  string to_user_id = 3;
+  string content = 4;
+  MessageType message_type = 5;
+  google.protobuf.Timestamp timestamp = 6;
+  map<string, string> metadata = 7;
+}
+
+// 消息类型枚举
+enum MessageType {
+  MESSAGE_TYPE_UNSPECIFIED = 0;
+  MESSAGE_TYPE_TEXT = 1;
+  MESSAGE_TYPE_IMAGE = 2;
+  MESSAGE_TYPE_FILE = 3;
+  MESSAGE_TYPE_SYSTEM = 4;
+}
+
+// 健康检查响应
+message HealthCheckResponse {
+  HealthStatus status = 1;
+  string message = 2;
+  map<string, string> details = 3;
+  google.protobuf.Timestamp timestamp = 4;
+}
+
+// 健康状态枚举
+enum HealthStatus {
+  HEALTH_STATUS_UNSPECIFIED = 0;
+  HEALTH_STATUS_SERVING = 1;
+  HEALTH_STATUS_NOT_SERVING = 2;
+  HEALTH_STATUS_SERVICE_UNKNOWN = 3;
+}

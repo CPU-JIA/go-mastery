@@ -1,0 +1,411 @@
+# ☸️ 监控配置 - Prometheus & Grafana集成
+
+# ==========================================
+# ServiceMonitor: Prometheus服务发现
+# ==========================================
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: go-microservice-monitor
+  namespace: microservices
+  labels:
+    app: go-microservice
+    component: monitoring
+    release: prometheus
+spec:
+  selector:
+    matchLabels:
+      app: go-microservice
+  endpoints:
+  - port: metrics
+    path: /api/metrics
+    interval: 30s
+    scrapeTimeout: 10s
+    honorLabels: true
+    metricRelabelings:
+    - sourceLabels: [__name__]
+      regex: 'go_.*'
+      targetLabel: __tmp_go_metric
+      replacement: 'true'
+    relabelings:
+    - sourceLabels: [__meta_kubernetes_pod_name]
+      targetLabel: pod
+    - sourceLabels: [__meta_kubernetes_namespace]
+      targetLabel: namespace
+    - sourceLabels: [__meta_kubernetes_service_name]
+      targetLabel: service
+
+---
+# ==========================================
+# PrometheusRule: 告警规则
+# ==========================================
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: go-microservice-alerts
+  namespace: microservices
+  labels:
+    app: go-microservice
+    component: alerting
+    prometheus: kube-prometheus
+    role: alert-rules
+spec:
+  groups:
+  - name: go-microservice.rules
+    interval: 30s
+    rules:
+    # 服务可用性告警
+    - alert: MicroserviceDown
+      expr: up{job="go-microservice-svc"} == 0
+      for: 1m
+      labels:
+        severity: critical
+        service: go-microservice
+      annotations:
+        summary: "Go微服务不可用"
+        description: "{{ $labels.instance }}的go-microservice已下线超过1分钟"
+
+    # 高错误率告警
+    - alert: HighErrorRate
+      expr: |
+        (
+          rate(http_requests_total{job="go-microservice-svc",status=~"5.."}[5m]) /
+          rate(http_requests_total{job="go-microservice-svc"}[5m])
+        ) > 0.05
+      for: 5m
+      labels:
+        severity: warning
+        service: go-microservice
+      annotations:
+        summary: "Go微服务错误率过高"
+        description: "{{ $labels.instance }}的5xx错误率在过去5分钟内超过5%"
+
+    # 高延迟告警
+    - alert: HighLatency
+      expr: |
+        histogram_quantile(0.95,
+          rate(http_request_duration_seconds_bucket{job="go-microservice-svc"}[5m])
+        ) > 1.0
+      for: 10m
+      labels:
+        severity: warning
+        service: go-microservice
+      annotations:
+        summary: "Go微服务延迟过高"
+        description: "{{ $labels.instance }}的P95响应时间在过去10分钟内超过1秒"
+
+    # 内存使用告警
+    - alert: HighMemoryUsage
+      expr: |
+        (
+          go_memstats_alloc_bytes{job="go-microservice-svc"} /
+          go_memstats_sys_bytes{job="go-microservice-svc"}
+        ) > 0.8
+      for: 15m
+      labels:
+        severity: warning
+        service: go-microservice
+      annotations:
+        summary: "Go微服务内存使用率过高"
+        description: "{{ $labels.instance }}的内存使用率在过去15分钟内超过80%"
+
+    # Goroutine泄漏告警
+    - alert: GoroutineLeak
+      expr: |
+        go_goroutines{job="go-microservice-svc"} > 1000
+      for: 10m
+      labels:
+        severity: warning
+        service: go-microservice
+      annotations:
+        summary: "Go微服务Goroutine数量异常"
+        description: "{{ $labels.instance }}的Goroutine数量超过1000，可能存在泄漏"
+
+    # GC频繁告警
+    - alert: FrequentGC
+      expr: |
+        rate(go_gc_duration_seconds_count{job="go-microservice-svc"}[5m]) > 5
+      for: 10m
+      labels:
+        severity: info
+        service: go-microservice
+      annotations:
+        summary: "Go微服务GC过于频繁"
+        description: "{{ $labels.instance }}的GC频率在过去5分钟内超过5次/秒"
+
+    # Pod重启告警
+    - alert: PodRestarting
+      expr: |
+        rate(kube_pod_container_status_restarts_total{pod=~"go-microservice-.*"}[15m]) > 0
+      for: 5m
+      labels:
+        severity: warning
+        service: go-microservice
+      annotations:
+        summary: "Go微服务Pod频繁重启"
+        description: "Pod {{ $labels.pod }}在过去15分钟内重启了{{ $value }}次"
+
+    # 副本数不足告警
+    - alert: InsufficientReplicas
+      expr: |
+        kube_deployment_status_replicas_available{deployment="go-microservice"} < 2
+      for: 5m
+      labels:
+        severity: critical
+        service: go-microservice
+      annotations:
+        summary: "Go微服务副本数不足"
+        description: "go-microservice当前可用副本数为{{ $value }}，低于最小要求"
+
+---
+# ==========================================
+# Grafana Dashboard ConfigMap
+# ==========================================
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: go-microservice-dashboard
+  namespace: monitoring
+  labels:
+    app: go-microservice
+    component: dashboard
+    grafana_dashboard: "1"
+data:
+  go-microservice-dashboard.json: |
+    {
+      "dashboard": {
+        "id": null,
+        "title": "Go微服务监控",
+        "tags": ["go", "microservice", "kubernetes"],
+        "style": "dark",
+        "timezone": "browser",
+        "panels": [
+          {
+            "id": 1,
+            "title": "请求速率",
+            "type": "graph",
+            "targets": [
+              {
+                "expr": "rate(http_requests_total{job=\"go-microservice-svc\"}[5m])",
+                "legendFormat": "{{method}} {{status}}"
+              }
+            ],
+            "yAxes": [
+              {
+                "label": "请求/秒"
+              }
+            ]
+          },
+          {
+            "id": 2,
+            "title": "错误率",
+            "type": "stat",
+            "targets": [
+              {
+                "expr": "rate(http_requests_total{job=\"go-microservice-svc\",status=~\"5..\"}[5m]) / rate(http_requests_total{job=\"go-microservice-svc\"}[5m])",
+                "legendFormat": "错误率"
+              }
+            ],
+            "fieldConfig": {
+              "defaults": {
+                "unit": "percentunit",
+                "min": 0,
+                "max": 1
+              }
+            }
+          },
+          {
+            "id": 3,
+            "title": "响应时间分布",
+            "type": "heatmap",
+            "targets": [
+              {
+                "expr": "rate(http_request_duration_seconds_bucket{job=\"go-microservice-svc\"}[5m])",
+                "legendFormat": "{{le}}"
+              }
+            ]
+          },
+          {
+            "id": 4,
+            "title": "内存使用",
+            "type": "graph",
+            "targets": [
+              {
+                "expr": "go_memstats_alloc_bytes{job=\"go-microservice-svc\"}",
+                "legendFormat": "已分配"
+              },
+              {
+                "expr": "go_memstats_sys_bytes{job=\"go-microservice-svc\"}",
+                "legendFormat": "系统总计"
+              }
+            ],
+            "yAxes": [
+              {
+                "label": "字节",
+                "logBase": 1,
+                "min": null,
+                "max": null,
+                "show": true
+              }
+            ]
+          },
+          {
+            "id": 5,
+            "title": "Goroutine数量",
+            "type": "graph",
+            "targets": [
+              {
+                "expr": "go_goroutines{job=\"go-microservice-svc\"}",
+                "legendFormat": "Goroutines"
+              }
+            ]
+          },
+          {
+            "id": 6,
+            "title": "GC性能",
+            "type": "graph",
+            "targets": [
+              {
+                "expr": "rate(go_gc_duration_seconds_count{job=\"go-microservice-svc\"}[5m])",
+                "legendFormat": "GC频率"
+              },
+              {
+                "expr": "go_gc_duration_seconds{job=\"go-microservice-svc\",quantile=\"0.5\"}",
+                "legendFormat": "GC延迟P50"
+              }
+            ]
+          }
+        ],
+        "time": {
+          "from": "now-1h",
+          "to": "now"
+        },
+        "refresh": "30s"
+      }
+    }
+
+---
+# ==========================================
+# PodMonitor: Pod级别监控
+# ==========================================
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: go-microservice-podmonitor
+  namespace: microservices
+  labels:
+    app: go-microservice
+    component: pod-monitoring
+spec:
+  selector:
+    matchLabels:
+      app: go-microservice
+  podMetricsEndpoints:
+  - port: metrics
+    path: /api/metrics
+    interval: 30s
+    scrapeTimeout: 10s
+
+---
+# ==========================================
+# 日志收集配置 (Fluent Bit)
+# ==========================================
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fluent-bit-microservice-config
+  namespace: logging
+  labels:
+    app: fluent-bit
+    component: config
+data:
+  microservice.conf: |
+    [INPUT]
+        Name              tail
+        Tag               kube.microservice.*
+        Path              /var/log/containers/*go-microservice*.log
+        Parser            docker
+        DB                /fluent-bit/state/flb_microservice.db
+        Mem_Buf_Limit     50MB
+        Skip_Long_Lines   On
+        Refresh_Interval  10
+
+    [FILTER]
+        Name                kubernetes
+        Match               kube.microservice.*
+        Kube_URL            https://kubernetes.default.svc:443
+        Kube_CA_File        /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+        Kube_Token_File     /var/run/secrets/kubernetes.io/serviceaccount/token
+        Kube_Tag_Prefix     kube.microservice.var.log.containers.
+        Merge_Log           On
+        Keep_Log            Off
+        K8S-Logging.Parser  On
+        K8S-Logging.Exclude Off
+
+    [FILTER]
+        Name                 parser
+        Match                kube.microservice.*
+        Key_Name             log
+        Parser               go_microservice_parser
+        Reserve_Data         On
+
+    [OUTPUT]
+        Name                 es
+        Match                kube.microservice.*
+        Host                 elasticsearch.logging.svc.cluster.local
+        Port                 9200
+        Index                microservice
+        Type                 _doc
+        Logstash_Format      On
+        Logstash_Prefix      microservice
+        Logstash_DateFormat  %Y.%m.%d
+        Include_Tag_Key      On
+        Tag_Key              @tag
+
+  parsers.conf: |
+    [PARSER]
+        Name         go_microservice_parser
+        Format       json
+        Time_Key     timestamp
+        Time_Format  %Y-%m-%dT%H:%M:%S.%L%z
+        Time_Keep    On
+
+---
+# ==========================================
+# Jaeger追踪配置
+# ==========================================
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: jaeger-microservice-config
+  namespace: tracing
+  labels:
+    app: jaeger
+    component: config
+data:
+  microservice-sampling.json: |
+    {
+      "service_strategies": [
+        {
+          "service": "go-microservice",
+          "type": "probabilistic",
+          "param": 1.0,
+          "operation_strategies": [
+            {
+              "operation": "GET /api/metrics",
+              "type": "probabilistic",
+              "param": 0.1
+            },
+            {
+              "operation": "GET /health",
+              "type": "probabilistic",
+              "param": 0.1
+            }
+          ]
+        }
+      ],
+      "default_strategy": {
+        "type": "probabilistic",
+        "param": 0.1
+      }
+    }

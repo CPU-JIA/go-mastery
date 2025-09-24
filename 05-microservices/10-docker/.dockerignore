@@ -1,0 +1,159 @@
+# ==========================================
+# Docker Build Context Optimization
+# ==========================================
+# 优化Docker构建上下文，减少构建时间和镜像大小
+
+# 版本控制
+.git/
+.gitignore
+.gitattributes
+.gitmodules
+
+# 文档和说明文件
+README.md
+README.rst
+CHANGELOG.md
+LICENSE
+CONTRIBUTING.md
+docs/
+*.md
+
+# IDE和编辑器文件
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# 编译和构建产物
+*.exe
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+coverage.out
+coverage.html
+*.prof
+*.pprof
+debug/
+bin/
+build/
+dist/
+target/
+
+# 依赖目录
+vendor/
+node_modules/
+
+# 临时文件和缓存
+tmp/
+temp/
+*.tmp
+*.temp
+*.cache
+.cache/
+
+# 日志文件
+*.log
+logs/
+
+# 配置文件 (敏感信息)
+.env
+.env.*
+*.key
+*.pem
+*.crt
+secrets/
+config/local/
+config/development/
+
+# 测试相关
+test/
+tests/
+*_test.go
+testdata/
+fixtures/
+
+# Docker相关
+Dockerfile.*
+docker-compose*.yml
+.dockerignore
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+.travis.yml
+.circleci/
+Jenkinsfile
+azure-pipelines.yml
+
+# 数据库和数据文件
+*.db
+*.sqlite
+*.sqlite3
+data/
+migrations/
+
+# 备份文件
+*.bak
+*.backup
+*~
+
+# 压缩文件
+*.zip
+*.tar
+*.tar.gz
+*.rar
+*.7z
+
+# 开发工具
+Makefile
+scripts/
+tools/
+
+# 平台特定文件
+*.dSYM/
+*.su
+*.idb
+*.pdb
+
+# 运行时产生的文件
+pid
+*.pid
+*.seed
+*.pid.lock
+pids/
+
+# ==========================================
+# 项目特定排除 (根据需要调整)
+# ==========================================
+
+# 示例配置文件 (保留模板，排除具体配置)
+config.example.yml
+config.template.yml
+!config.example.*
+!config.template.*
+
+# 部署脚本 (通常不需要在容器中)
+deploy/
+k8s/
+helm/
+
+# 性能测试文件
+benchmarks/
+load-test/
+
+# 监控和可观测性配置 (如果不在容器中使用)
+prometheus/
+grafana/
+jaeger/
+
+# ==========================================
+# 保留的必要文件 (使用!前缀)
+# ==========================================
+# 如果上面的规则过于宽泛，可以使用!来保留特定文件
+# !important-config.yml
+# !required-script.sh

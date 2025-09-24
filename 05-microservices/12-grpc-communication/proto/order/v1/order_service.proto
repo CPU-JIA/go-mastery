@@ -1,0 +1,371 @@
+// 🚀 订单服务 Proto定义 - 现代化gRPC接口设计
+syntax = "proto3";
+
+package order_service.v1;
+
+option go_package = "github.com/go-mastery/microservices/grpc/order/v1;orderv1";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+import "google/protobuf/field_mask.proto";
+import "user/v1/user_service.proto";
+
+// 订单服务接口定义
+service OrderService {
+  // 创建订单
+  rpc CreateOrder(CreateOrderRequest) returns (CreateOrderResponse);
+
+  // 获取订单详情
+  rpc GetOrder(GetOrderRequest) returns (GetOrderResponse);
+
+  // 更新订单
+  rpc UpdateOrder(UpdateOrderRequest) returns (UpdateOrderResponse);
+
+  // 取消订单
+  rpc CancelOrder(CancelOrderRequest) returns (google.protobuf.Empty);
+
+  // 列出用户订单
+  rpc ListOrders(ListOrdersRequest) returns (ListOrdersResponse);
+
+  // 订单支付
+  rpc PayOrder(PayOrderRequest) returns (PayOrderResponse);
+
+  // 订单发货
+  rpc ShipOrder(ShipOrderRequest) returns (ShipOrderResponse);
+
+  // 订单状态流 (Server Streaming)
+  rpc StreamOrderStatus(StreamOrderStatusRequest) returns (stream OrderStatusEvent);
+
+  // 批量处理订单 (Client Streaming)
+  rpc BatchProcessOrders(stream ProcessOrderRequest) returns (BatchProcessOrdersResponse);
+
+  // 实时订单处理 (Bidirectional Streaming)
+  rpc RealTimeOrderProcessing(stream OrderProcessingRequest) returns (stream OrderProcessingResponse);
+}
+
+// 订单模型
+message Order {
+  string order_id = 1;
+  string user_id = 2;
+  OrderStatus status = 3;
+  repeated OrderItem items = 4;
+  Money total_amount = 5;
+  Money tax_amount = 6;
+  Money shipping_amount = 7;
+  Money discount_amount = 8;
+  ShippingAddress shipping_address = 9;
+  BillingAddress billing_address = 10;
+  PaymentInfo payment_info = 11;
+  string tracking_number = 12;
+  google.protobuf.Timestamp created_at = 13;
+  google.protobuf.Timestamp updated_at = 14;
+  google.protobuf.Timestamp shipped_at = 15;
+  google.protobuf.Timestamp delivered_at = 16;
+  map<string, string> metadata = 17;
+}
+
+// 订单状态枚举
+enum OrderStatus {
+  ORDER_STATUS_UNSPECIFIED = 0;
+  ORDER_STATUS_PENDING = 1;      // 待处理
+  ORDER_STATUS_CONFIRMED = 2;    // 已确认
+  ORDER_STATUS_PAID = 3;         // 已支付
+  ORDER_STATUS_PROCESSING = 4;   // 处理中
+  ORDER_STATUS_SHIPPED = 5;      // 已发货
+  ORDER_STATUS_DELIVERED = 6;    // 已送达
+  ORDER_STATUS_CANCELLED = 7;    // 已取消
+  ORDER_STATUS_REFUNDED = 8;     // 已退款
+  ORDER_STATUS_RETURNED = 9;     // 已退货
+}
+
+// 订单项
+message OrderItem {
+  string item_id = 1;
+  string product_id = 2;
+  string product_name = 3;
+  string product_sku = 4;
+  int32 quantity = 5;
+  Money unit_price = 6;
+  Money total_price = 7;
+  map<string, string> product_attributes = 8;
+  string warehouse_id = 9;
+}
+
+// 金额
+message Money {
+  string currency = 1; // ISO 4217 currency code (e.g., USD, CNY)
+  int64 amount = 2;    // Amount in smallest currency unit (e.g., cents)
+  int32 decimal_places = 3; // Number of decimal places
+}
+
+// 收货地址
+message ShippingAddress {
+  string recipient_name = 1;
+  string phone = 2;
+  string email = 3;
+  string address_line1 = 4;
+  string address_line2 = 5;
+  string city = 6;
+  string state = 7;
+  string postal_code = 8;
+  string country = 9;
+  bool is_default = 10;
+}
+
+// 账单地址
+message BillingAddress {
+  string name = 1;
+  string address_line1 = 2;
+  string address_line2 = 3;
+  string city = 4;
+  string state = 5;
+  string postal_code = 6;
+  string country = 7;
+}
+
+// 支付信息
+message PaymentInfo {
+  string payment_id = 1;
+  PaymentMethod method = 2;
+  PaymentStatus status = 3;
+  string transaction_id = 4;
+  string gateway = 5; // stripe, paypal, alipay, etc.
+  google.protobuf.Timestamp paid_at = 6;
+  map<string, string> details = 7;
+}
+
+// 支付方式枚举
+enum PaymentMethod {
+  PAYMENT_METHOD_UNSPECIFIED = 0;
+  PAYMENT_METHOD_CREDIT_CARD = 1;
+  PAYMENT_METHOD_DEBIT_CARD = 2;
+  PAYMENT_METHOD_PAYPAL = 3;
+  PAYMENT_METHOD_ALIPAY = 4;
+  PAYMENT_METHOD_WECHAT_PAY = 5;
+  PAYMENT_METHOD_BANK_TRANSFER = 6;
+  PAYMENT_METHOD_CRYPTO = 7;
+}
+
+// 支付状态枚举
+enum PaymentStatus {
+  PAYMENT_STATUS_UNSPECIFIED = 0;
+  PAYMENT_STATUS_PENDING = 1;
+  PAYMENT_STATUS_PROCESSING = 2;
+  PAYMENT_STATUS_COMPLETED = 3;
+  PAYMENT_STATUS_FAILED = 4;
+  PAYMENT_STATUS_REFUNDED = 5;
+  PAYMENT_STATUS_PARTIALLY_REFUNDED = 6;
+}
+
+// === 请求和响应消息 ===
+
+// 创建订单请求
+message CreateOrderRequest {
+  string user_id = 1;
+  repeated OrderItem items = 2;
+  ShippingAddress shipping_address = 3;
+  BillingAddress billing_address = 4;
+  string coupon_code = 5;
+  map<string, string> metadata = 6;
+  string client_request_id = 7; // 幂等性控制
+}
+
+// 创建订单响应
+message CreateOrderResponse {
+  Order order = 1;
+  OrderValidation validation = 2;
+}
+
+// 订单验证结果
+message OrderValidation {
+  bool is_valid = 1;
+  repeated ValidationError errors = 2;
+  repeated ValidationWarning warnings = 3;
+}
+
+// 验证错误
+message ValidationError {
+  string field = 1;
+  string code = 2;
+  string message = 3;
+  map<string, string> details = 4;
+}
+
+// 验证警告
+message ValidationWarning {
+  string field = 1;
+  string code = 2;
+  string message = 3;
+}
+
+// 获取订单请求
+message GetOrderRequest {
+  string order_id = 1;
+  string user_id = 2; // 用于权限验证
+  google.protobuf.FieldMask field_mask = 3;
+  bool include_items = 4;
+}
+
+// 获取订单响应
+message GetOrderResponse {
+  Order order = 1;
+}
+
+// 更新订单请求
+message UpdateOrderRequest {
+  string order_id = 1;
+  Order order = 2;
+  google.protobuf.FieldMask update_mask = 3;
+  string user_id = 4; // 用于权限验证
+}
+
+// 更新订单响应
+message UpdateOrderResponse {
+  Order order = 1;
+}
+
+// 取消订单请求
+message CancelOrderRequest {
+  string order_id = 1;
+  string user_id = 2;
+  string reason = 3;
+  bool refund_payment = 4;
+}
+
+// 列出订单请求
+message ListOrdersRequest {
+  string user_id = 1;
+  int32 page_size = 2;
+  string page_token = 3;
+  OrderFilter filter = 4;
+  repeated string order_by = 5;
+}
+
+// 订单过滤器
+message OrderFilter {
+  repeated OrderStatus statuses = 1;
+  google.protobuf.Timestamp created_after = 2;
+  google.protobuf.Timestamp created_before = 3;
+  Money amount_min = 4;
+  Money amount_max = 5;
+}
+
+// 列出订单响应
+message ListOrdersResponse {
+  repeated Order orders = 1;
+  string next_page_token = 2;
+  int32 total_count = 3;
+}
+
+// 订单支付请求
+message PayOrderRequest {
+  string order_id = 1;
+  string user_id = 2;
+  PaymentMethod method = 3;
+  map<string, string> payment_details = 4;
+  string return_url = 5;
+  string cancel_url = 6;
+}
+
+// 订单支付响应
+message PayOrderResponse {
+  string payment_id = 1;
+  PaymentStatus status = 2;
+  string payment_url = 3; // 用于重定向支付
+  string confirmation_token = 4;
+  Order updated_order = 5;
+}
+
+// 订单发货请求
+message ShipOrderRequest {
+  string order_id = 1;
+  string tracking_number = 2;
+  string carrier = 3;
+  string shipping_method = 4;
+  google.protobuf.Timestamp estimated_delivery = 5;
+  repeated ShippingItem items = 6;
+}
+
+// 发货项
+message ShippingItem {
+  string item_id = 1;
+  int32 quantity = 2;
+  string warehouse_id = 3;
+}
+
+// 订单发货响应
+message ShipOrderResponse {
+  Order updated_order = 1;
+  TrackingInfo tracking_info = 2;
+}
+
+// 物流追踪信息
+message TrackingInfo {
+  string tracking_number = 1;
+  string carrier = 2;
+  string tracking_url = 3;
+  google.protobuf.Timestamp shipped_at = 4;
+  google.protobuf.Timestamp estimated_delivery = 5;
+}
+
+// 订单状态流请求
+message StreamOrderStatusRequest {
+  string order_id = 1;
+  string user_id = 2;
+}
+
+// 订单状态事件
+message OrderStatusEvent {
+  string order_id = 1;
+  OrderStatus previous_status = 2;
+  OrderStatus current_status = 3;
+  google.protobuf.Timestamp timestamp = 4;
+  string reason = 5;
+  map<string, string> metadata = 6;
+}
+
+// 批量处理订单请求
+message ProcessOrderRequest {
+  string order_id = 1;
+  string action = 2; // confirm, cancel, ship, etc.
+  map<string, string> parameters = 3;
+}
+
+// 批量处理订单响应
+message BatchProcessOrdersResponse {
+  int32 processed_count = 1;
+  int32 success_count = 2;
+  int32 failed_count = 3;
+  repeated ProcessingError errors = 4;
+}
+
+// 处理错误
+message ProcessingError {
+  string order_id = 1;
+  string error_code = 2;
+  string error_message = 3;
+}
+
+// 实时订单处理请求
+message OrderProcessingRequest {
+  string request_id = 1;
+  oneof request {
+    CreateOrderRequest create_order = 2;
+    UpdateOrderRequest update_order = 3;
+    CancelOrderRequest cancel_order = 4;
+    PayOrderRequest pay_order = 5;
+  }
+}
+
+// 实时订单处理响应
+message OrderProcessingResponse {
+  string request_id = 1;
+  bool success = 2;
+  oneof response {
+    CreateOrderResponse create_order = 3;
+    UpdateOrderResponse update_order = 4;
+    google.protobuf.Empty cancel_order = 5;
+    PayOrderResponse pay_order = 6;
+  }
+  repeated ProcessingError errors = 7;
+}
