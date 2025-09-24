@@ -1,0 +1,160 @@
+# Pre-commit hooks configuration for Go Mastery Project
+# Install: pip install pre-commit
+# Setup: pre-commit install
+# Run manually: pre-commit run --all-files
+
+repos:
+  # Go formatting and basic checks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-added-large-files
+        args: ['--maxkb=1000']
+      - id: check-case-conflict
+      - id: check-merge-conflict
+      - id: check-json
+      - id: pretty-format-json
+        args: ['--autofix']
+
+  # Go specific hooks
+  - repo: local
+    hooks:
+      - id: go-fmt
+        name: go fmt
+        description: Run gofmt on Go source files
+        entry: gofmt
+        args: [-w, -s]
+        language: system
+        files: \.go$
+        pass_filenames: true
+
+      - id: go-vet
+        name: go vet
+        description: Run go vet on Go packages
+        entry: go
+        args: [vet, ./...]
+        language: system
+        files: \.go$
+        pass_filenames: false
+
+      - id: go-mod-tidy
+        name: go mod tidy
+        description: Ensure go.mod and go.sum are up to date
+        entry: go
+        args: [mod, tidy]
+        language: system
+        files: go\.(mod|sum)$
+        pass_filenames: false
+
+      - id: go-mod-verify
+        name: go mod verify
+        description: Verify dependencies have expected content
+        entry: go
+        args: [mod, verify]
+        language: system
+        files: go\.sum$
+        pass_filenames: false
+
+      - id: go-test
+        name: go test
+        description: Run go test on all packages
+        entry: go
+        args: [test, -short, ./...]
+        language: system
+        files: \.go$
+        pass_filenames: false
+
+      - id: go-build
+        name: go build
+        description: Build the application
+        entry: go
+        args: [build, ./...]
+        language: system
+        files: \.go$
+        pass_filenames: false
+
+      - id: goimports
+        name: goimports
+        description: Run goimports on Go source files
+        entry: goimports
+        args: [-w]
+        language: system
+        files: \.go$
+        pass_filenames: true
+
+  # Security and quality checks
+  - repo: local
+    hooks:
+      - id: gosec
+        name: gosec security scanner
+        description: Run gosec security scanner
+        entry: bash
+        args:
+          - -c
+          - |
+            if command -v gosec >/dev/null 2>&1; then
+              gosec ./...
+            else
+              echo "gosec not installed, skipping security scan"
+              echo "Install with: go install github.com/securecodewarrior/gosec/v2/cmd/gosec@latest"
+            fi
+        language: system
+        files: \.go$
+        pass_filenames: false
+
+      - id: staticcheck
+        name: staticcheck
+        description: Run staticcheck linter
+        entry: bash
+        args:
+          - -c
+          - |
+            if command -v staticcheck >/dev/null 2>&1; then
+              staticcheck ./...
+            else
+              echo "staticcheck not installed, skipping lint check"
+              echo "Install with: go install honnef.co/go/tools/cmd/staticcheck@latest"
+            fi
+        language: system
+        files: \.go$
+        pass_filenames: false
+
+      - id: govulncheck
+        name: govulncheck
+        description: Run Go vulnerability scanner
+        entry: bash
+        args:
+          - -c
+          - |
+            if command -v govulncheck >/dev/null 2>&1; then
+              govulncheck ./...
+            else
+              echo "govulncheck not installed, skipping vulnerability scan"
+              echo "Install with: go install golang.org/x/vuln/cmd/govulncheck@latest"
+            fi
+        language: system
+        files: \.go$
+        pass_filenames: false
+
+  # Commit message validation
+  - repo: https://github.com/compilerla/conventional-pre-commit
+    rev: v3.6.0
+    hooks:
+      - id: conventional-pre-commit
+        stages: [commit-msg]
+        args: [--strict, --force-scope]
+
+# Configuration
+default_language_version:
+  python: python3
+
+# Exclude patterns
+exclude: |
+  (?x)^(
+    vendor/.*|
+    .*\.pb\.go$|
+    .*_generated\.go$
+  )$

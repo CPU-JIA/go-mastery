@@ -1,0 +1,191 @@
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+bin/
+dist/
+
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+coverage.out
+coverage.html
+coverage/
+
+# Dependency directories (remove the comment below to include it)
+vendor/
+
+# Go workspace file
+go.work
+go.work.sum
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+*.lcov
+
+# nyc test coverage
+.nyc_output
+
+# Build artifacts
+build/
+dist/
+target/
+
+# Benchmark results
+benchmarks.txt
+benchmark.txt
+*.bench
+
+# Profile files
+*.prof
+*.pprof
+cpu.prof
+mem.prof
+profile.out
+
+# Test cache
+.testcache/
+
+# Documentation generated files
+doc.html
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Environment variables
+.env
+.env.local
+.env.test
+
+# Configuration files (keep templates)
+config.yaml
+config.json
+!config.template.*
+!config.example.*
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Cache directories
+.cache/
+node_modules/
+
+# Package manager files
+package-lock.json
+yarn.lock
+
+# Docker
+docker-compose.override.yml
+.dockerignore.bak
+
+# Kubernetes
+k8s-config.yaml
+
+# Certificates and keys
+*.pem
+*.key
+*.crt
+*.cert
+*.p12
+*.pfx
+
+# Backup files
+*.bak
+*.backup
+*~
+
+# Go module download cache
+go.sum.backup
+
+# Development tools
+.tools/
+
+# CI/CD artifacts
+.github/workflows/artifacts/
+ci-results/
+
+# Performance monitoring
+jaeger/
+prometheus/
+
+# Local development
+local/
+dev/
+debug/
+
+# Project specific
+examples/output/
+generated/
+migrations/data/
+test-data/
+
+# Security scan results
+gosec-report.json
+security-scan.txt
+
+# Dependency check results
+dependency-check-report.html
+
+# Air live reload
+.air.toml
+tmp/
+
+# Wire generated files
+wire_gen.go
+
+# Mockgen generated files
+*_mock.go
+mocks/
+
+# Protocol buffer generated files
+*.pb.go
+*.pb.gw.go
+
+# gRPC gateway generated files
+*.gw.go
+
+# Swagger/OpenAPI generated files
+api/swagger/
+docs/swagger/
+
+# Assets and static files (if dynamically generated)
+assets/dist/
+static/dist/
+
+# Go modules workspace
+go.work
+go.work.sum

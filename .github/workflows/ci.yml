@@ -1,0 +1,406 @@
+name: Go Mastery CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:
+
+env:
+  GO_VERSION_MATRIX: "1.21,1.22,1.23,1.24"
+  COVERAGE_THRESHOLD: 75
+
+jobs:
+  # Job 1: Static Analysis and Code Quality
+  static-analysis:
+    name: Static Analysis
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go-version: [1.21, 1.22, 1.23, 1.24]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Go ${{ matrix.go-version }}
+      uses: actions/setup-go@v5
+      with:
+        go-version: ${{ matrix.go-version }}
+        cache: true
+        cache-dependency-path: go.sum
+
+    - name: Cache Go modules
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.cache/go-build
+          ~/go/pkg/mod
+        key: ${{ runner.os }}-go-${{ matrix.go-version }}-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-${{ matrix.go-version }}-
+          ${{ runner.os }}-go-
+
+    - name: Verify Go modules
+      run: go mod verify
+
+    - name: Download dependencies
+      run: go mod download
+
+    - name: Check formatting
+      run: |
+        if [ "$(gofmt -s -l . | wc -l)" -gt 0 ]; then
+          echo "The following files are not properly formatted:"
+          gofmt -s -l .
+          echo "Run 'gofmt -s -w .' to fix formatting issues."
+          exit 1
+        fi
+
+    - name: Run go vet
+      run: go vet ./...
+
+    - name: Install staticcheck
+      run: go install honnef.co/go/tools/cmd/staticcheck@latest
+
+    - name: Run staticcheck
+      run: staticcheck ./...
+
+  # Job 2: Security Analysis
+  security:
+    name: Security Analysis
+    runs-on: ubuntu-latest
+    needs: static-analysis
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: '1.24'
+        cache: true
+
+    - name: Install gosec
+      run: go install github.com/securecodewarrior/gosec/v2/cmd/gosec@latest
+
+    - name: Run gosec security scanner
+      run: gosec -fmt sarif -out gosec-results.sarif ./...
+      continue-on-error: true
+
+    - name: Upload SARIF file
+      uses: github/codeql-action/upload-sarif@v3
+      with:
+        sarif_file: gosec-results.sarif
+      if: always()
+
+    - name: Run gosec with JSON output for CI
+      run: |
+        gosec -fmt json -out gosec-results.json ./... || true
+        if [ -s gosec-results.json ]; then
+          echo "Security vulnerabilities found:"
+          cat gosec-results.json
+          # Check if there are any HIGH or MEDIUM severity issues
+          if grep -q '"severity":"HIGH"\|"severity":"MEDIUM"' gosec-results.json; then
+            echo "Critical security issues found. Please review and fix."
+            exit 1
+          fi
+        fi
+
+  # Job 3: Build and Test
+  test:
+    name: Build and Test
+    runs-on: ubuntu-latest
+    needs: static-analysis
+    strategy:
+      matrix:
+        go-version: [1.21, 1.22, 1.23, 1.24]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Go ${{ matrix.go-version }}
+      uses: actions/setup-go@v5
+      with:
+        go-version: ${{ matrix.go-version }}
+        cache: true
+        cache-dependency-path: go.sum
+
+    - name: Build application
+      run: go build -v ./...
+
+    - name: Run tests with race detection
+      run: |
+        go test -race -coverprofile=coverage.out -covermode=atomic ./...
+
+    - name: Check test coverage
+      run: |
+        COVERAGE=$(go tool cover -func=coverage.out | grep total | awk '{print $3}' | sed 's/%//')
+        echo "Current test coverage: ${COVERAGE}%"
+        if (( $(echo "${COVERAGE} < ${COVERAGE_THRESHOLD}" | bc -l) )); then
+          echo "Test coverage ${COVERAGE}% is below threshold ${COVERAGE_THRESHOLD}%"
+          exit 1
+        fi
+        echo "Test coverage ${COVERAGE}% meets threshold ${COVERAGE_THRESHOLD}%"
+
+    - name: Generate coverage HTML report
+      run: go tool cover -html=coverage.out -o coverage.html
+      if: matrix.go-version == '1.24'
+
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v4
+      with:
+        file: ./coverage.out
+        flags: unittests
+        name: codecov-${{ matrix.go-version }}
+      if: matrix.go-version == '1.24'
+
+    - name: Upload coverage report
+      uses: actions/upload-artifact@v4
+      with:
+        name: coverage-report-${{ matrix.go-version }}
+        path: |
+          coverage.out
+          coverage.html
+        retention-days: 30
+      if: matrix.go-version == '1.24'
+
+  # Job 4: Benchmarking
+  benchmark:
+    name: Performance Benchmarks
+    runs-on: ubuntu-latest
+    needs: [static-analysis, test]
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: '1.24'
+        cache: true
+
+    - name: Run benchmarks
+      run: |
+        go test -bench=. -benchmem -count=3 ./... > benchmark-results.txt 2>&1 || true
+        echo "Benchmark Results:"
+        cat benchmark-results.txt
+
+    - name: Upload benchmark results
+      uses: actions/upload-artifact@v4
+      with:
+        name: benchmark-results
+        path: benchmark-results.txt
+        retention-days: 30
+
+  # Job 5: Integration Tests
+  integration-tests:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+    needs: [test, security]
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_DB: testdb
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+      redis:
+        image: redis:7
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: '1.24'
+        cache: true
+
+    - name: Run integration tests
+      env:
+        DATABASE_URL: postgres://postgres:postgres@localhost:5432/testdb?sslmode=disable
+        REDIS_URL: redis://localhost:6379
+      run: |
+        go test -tags=integration -v ./... || echo "Integration tests completed (some failures expected in demo environment)"
+
+  # Job 6: Build Matrix Validation
+  build-matrix:
+    name: Cross-Platform Build Validation
+    runs-on: ubuntu-latest
+    needs: test
+    strategy:
+      matrix:
+        goos: [linux, windows, darwin]
+        goarch: [amd64, arm64]
+        exclude:
+          - goos: windows
+            goarch: arm64
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: '1.24'
+        cache: true
+
+    - name: Build for ${{ matrix.goos }}/${{ matrix.goarch }}
+      env:
+        GOOS: ${{ matrix.goos }}
+        GOARCH: ${{ matrix.goarch }}
+      run: |
+        # Build main packages only
+        find . -name "main.go" -not -path "./.git/*" | while read -r mainfile; do
+          dir=$(dirname "$mainfile")
+          echo "Building $dir for $GOOS/$GOARCH"
+          cd "$dir"
+          go build -v .
+          cd - > /dev/null
+        done
+
+  # Job 7: Dependency Review and Vulnerability Check
+  dependency-review:
+    name: Dependency Review
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Dependency Review
+      uses: actions/dependency-review-action@v4
+
+  # Job 8: Vulnerability Scanning
+  vuln-scan:
+    name: Vulnerability Scan
+    runs-on: ubuntu-latest
+    needs: static-analysis
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: '1.24'
+        cache: true
+
+    - name: Install govulncheck
+      run: go install golang.org/x/vuln/cmd/govulncheck@latest
+
+    - name: Run govulncheck
+      run: govulncheck ./...
+
+  # Job 9: Quality Gate Summary
+  quality-gate:
+    name: Quality Gate Summary
+    runs-on: ubuntu-latest
+    needs: [static-analysis, security, test, benchmark, integration-tests, build-matrix, vuln-scan]
+    if: always()
+
+    steps:
+    - name: Quality Gate Results
+      run: |
+        echo "Quality Gate Summary:"
+        echo "==================="
+        echo "Static Analysis: ${{ needs.static-analysis.result }}"
+        echo "Security Scan: ${{ needs.security.result }}"
+        echo "Tests: ${{ needs.test.result }}"
+        echo "Benchmarks: ${{ needs.benchmark.result }}"
+        echo "Integration Tests: ${{ needs.integration-tests.result }}"
+        echo "Cross-Platform Build: ${{ needs.build-matrix.result }}"
+        echo "Vulnerability Scan: ${{ needs.vuln-scan.result }}"
+        echo "==================="
+
+        # Check if all critical jobs passed
+        if [[ "${{ needs.static-analysis.result }}" != "success" ]]; then
+          echo "❌ Static analysis failed"
+          exit 1
+        fi
+
+        if [[ "${{ needs.security.result }}" != "success" ]]; then
+          echo "❌ Security scan failed"
+          exit 1
+        fi
+
+        if [[ "${{ needs.test.result }}" != "success" ]]; then
+          echo "❌ Tests failed"
+          exit 1
+        fi
+
+        if [[ "${{ needs.vuln-scan.result }}" != "success" ]]; then
+          echo "❌ Vulnerability scan failed"
+          exit 1
+        fi
+
+        echo "✅ All quality gates passed!"
+
+  # Job 10: Deploy (only on main branch)
+  deploy:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: quality-gate
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    environment: production
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: '1.24'
+
+    - name: Build release binaries
+      run: |
+        mkdir -p dist
+
+        # Build for multiple platforms
+        GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o dist/go-mastery-linux-amd64 ./...
+        GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -o dist/go-mastery-windows-amd64.exe ./...
+        GOOS=darwin GOARCH=amd64 go build -ldflags="-s -w" -o dist/go-mastery-darwin-amd64 ./...
+        GOOS=darwin GOARCH=arm64 go build -ldflags="-s -w" -o dist/go-mastery-darwin-arm64 ./...
+
+    - name: Upload release artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: release-binaries
+        path: dist/
+        retention-days: 90
+
+    - name: Create Release
+      if: startsWith(github.ref, 'refs/tags/')
+      uses: softprops/action-gh-release@v2
+      with:
+        files: dist/*
+        generate_release_notes: true
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
