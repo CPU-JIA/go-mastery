@@ -14,14 +14,15 @@ import (
 // ====================
 
 func TestUser(t *testing.T) {
-	now := time.Now()
+	// 使用固定时间避免单调时钟问题
+	fixedTime := time.Date(2024, 1, 1, 12, 0, 0, 0, time.UTC)
 	user := User{
 		ID:       "user123",
 		Username: "testuser",
 		Avatar:   "https://example.com/avatar.jpg",
 		Status:   "online",
-		LastSeen: now,
-		JoinedAt: now,
+		LastSeen: fixedTime,
+		JoinedAt: fixedTime,
 	}
 
 	// 测试用户结构体字段
@@ -53,14 +54,15 @@ func TestUser(t *testing.T) {
 }
 
 func TestRoom(t *testing.T) {
-	now := time.Now()
+	// 使用固定时间避免单调时钟问题
+	fixedTime := time.Date(2024, 1, 1, 12, 0, 0, 0, time.UTC)
 	room := Room{
 		ID:          "room123",
 		Name:        "General Chat",
 		Description: "General discussion room",
 		Type:        "public",
 		CreatedBy:   "user123",
-		CreatedAt:   now,
+		CreatedAt:   fixedTime,
 		Members:     []string{"user123", "user456"},
 		IsActive:    true,
 	}

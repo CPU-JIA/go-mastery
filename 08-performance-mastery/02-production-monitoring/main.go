@@ -1708,7 +1708,7 @@ func simulateServiceLoad(apm *APMSystem, userService, orderService, paymentServi
 	go func() {
 		for i := 0; i < 60; i++ {
 			responseTime := time.Duration(secureRandomInt(800)+200) * time.Millisecond // 200-1000ms
-			isError := secureRandomFloat64() < 0.005                                    // 0.5%错误率
+			isError := secureRandomFloat64() < 0.005                                   // 0.5%错误率
 
 			paymentService.mutex.Lock()
 			atomic.AddInt64(&paymentService.RequestCount, 1)

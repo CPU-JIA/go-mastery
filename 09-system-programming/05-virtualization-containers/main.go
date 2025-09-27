@@ -93,16 +93,16 @@ func validateIPAddress(ip string) error {
 func validateExecutablePath(path string) error {
 	// 验证可执行文件路径，只允许白名单中的命令
 	allowedCommands := map[string]bool{
-		"sh":     true,
-		"bash":   true,
-		"python": true,
+		"sh":      true,
+		"bash":    true,
+		"python":  true,
 		"python3": true,
-		"node":   true,
-		"java":   true,
-		"go":     true,
-		"php":    true,
-		"ruby":   true,
-		"perl":   true,
+		"node":    true,
+		"java":    true,
+		"go":      true,
+		"php":     true,
+		"ruby":    true,
+		"perl":    true,
 	}
 
 	// 提取命令名称
@@ -113,8 +113,8 @@ func validateExecutablePath(path string) error {
 
 	// 检查路径是否包含危险字符
 	if strings.Contains(path, "..") || strings.Contains(path, ";") ||
-	   strings.Contains(path, "&") || strings.Contains(path, "|") ||
-	   strings.Contains(path, "$") || strings.Contains(path, "`") {
+		strings.Contains(path, "&") || strings.Contains(path, "|") ||
+		strings.Contains(path, "$") || strings.Contains(path, "`") {
 		return fmt.Errorf("命令路径包含危险字符")
 	}
 
