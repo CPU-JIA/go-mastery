@@ -1,0 +1,64 @@
+version: '3.8'
+
+services:
+  file-storage:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - HOST=0.0.0.0
+      - PORT=8080
+      - DB_DRIVER=sqlite
+      - DB_DSN=/app/data/file_storage.db
+      - STORAGE_PROVIDER=local
+      - STORAGE_LOCAL_PATH=/app/uploads
+      - UPLOAD_MAX_SIZE=104857600
+      - MINIO_ENDPOINT=minio:9000
+      - MINIO_ACCESS_KEY=minioadmin
+      - MINIO_SECRET_KEY=minioadmin
+      - MINIO_BUCKET=files
+    volumes:
+      - file_data:/app/data
+      - file_uploads:/app/uploads
+      - file_temp:/app/temp
+    depends_on:
+      - minio
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080/api/v1/stats"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  minio:
+    image: minio/minio:latest
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      - MINIO_ROOT_USER=minioadmin
+      - MINIO_ROOT_PASSWORD=minioadmin
+    volumes:
+      - minio_data:/data
+    command: server /data --console-address ":9001"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+
+volumes:
+  file_data:
+    driver: local
+  file_uploads:
+    driver: local
+  file_temp:
+    driver: local
+  minio_data:
+    driver: local
+
+networks:
+  default:
+    name: file-storage-network

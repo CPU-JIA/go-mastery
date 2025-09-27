@@ -3,6 +3,7 @@ module file-storage-service
 go 1.24.6
 
 require (
+	github.com/gorilla/mux v1.8.1
 	github.com/minio/minio-go/v7 v7.0.95
 	github.com/stretchr/testify v1.9.0
 	gorm.io/driver/sqlite v1.5.6
