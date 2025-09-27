@@ -20,7 +20,6 @@ import (
 	"archive/zip"
 	"crypto/aes"
 	"crypto/cipher"
-	"crypto/md5"
 	"crypto/rand"
 	"crypto/sha256"
 	"encoding/hex"
@@ -1686,7 +1685,7 @@ func (fs *FileServer) sendError(w http.ResponseWriter, message string, statusCod
 // ====================
 
 func generateFileID() string {
-	hash := md5.Sum([]byte(fmt.Sprintf("%d-%d", time.Now().UnixNano(), mathrand.Int())))
+	hash := sha256.Sum256([]byte(fmt.Sprintf("%d-%d", time.Now().UnixNano(), mathrand.Int())))
 	return hex.EncodeToString(hash[:])[:16]
 }
 

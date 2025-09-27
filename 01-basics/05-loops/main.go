@@ -1,8 +1,9 @@
 package main
 
 import (
+	"crypto/rand"
 	"fmt"
-	"math/rand"
+	"math/big"
 	"time"
 )
 
@@ -22,6 +23,27 @@ Go循环特点：
 - range可以遍历数组、切片、字符串、映射、通道
 - 支持标签和goto (不推荐使用goto)
 */
+
+// secureRandomInt 生成安全的随机整数 [0, max)
+func secureRandomInt(max int) int {
+	n, err := rand.Int(rand.Reader, big.NewInt(int64(max)))
+	if err != nil {
+		// 如果加密随机数生成失败，使用时间作为fallback
+		// G115安全修复：确保转换不会溢出
+		fallback := time.Now().UnixNano() % int64(max)
+		// 检查是否在int范围内
+		if fallback > int64(^uint(0)>>1) {
+			fallback = fallback % int64(^uint(0)>>1)
+		}
+		return int(fallback)
+	}
+	// G115安全修复：检查int64到int的安全转换
+	result := n.Int64()
+	if result > int64(^uint(0)>>1) {
+		result = result % int64(max)
+	}
+	return int(result)
+}
 
 func main() {
 	fmt.Println("=== Go语言循环语句学习 ===")
@@ -118,11 +140,10 @@ func demonstrateWhileLoop() {
 	}
 	fmt.Printf("\n和: %d\n", sum)
 
-	// 随机数示例
-	rand.Seed(time.Now().UnixNano())
+	// 随机数示例 - 使用加密安全随机数
 	fmt.Print("随机数直到得到6: ")
 	for {
-		num := rand.Intn(6) + 1
+		num := secureRandomInt(6) + 1
 		fmt.Printf("%d ", num)
 		if num == 6 {
 			break

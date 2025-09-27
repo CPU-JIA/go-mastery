@@ -926,7 +926,14 @@ func main() {
 	fmt.Println("    -H 'Content-Type: application/json' \\")
 	fmt.Println("    -d '{\"operations\":{\"account-service\":{\"account_id\":\"acc_1\",\"amount\":50},\"inventory-service\":{\"product_id\":\"prod_1\",\"quantity\":3}}}'")
 
-	log.Fatal(http.ListenAndServe(":8080", router))
+	server := &http.Server{
+		Addr:         ":8080",
+		Handler:      router,
+		ReadTimeout:  15 * time.Second,
+		WriteTimeout: 15 * time.Second,
+		IdleTimeout:  60 * time.Second,
+	}
+	log.Fatal(server.ListenAndServe())
 }
 
 /*

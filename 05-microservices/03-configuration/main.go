@@ -1115,7 +1115,14 @@ func main() {
 	fmt.Println("  # 验证配置")
 	fmt.Println("  curl http://localhost:8080/api/config/user-service/development/validate")
 
-	log.Fatal(http.ListenAndServe(":8080", router))
+	httpServer := &http.Server{
+		Addr:         ":8080",
+		Handler:      router,
+		ReadTimeout:  15 * time.Second,
+		WriteTimeout: 15 * time.Second,
+		IdleTimeout:  60 * time.Second,
+	}
+	log.Fatal(httpServer.ListenAndServe())
 }
 
 /*

@@ -189,3 +189,72 @@ static/dist/
 # Go modules workspace
 go.work
 go.work.sum
+
+# ===================================================================
+# Project Cleanup Enhancement - Added 2025-01-27
+# 防止清理过程中发现的中间产物再次出现
+# ===================================================================
+
+# Python 缓存 (项目中不应该存在Python代码)
+__pycache__/
+*.py[cod]
+*$py.class
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pytest_cache/
+
+# 临时分析和错误检查文件
+errcheck_results.txt
+errcheck_full_results.txt
+errcheck_*.txt
+analyze_errors.py
+analyze_*.py
+*_analysis.txt
+*_results.txt
+
+# 质量保障系统生成的报告目录
+quality-reports/
+reports/
+
+# 编译产物 (确保所有平台的可执行文件被忽略)
+*.exe
+*.exe~
+*.out
+*.test
+main
+debug
+debug.test
+
+# 临时和备份文件增强
+*.orig
+*.tmp
+*.temp
+.tmp/
+.temp/
+*~
+*.bak
+*.backup
+
+# IDE配置增强 (保留项目级配置，忽略个人配置)
+.vscode/settings.json.backup
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/usage.statistics.xml
+.idea/shelf/
+
+# 额外的日志和调试文件
+debug.log
+error.log
+trace.log
+*.debug
+debug_*
+
+# 确保重要文件不被忽略
+!scripts/
+!.github/workflows/
+!.golangci.yml
+!CONTRIBUTING.md
+!README*.md
+!QUALITY*.md
+!FINAL*.md

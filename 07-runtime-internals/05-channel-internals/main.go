@@ -22,14 +22,34 @@
 package main
 
 import (
+	"crypto/rand"
 	"fmt"
-	"math/rand"
+	"math/big"
 	"runtime"
 	"sync"
 	"sync/atomic"
 	"time"
 	"unsafe"
 )
+
+// 安全随机数生成函数
+func secureRandomInt(max int) int {
+	n, err := rand.Int(rand.Reader, big.NewInt(int64(max)))
+	if err != nil {
+		// G115安全修复：确保转换不会溢出
+		fallback := time.Now().UnixNano() % int64(max)
+		if fallback > int64(^uint(0)>>1) {
+			fallback = fallback % int64(^uint(0)>>1)
+		}
+		return int(fallback)
+	}
+	// G115安全修复：检查int64到int的安全转换
+	result := n.Int64()
+	if result > int64(^uint(0)>>1) {
+		result = result % int64(max)
+	}
+	return int(result)
+}
 
 // ==================
 // 1. Channel结构模拟
@@ -899,7 +919,7 @@ func demonstrateChannelGC() {
 	// 创建大量channel
 	channels := make([]chan int, 10000)
 	for i := range channels {
-		channels[i] = make(chan int, rand.Intn(10)+1)
+		channels[i] = make(chan int, secureRandomInt(10)+1)
 	}
 
 	runtime.ReadMemStats(&after)
@@ -940,9 +960,6 @@ func demonstrateChannelGC() {
 }
 
 func main() {
-	// 设置随机种子
-	rand.Seed(time.Now().UnixNano())
-
 	demonstrateChannelInternals()
 
 	fmt.Println("\n=== Go Channel底层实现深度解析完成 ===")

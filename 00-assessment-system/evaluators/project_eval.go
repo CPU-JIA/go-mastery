@@ -29,58 +29,58 @@ import (
 
 // ProjectEvaluator 项目评估器
 type ProjectEvaluator struct {
-	config        *ProjectEvalConfig
-	projectInfo   *ProjectInfo
-	requirements  []ProjectRequirement
-	criteria      []EvaluationCriteria
-	results       *ProjectEvaluationResult
+	config       *ProjectEvalConfig
+	projectInfo  *ProjectInfo
+	requirements []ProjectRequirement
+	criteria     []EvaluationCriteria
+	results      *ProjectEvaluationResult
 }
 
 // ProjectEvalConfig 项目评估配置
 type ProjectEvalConfig struct {
 	// 评估范围配置
-	ProjectType       string                     `json:"project_type"`       // 项目类型: cli, web, library, service
-	Stage             int                        `json:"stage"`              // 学习阶段 (1-15)
-	RequirementLevel  string                     `json:"requirement_level"`  // 要求级别: basic, intermediate, advanced
+	ProjectType      string `json:"project_type"`      // 项目类型: cli, web, library, service
+	Stage            int    `json:"stage"`             // 学习阶段 (1-15)
+	RequirementLevel string `json:"requirement_level"` // 要求级别: basic, intermediate, advanced
 
 	// 评估权重配置
-	WeightSettings    ProjectEvalWeights         `json:"weight_settings"`    // 维度权重
-	Criteria          map[string]CriteriaConfig  `json:"criteria"`           // 评估标准配置
-	Thresholds        ProjectThresholds          `json:"thresholds"`         // 阈值设定
+	WeightSettings ProjectEvalWeights        `json:"weight_settings"` // 维度权重
+	Criteria       map[string]CriteriaConfig `json:"criteria"`        // 评估标准配置
+	Thresholds     ProjectThresholds         `json:"thresholds"`      // 阈值设定
 
 	// 分析配置
-	AnalyzeReadme     bool                       `json:"analyze_readme"`     // 是否分析README
-	AnalyzeDocs       bool                       `json:"analyze_docs"`       // 是否分析文档
-	AnalyzeBuild      bool                       `json:"analyze_build"`      // 是否分析构建系统
-	AnalyzeAPI        bool                       `json:"analyze_api"`        // 是否分析API设计
-	CheckDependencies bool                       `json:"check_dependencies"` // 是否检查依赖
+	AnalyzeReadme     bool `json:"analyze_readme"`     // 是否分析README
+	AnalyzeDocs       bool `json:"analyze_docs"`       // 是否分析文档
+	AnalyzeBuild      bool `json:"analyze_build"`      // 是否分析构建系统
+	AnalyzeAPI        bool `json:"analyze_api"`        // 是否分析API设计
+	CheckDependencies bool `json:"check_dependencies"` // 是否检查依赖
 
 	// 输出配置
-	DetailLevel       string                     `json:"detail_level"`       // 详细程度
-	GenerateSuggestions bool                     `json:"generate_suggestions"` // 是否生成建议
-	SaveResults       bool                       `json:"save_results"`       // 是否保存结果
-	ResultsPath       string                     `json:"results_path"`       // 结果保存路径
+	DetailLevel         string `json:"detail_level"`         // 详细程度
+	GenerateSuggestions bool   `json:"generate_suggestions"` // 是否生成建议
+	SaveResults         bool   `json:"save_results"`         // 是否保存结果
+	ResultsPath         string `json:"results_path"`         // 结果保存路径
 }
 
 // ProjectEvalWeights 项目评估权重
 type ProjectEvalWeights struct {
-	FunctionalityScore  float64 `json:"functionality_score"`  // 功能完整性权重
-	ArchitectureScore   float64 `json:"architecture_score"`   // 架构质量权重
-	UserExperienceScore float64 `json:"user_experience_score"` // 用户体验权重
-	TechnicalDepthScore float64 `json:"technical_depth_score"` // 技术深度权重
-	EngineeringScore    float64 `json:"engineering_score"`    // 工程质量权重
+	FunctionalityScore   float64 `json:"functionality_score"`   // 功能完整性权重
+	ArchitectureScore    float64 `json:"architecture_score"`    // 架构质量权重
+	UserExperienceScore  float64 `json:"user_experience_score"` // 用户体验权重
+	TechnicalDepthScore  float64 `json:"technical_depth_score"` // 技术深度权重
+	EngineeringScore     float64 `json:"engineering_score"`     // 工程质量权重
 	MaintainabilityScore float64 `json:"maintainability_score"` // 可维护性权重
-	InnovationScore     float64 `json:"innovation_score"`     // 创新性权重
+	InnovationScore      float64 `json:"innovation_score"`      // 创新性权重
 }
 
 // ProjectThresholds 项目评估阈值
 type ProjectThresholds struct {
-	MinFunctionality    float64 `json:"min_functionality"`    // 最低功能完整性
-	MinArchitecture     float64 `json:"min_architecture"`     // 最低架构质量
-	MinDocumentation    float64 `json:"min_documentation"`    // 最低文档质量
-	MinTestCoverage     float64 `json:"min_test_coverage"`    // 最低测试覆盖率
-	MaxComplexity       int     `json:"max_complexity"`       // 最大复杂度
-	MinModularity       float64 `json:"min_modularity"`       // 最低模块化程度
+	MinFunctionality float64 `json:"min_functionality"` // 最低功能完整性
+	MinArchitecture  float64 `json:"min_architecture"`  // 最低架构质量
+	MinDocumentation float64 `json:"min_documentation"` // 最低文档质量
+	MinTestCoverage  float64 `json:"min_test_coverage"` // 最低测试覆盖率
+	MaxComplexity    int     `json:"max_complexity"`    // 最大复杂度
+	MinModularity    float64 `json:"min_modularity"`    // 最低模块化程度
 }
 
 // CriteriaConfig 评估标准配置
@@ -93,64 +93,64 @@ type CriteriaConfig struct {
 
 // ProjectInfo 项目信息
 type ProjectInfo struct {
-	Name            string                     `json:"name"`             // 项目名称
-	Path            string                     `json:"path"`             // 项目路径
-	Type            string                     `json:"type"`             // 项目类型
-	Language        string                     `json:"language"`         // 主要语言
-	Framework       string                     `json:"framework"`        // 使用框架
+	Name      string `json:"name"`      // 项目名称
+	Path      string `json:"path"`      // 项目路径
+	Type      string `json:"type"`      // 项目类型
+	Language  string `json:"language"`  // 主要语言
+	Framework string `json:"framework"` // 使用框架
 
 	// 项目统计
-	Structure       ProjectStructure           `json:"structure"`        // 项目结构
-	Dependencies    DependencyAnalysis         `json:"dependencies"`     // 依赖分析
-	BuildSystem     BuildSystemInfo            `json:"build_system"`     // 构建系统
-	Documentation   DocumentationInfo          `json:"documentation"`    // 文档信息
-	TestingInfo     TestingInfo                `json:"testing_info"`     // 测试信息
+	Structure     ProjectStructure   `json:"structure"`     // 项目结构
+	Dependencies  DependencyAnalysis `json:"dependencies"`  // 依赖分析
+	BuildSystem   BuildSystemInfo    `json:"build_system"`  // 构建系统
+	Documentation DocumentationInfo  `json:"documentation"` // 文档信息
+	TestingInfo   TestingInfo        `json:"testing_info"`  // 测试信息
 
 	// 项目元数据
-	CreatedAt       time.Time                  `json:"created_at"`       // 创建时间
-	LastModified    time.Time                  `json:"last_modified"`    // 最后修改
-	Contributors    int                        `json:"contributors"`     // 贡献者数量
-	CommitCount     int                        `json:"commit_count"`     // 提交数量
+	CreatedAt    time.Time `json:"created_at"`    // 创建时间
+	LastModified time.Time `json:"last_modified"` // 最后修改
+	Contributors int       `json:"contributors"`  // 贡献者数量
+	CommitCount  int       `json:"commit_count"`  // 提交数量
 }
 
 // ProjectStructure 项目结构信息
 type ProjectStructure struct {
-	TotalFiles      int                        `json:"total_files"`      // 总文件数
-	GoFiles         int                        `json:"go_files"`         // Go文件数
-	TestFiles       int                        `json:"test_files"`       // 测试文件数
-	Packages        int                        `json:"packages"`         // 包数量
-	ModuleDepth     int                        `json:"module_depth"`     // 模块深度
+	TotalFiles  int `json:"total_files"`  // 总文件数
+	GoFiles     int `json:"go_files"`     // Go文件数
+	TestFiles   int `json:"test_files"`   // 测试文件数
+	Packages    int `json:"packages"`     // 包数量
+	ModuleDepth int `json:"module_depth"` // 模块深度
 
 	// 目录结构
-	HasCmd          bool                       `json:"has_cmd"`          // 是否有cmd目录
-	HasInternal     bool                       `json:"has_internal"`     // 是否有internal目录
-	HasPkg          bool                       `json:"has_pkg"`          // 是否有pkg目录
-	HasAPI          bool                       `json:"has_api"`          // 是否有api目录
-	HasDocs         bool                       `json:"has_docs"`         // 是否有docs目录
-	HasExamples     bool                       `json:"has_examples"`     // 是否有examples目录
+	HasCmd      bool `json:"has_cmd"`      // 是否有cmd目录
+	HasInternal bool `json:"has_internal"` // 是否有internal目录
+	HasPkg      bool `json:"has_pkg"`      // 是否有pkg目录
+	HasAPI      bool `json:"has_api"`      // 是否有api目录
+	HasDocs     bool `json:"has_docs"`     // 是否有docs目录
+	HasExamples bool `json:"has_examples"` // 是否有examples目录
 
 	// 文件组织
-	FileOrganization float64                   `json:"file_organization"` // 文件组织评分
-	NamingConsistency float64                  `json:"naming_consistency"` // 命名一致性评分
-	ModuleBoundaries float64                   `json:"module_boundaries"`  // 模块边界清晰度
+	FileOrganization  float64 `json:"file_organization"`  // 文件组织评分
+	NamingConsistency float64 `json:"naming_consistency"` // 命名一致性评分
+	ModuleBoundaries  float64 `json:"module_boundaries"`  // 模块边界清晰度
 }
 
 // DependencyAnalysis 依赖分析
 type DependencyAnalysis struct {
-	TotalDependencies  int                     `json:"total_dependencies"`  // 总依赖数
-	DirectDependencies int                     `json:"direct_dependencies"` // 直接依赖数
-	IndirectDependencies int                   `json:"indirect_dependencies"` // 间接依赖数
-	StandardLibraryUsage float64              `json:"standard_library_usage"` // 标准库使用率
+	TotalDependencies    int     `json:"total_dependencies"`     // 总依赖数
+	DirectDependencies   int     `json:"direct_dependencies"`    // 直接依赖数
+	IndirectDependencies int     `json:"indirect_dependencies"`  // 间接依赖数
+	StandardLibraryUsage float64 `json:"standard_library_usage"` // 标准库使用率
 
 	// 依赖质量
-	DependencyQuality  float64               `json:"dependency_quality"`   // 依赖质量评分
-	VersionConsistency float64               `json:"version_consistency"`  // 版本一致性
-	SecurityRisk       float64               `json:"security_risk"`        // 安全风险评分
-	Vulnerabilities    []VulnerabilityInfo   `json:"vulnerabilities"`      // 漏洞信息
+	DependencyQuality  float64             `json:"dependency_quality"`  // 依赖质量评分
+	VersionConsistency float64             `json:"version_consistency"` // 版本一致性
+	SecurityRisk       float64             `json:"security_risk"`       // 安全风险评分
+	Vulnerabilities    []VulnerabilityInfo `json:"vulnerabilities"`     // 漏洞信息
 
 	// 依赖详情
-	Dependencies       []DependencyInfo      `json:"dependencies"`         // 依赖详情
-	LicenseCompatibility float64             `json:"license_compatibility"` // 许可证兼容性
+	Dependencies         []DependencyInfo `json:"dependencies"`          // 依赖详情
+	LicenseCompatibility float64          `json:"license_compatibility"` // 许可证兼容性
 }
 
 // DependencyInfo 依赖信息
@@ -167,505 +167,505 @@ type DependencyInfo struct {
 
 // VulnerabilityInfo 漏洞信息
 type VulnerabilityInfo struct {
-	ID          string    `json:"id"`          // 漏洞ID
-	Severity    string    `json:"severity"`    // 严重程度
-	Description string    `json:"description"` // 漏洞描述
-	Package     string    `json:"package"`     // 受影响包
-	FixedVersion string   `json:"fixed_version"` // 修复版本
-	CVSS        float64   `json:"cvss"`        // CVSS评分
+	ID           string  `json:"id"`            // 漏洞ID
+	Severity     string  `json:"severity"`      // 严重程度
+	Description  string  `json:"description"`   // 漏洞描述
+	Package      string  `json:"package"`       // 受影响包
+	FixedVersion string  `json:"fixed_version"` // 修复版本
+	CVSS         float64 `json:"cvss"`          // CVSS评分
 }
 
 // BuildSystemInfo 构建系统信息
 type BuildSystemInfo struct {
-	HasGoMod        bool                       `json:"has_go_mod"`        // 是否有go.mod
-	HasMakefile     bool                       `json:"has_makefile"`      // 是否有Makefile
-	HasDockerfile   bool                       `json:"has_dockerfile"`    // 是否有Dockerfile
-	HasGitHubActions bool                      `json:"has_github_actions"` // 是否有GitHub Actions
-	HasGoReleaser   bool                       `json:"has_go_releaser"`   // 是否有GoReleaser
+	HasGoMod         bool `json:"has_go_mod"`         // 是否有go.mod
+	HasMakefile      bool `json:"has_makefile"`       // 是否有Makefile
+	HasDockerfile    bool `json:"has_dockerfile"`     // 是否有Dockerfile
+	HasGitHubActions bool `json:"has_github_actions"` // 是否有GitHub Actions
+	HasGoReleaser    bool `json:"has_go_releaser"`    // 是否有GoReleaser
 
 	// 构建配置质量
-	BuildQuality    float64                    `json:"build_quality"`     // 构建质量评分
-	CIConfiguration float64                    `json:"ci_configuration"`  // CI配置评分
-	DeploymentReady float64                    `json:"deployment_ready"`  // 部署准备度
+	BuildQuality    float64 `json:"build_quality"`    // 构建质量评分
+	CIConfiguration float64 `json:"ci_configuration"` // CI配置评分
+	DeploymentReady float64 `json:"deployment_ready"` // 部署准备度
 }
 
 // DocumentationInfo 文档信息
 type DocumentationInfo struct {
-	HasReadme       bool                       `json:"has_readme"`        // 是否有README
-	ReadmeQuality   float64                    `json:"readme_quality"`    // README质量评分
-	HasChangelog    bool                       `json:"has_changelog"`     // 是否有CHANGELOG
-	HasLicense      bool                       `json:"has_license"`       // 是否有LICENSE
-	HasContributing bool                       `json:"has_contributing"`  // 是否有CONTRIBUTING
+	HasReadme       bool    `json:"has_readme"`       // 是否有README
+	ReadmeQuality   float64 `json:"readme_quality"`   // README质量评分
+	HasChangelog    bool    `json:"has_changelog"`    // 是否有CHANGELOG
+	HasLicense      bool    `json:"has_license"`      // 是否有LICENSE
+	HasContributing bool    `json:"has_contributing"` // 是否有CONTRIBUTING
 
 	// API文档
-	HasAPIDoc       bool                       `json:"has_api_doc"`       // 是否有API文档
-	GoDocCoverage   float64                    `json:"godoc_coverage"`    // GoDoc覆盖率
-	ExampleCount    int                        `json:"example_count"`     // 示例数量
+	HasAPIDoc     bool    `json:"has_api_doc"`    // 是否有API文档
+	GoDocCoverage float64 `json:"godoc_coverage"` // GoDoc覆盖率
+	ExampleCount  int     `json:"example_count"`  // 示例数量
 
 	// 文档质量
-	OverallDocScore float64                    `json:"overall_doc_score"` // 总体文档评分
-	DocConsistency  float64                    `json:"doc_consistency"`   // 文档一致性
-	DocCompleteness float64                    `json:"doc_completeness"`  // 文档完整性
+	OverallDocScore float64 `json:"overall_doc_score"` // 总体文档评分
+	DocConsistency  float64 `json:"doc_consistency"`   // 文档一致性
+	DocCompleteness float64 `json:"doc_completeness"`  // 文档完整性
 }
 
 // TestingInfo 测试信息
 type TestingInfo struct {
-	HasTests        bool                       `json:"has_tests"`         // 是否有测试
-	TestCoverage    float64                    `json:"test_coverage"`     // 测试覆盖率
-	TestFiles       int                        `json:"test_files"`        // 测试文件数
-	TestFunctions   int                        `json:"test_functions"`    // 测试函数数
-	BenchmarkCount  int                        `json:"benchmark_count"`   // 基准测试数
-	ExampleTests    int                        `json:"example_tests"`     // 示例测试数
+	HasTests       bool    `json:"has_tests"`       // 是否有测试
+	TestCoverage   float64 `json:"test_coverage"`   // 测试覆盖率
+	TestFiles      int     `json:"test_files"`      // 测试文件数
+	TestFunctions  int     `json:"test_functions"`  // 测试函数数
+	BenchmarkCount int     `json:"benchmark_count"` // 基准测试数
+	ExampleTests   int     `json:"example_tests"`   // 示例测试数
 
 	// 测试质量
-	TestQuality     float64                    `json:"test_quality"`      // 测试质量评分
-	TestStrategy    float64                    `json:"test_strategy"`     // 测试策略评分
-	EdgeCaseTesting float64                    `json:"edge_case_testing"` // 边界情况测试
+	TestQuality     float64 `json:"test_quality"`      // 测试质量评分
+	TestStrategy    float64 `json:"test_strategy"`     // 测试策略评分
+	EdgeCaseTesting float64 `json:"edge_case_testing"` // 边界情况测试
 }
 
 // ProjectRequirement 项目需求定义
 type ProjectRequirement struct {
-	ID          string                         `json:"id"`           // 需求ID
-	Category    string                         `json:"category"`     // 需求分类
-	Title       string                         `json:"title"`        // 需求标题
-	Description string                         `json:"description"`  // 需求描述
-	Priority    int                            `json:"priority"`     // 优先级
-	Mandatory   bool                           `json:"mandatory"`    // 是否必需
+	ID          string `json:"id"`          // 需求ID
+	Category    string `json:"category"`    // 需求分类
+	Title       string `json:"title"`       // 需求标题
+	Description string `json:"description"` // 需求描述
+	Priority    int    `json:"priority"`    // 优先级
+	Mandatory   bool   `json:"mandatory"`   // 是否必需
 
 	// 验证标准
-	AcceptanceCriteria []AcceptanceCriterion    `json:"acceptance_criteria"` // 验收标准
-	TestCases          []RequirementTestCase    `json:"test_cases"`          // 测试用例
-	Examples           []RequirementExample     `json:"examples"`            // 需求示例
+	AcceptanceCriteria []AcceptanceCriterion `json:"acceptance_criteria"` // 验收标准
+	TestCases          []RequirementTestCase `json:"test_cases"`          // 测试用例
+	Examples           []RequirementExample  `json:"examples"`            // 需求示例
 }
 
 // AcceptanceCriterion 验收标准
 type AcceptanceCriterion struct {
-	ID          string                         `json:"id"`           // 标准ID
-	Description string                         `json:"description"`  // 标准描述
-	Type        string                         `json:"type"`         // 标准类型: functional, non_functional, technical
-	Verifiable  bool                           `json:"verifiable"`   // 是否可验证
-	Automated   bool                           `json:"automated"`    // 是否可自动验证
-	CheckMethod string                         `json:"check_method"` // 验证方法
+	ID          string `json:"id"`           // 标准ID
+	Description string `json:"description"`  // 标准描述
+	Type        string `json:"type"`         // 标准类型: functional, non_functional, technical
+	Verifiable  bool   `json:"verifiable"`   // 是否可验证
+	Automated   bool   `json:"automated"`    // 是否可自动验证
+	CheckMethod string `json:"check_method"` // 验证方法
 }
 
 // RequirementTestCase 需求测试用例
 type RequirementTestCase struct {
-	ID          string                         `json:"id"`           // 用例ID
-	Name        string                         `json:"name"`         // 用例名称
-	Input       interface{}                    `json:"input"`        // 输入
-	Expected    interface{}                    `json:"expected"`     // 期望输出
-	Steps       []TestStep                     `json:"steps"`        // 测试步骤
-	Automated   bool                           `json:"automated"`    // 是否自动化
+	ID        string      `json:"id"`        // 用例ID
+	Name      string      `json:"name"`      // 用例名称
+	Input     interface{} `json:"input"`     // 输入
+	Expected  interface{} `json:"expected"`  // 期望输出
+	Steps     []TestStep  `json:"steps"`     // 测试步骤
+	Automated bool        `json:"automated"` // 是否自动化
 }
 
 // TestStep 测试步骤
 type TestStep struct {
-	Action      string                         `json:"action"`       // 操作
-	Data        interface{}                    `json:"data"`         // 数据
-	Expected    string                         `json:"expected"`     // 期望结果
+	Action   string      `json:"action"`   // 操作
+	Data     interface{} `json:"data"`     // 数据
+	Expected string      `json:"expected"` // 期望结果
 }
 
 // RequirementExample 需求示例
 type RequirementExample struct {
-	Title       string                         `json:"title"`        // 示例标题
-	Description string                         `json:"description"`  // 示例描述
-	Code        string                         `json:"code"`         // 示例代码
-	Output      string                         `json:"output"`       // 示例输出
+	Title       string `json:"title"`       // 示例标题
+	Description string `json:"description"` // 示例描述
+	Code        string `json:"code"`        // 示例代码
+	Output      string `json:"output"`      // 示例输出
 }
 
 // EvaluationCriteria 评估标准
 type EvaluationCriteria struct {
-	ID          string                         `json:"id"`           // 标准ID
-	Category    string                         `json:"category"`     // 标准分类
-	Name        string                         `json:"name"`         // 标准名称
-	Description string                         `json:"description"`  // 标准描述
-	Weight      float64                        `json:"weight"`       // 权重
-	MaxScore    float64                        `json:"max_score"`    // 最高分
+	ID          string  `json:"id"`          // 标准ID
+	Category    string  `json:"category"`    // 标准分类
+	Name        string  `json:"name"`        // 标准名称
+	Description string  `json:"description"` // 标准描述
+	Weight      float64 `json:"weight"`      // 权重
+	MaxScore    float64 `json:"max_score"`   // 最高分
 
 	// 评估方法
-	EvalMethod  string                         `json:"eval_method"`  // 评估方法
-	Automated   bool                           `json:"automated"`    // 是否自动化
-	CheckFunc   string                         `json:"check_func"`   // 检查函数
+	EvalMethod string `json:"eval_method"` // 评估方法
+	Automated  bool   `json:"automated"`   // 是否自动化
+	CheckFunc  string `json:"check_func"`  // 检查函数
 
 	// 评分标准
-	ScoreLevels []ScoreLevel                   `json:"score_levels"` // 评分等级
-	Threshold   float64                        `json:"threshold"`    // 通过阈值
+	ScoreLevels []ScoreLevel `json:"score_levels"` // 评分等级
+	Threshold   float64      `json:"threshold"`    // 通过阈值
 }
 
 // ScoreLevel 评分等级
 type ScoreLevel struct {
-	Level       int                            `json:"level"`        // 等级
-	MinValue    float64                        `json:"min_value"`    // 最小值
-	MaxValue    float64                        `json:"max_value"`    // 最大值
-	Score       float64                        `json:"score"`        // 得分
-	Description string                         `json:"description"`  // 等级描述
+	Level       int     `json:"level"`       // 等级
+	MinValue    float64 `json:"min_value"`   // 最小值
+	MaxValue    float64 `json:"max_value"`   // 最大值
+	Score       float64 `json:"score"`       // 得分
+	Description string  `json:"description"` // 等级描述
 }
 
 // ProjectEvaluationResult 项目评估结果
 type ProjectEvaluationResult struct {
-	ProjectPath     string                     `json:"project_path"`     // 项目路径
-	ProjectInfo     ProjectInfo                `json:"project_info"`     // 项目信息
-	Timestamp       time.Time                  `json:"timestamp"`        // 评估时间
-	Duration        time.Duration              `json:"duration"`         // 评估耗时
+	ProjectPath string        `json:"project_path"` // 项目路径
+	ProjectInfo ProjectInfo   `json:"project_info"` // 项目信息
+	Timestamp   time.Time     `json:"timestamp"`    // 评估时间
+	Duration    time.Duration `json:"duration"`     // 评估耗时
 
 	// 整体评分
-	OverallScore    float64                    `json:"overall_score"`    // 总体评分
-	Grade           string                     `json:"grade"`            // 评级
-	Passed          bool                       `json:"passed"`           // 是否通过
+	OverallScore float64 `json:"overall_score"` // 总体评分
+	Grade        string  `json:"grade"`         // 评级
+	Passed       bool    `json:"passed"`        // 是否通过
 
 	// 维度评分
-	DimensionScores map[string]float64         `json:"dimension_scores"` // 各维度得分
-	CriteriaScores  map[string]float64         `json:"criteria_scores"`  // 各标准得分
+	DimensionScores map[string]float64 `json:"dimension_scores"` // 各维度得分
+	CriteriaScores  map[string]float64 `json:"criteria_scores"`  // 各标准得分
 
 	// 需求实现评估
-	RequirementResults []RequirementResult     `json:"requirement_results"` // 需求实现结果
-	FunctionalityScore float64                 `json:"functionality_score"` // 功能完整性得分
+	RequirementResults []RequirementResult `json:"requirement_results"` // 需求实现结果
+	FunctionalityScore float64             `json:"functionality_score"` // 功能完整性得分
 
 	// 质量分析
-	ArchitectureAnalysis ArchitectureAnalysis  `json:"architecture_analysis"` // 架构分析
-	UserExperienceAnalysis UXAnalysis          `json:"ux_analysis"`           // 用户体验分析
-	TechnicalAnalysis    TechnicalAnalysis     `json:"technical_analysis"`    // 技术分析
+	ArchitectureAnalysis   ArchitectureAnalysis `json:"architecture_analysis"` // 架构分析
+	UserExperienceAnalysis UXAnalysis           `json:"ux_analysis"`           // 用户体验分析
+	TechnicalAnalysis      TechnicalAnalysis    `json:"technical_analysis"`    // 技术分析
 
 	// 改进建议
-	Strengths       []ProjectStrength          `json:"strengths"`        // 项目优势
-	Weaknesses      []ProjectWeakness          `json:"weaknesses"`       // 项目不足
-	Improvements    []ProjectImprovement       `json:"improvements"`     // 改进建议
-	NextSteps       []NextStep                 `json:"next_steps"`       // 下一步建议
+	Strengths    []ProjectStrength    `json:"strengths"`    // 项目优势
+	Weaknesses   []ProjectWeakness    `json:"weaknesses"`   // 项目不足
+	Improvements []ProjectImprovement `json:"improvements"` // 改进建议
+	NextSteps    []NextStep           `json:"next_steps"`   // 下一步建议
 
 	// 比较分析
-	BenchmarkComparison *BenchmarkComparison   `json:"benchmark_comparison"` // 基准比较
-	PeerComparison      *PeerComparison        `json:"peer_comparison"`      // 同级比较
+	BenchmarkComparison *BenchmarkComparison `json:"benchmark_comparison"` // 基准比较
+	PeerComparison      *PeerComparison      `json:"peer_comparison"`      // 同级比较
 }
 
 // RequirementResult 需求实现结果
 type RequirementResult struct {
-	RequirementID   string                     `json:"requirement_id"`   // 需求ID
-	Implemented     bool                       `json:"implemented"`      // 是否实现
-	Score           float64                    `json:"score"`            // 实现得分
-	Quality         float64                    `json:"quality"`          // 实现质量
-	Completeness    float64                    `json:"completeness"`     // 完整程度
-	TestResults     []TestResult               `json:"test_results"`     // 测试结果
-	Evidence        []ImplementationEvidence   `json:"evidence"`         // 实现证据
-	Issues          []RequirementIssue         `json:"issues"`           // 实现问题
-	Suggestions     []string                   `json:"suggestions"`      // 改进建议
+	RequirementID string                   `json:"requirement_id"` // 需求ID
+	Implemented   bool                     `json:"implemented"`    // 是否实现
+	Score         float64                  `json:"score"`          // 实现得分
+	Quality       float64                  `json:"quality"`        // 实现质量
+	Completeness  float64                  `json:"completeness"`   // 完整程度
+	TestResults   []TestResult             `json:"test_results"`   // 测试结果
+	Evidence      []ImplementationEvidence `json:"evidence"`       // 实现证据
+	Issues        []RequirementIssue       `json:"issues"`         // 实现问题
+	Suggestions   []string                 `json:"suggestions"`    // 改进建议
 }
 
 // TestResult 测试结果（重用之前定义的结构）
 type TestResult struct {
-	TestID       string                        `json:"test_id"`       // 测试ID
-	Passed       bool                          `json:"passed"`        // 是否通过
-	Score        float64                       `json:"score"`         // 得分
-	Details      string                        `json:"details"`       // 详细信息
-	ExecutionTime float64                      `json:"execution_time"` // 执行时间
+	TestID        string  `json:"test_id"`        // 测试ID
+	Passed        bool    `json:"passed"`         // 是否通过
+	Score         float64 `json:"score"`          // 得分
+	Details       string  `json:"details"`        // 详细信息
+	ExecutionTime float64 `json:"execution_time"` // 执行时间
 }
 
 // ImplementationEvidence 实现证据
 type ImplementationEvidence struct {
-	Type        string                         `json:"type"`         // 证据类型: code, test, documentation, demo
-	Location    string                         `json:"location"`     // 位置信息
-	Description string                         `json:"description"`  // 描述
-	Quality     float64                        `json:"quality"`      // 质量评分
-	Relevance   float64                        `json:"relevance"`    // 相关性评分
+	Type        string  `json:"type"`        // 证据类型: code, test, documentation, demo
+	Location    string  `json:"location"`    // 位置信息
+	Description string  `json:"description"` // 描述
+	Quality     float64 `json:"quality"`     // 质量评分
+	Relevance   float64 `json:"relevance"`   // 相关性评分
 }
 
 // RequirementIssue 需求实现问题
 type RequirementIssue struct {
-	Type        string                         `json:"type"`         // 问题类型
-	Severity    string                         `json:"severity"`     // 严重程度
-	Description string                         `json:"description"`  // 问题描述
-	Location    string                         `json:"location"`     // 问题位置
-	Impact      string                         `json:"impact"`       // 影响评估
-	Suggestion  string                         `json:"suggestion"`   // 修复建议
+	Type        string `json:"type"`        // 问题类型
+	Severity    string `json:"severity"`    // 严重程度
+	Description string `json:"description"` // 问题描述
+	Location    string `json:"location"`    // 问题位置
+	Impact      string `json:"impact"`      // 影响评估
+	Suggestion  string `json:"suggestion"`  // 修复建议
 }
 
 // ArchitectureAnalysis 架构分析
 type ArchitectureAnalysis struct {
-	ModularityScore     float64                `json:"modularity_score"`     // 模块化评分
-	CouplingScore       float64                `json:"coupling_score"`       // 耦合度评分
-	CohesionScore       float64                `json:"cohesion_score"`       // 内聚度评分
-	InterfaceDesign     float64                `json:"interface_design"`     // 接口设计评分
-	DependencyManagement float64               `json:"dependency_management"` // 依赖管理评分
+	ModularityScore      float64 `json:"modularity_score"`      // 模块化评分
+	CouplingScore        float64 `json:"coupling_score"`        // 耦合度评分
+	CohesionScore        float64 `json:"cohesion_score"`        // 内聚度评分
+	InterfaceDesign      float64 `json:"interface_design"`      // 接口设计评分
+	DependencyManagement float64 `json:"dependency_management"` // 依赖管理评分
 
 	// 架构模式
-	DesignPatterns      []UsedDesignPattern    `json:"design_patterns"`      // 使用的设计模式
-	ArchitecturalStyle  string                 `json:"architectural_style"`  // 架构风格
-	LayerSeparation     float64                `json:"layer_separation"`     // 层次分离度
+	DesignPatterns     []UsedDesignPattern `json:"design_patterns"`     // 使用的设计模式
+	ArchitecturalStyle string              `json:"architectural_style"` // 架构风格
+	LayerSeparation    float64             `json:"layer_separation"`    // 层次分离度
 
 	// 扩展性分析
-	Extensibility       float64                `json:"extensibility"`        // 可扩展性
-	Flexibility         float64                `json:"flexibility"`          // 灵活性
-	Reusability         float64                `json:"reusability"`          // 可重用性
+	Extensibility float64 `json:"extensibility"` // 可扩展性
+	Flexibility   float64 `json:"flexibility"`   // 灵活性
+	Reusability   float64 `json:"reusability"`   // 可重用性
 
 	// 问题识别
-	ArchitecturalIssues []ArchitecturalIssue   `json:"architectural_issues"` // 架构问题
-	RefactoringNeeds    []RefactoringNeed      `json:"refactoring_needs"`    // 重构需求
+	ArchitecturalIssues []ArchitecturalIssue `json:"architectural_issues"` // 架构问题
+	RefactoringNeeds    []RefactoringNeed    `json:"refactoring_needs"`    // 重构需求
 }
 
 // UsedDesignPattern 使用的设计模式
 type UsedDesignPattern struct {
-	Name        string                         `json:"name"`         // 模式名称
-	Usage       string                         `json:"usage"`        // 使用方式
-	Location    []string                       `json:"location"`     // 使用位置
-	Appropriate bool                           `json:"appropriate"`  // 是否恰当使用
-	Quality     float64                        `json:"quality"`      // 使用质量
+	Name        string   `json:"name"`        // 模式名称
+	Usage       string   `json:"usage"`       // 使用方式
+	Location    []string `json:"location"`    // 使用位置
+	Appropriate bool     `json:"appropriate"` // 是否恰当使用
+	Quality     float64  `json:"quality"`     // 使用质量
 }
 
 // ArchitecturalIssue 架构问题
 type ArchitecturalIssue struct {
-	Type        string                         `json:"type"`         // 问题类型
-	Severity    string                         `json:"severity"`     // 严重程度
-	Description string                         `json:"description"`  // 问题描述
-	Location    string                         `json:"location"`     // 问题位置
-	Impact      string                         `json:"impact"`       // 影响范围
-	Suggestion  string                         `json:"suggestion"`   // 解决建议
-	Priority    int                            `json:"priority"`     // 优先级
+	Type        string `json:"type"`        // 问题类型
+	Severity    string `json:"severity"`    // 严重程度
+	Description string `json:"description"` // 问题描述
+	Location    string `json:"location"`    // 问题位置
+	Impact      string `json:"impact"`      // 影响范围
+	Suggestion  string `json:"suggestion"`  // 解决建议
+	Priority    int    `json:"priority"`    // 优先级
 }
 
 // RefactoringNeed 重构需求
 type RefactoringNeed struct {
-	Type        string                         `json:"type"`         // 重构类型
-	Target      string                         `json:"target"`       // 重构目标
-	Reason      string                         `json:"reason"`       // 重构原因
-	Benefit     string                         `json:"benefit"`      // 预期收益
-	Effort      string                         `json:"effort"`       // 所需工作量
-	Priority    int                            `json:"priority"`     // 优先级
+	Type     string `json:"type"`     // 重构类型
+	Target   string `json:"target"`   // 重构目标
+	Reason   string `json:"reason"`   // 重构原因
+	Benefit  string `json:"benefit"`  // 预期收益
+	Effort   string `json:"effort"`   // 所需工作量
+	Priority int    `json:"priority"` // 优先级
 }
 
 // UXAnalysis 用户体验分析
 type UXAnalysis struct {
 	// API设计评分
-	APIDesignScore      float64                `json:"api_design_score"`      // API设计评分
-	ErrorHandlingScore  float64                `json:"error_handling_score"`  // 错误处理评分
-	UsabilityScore      float64                `json:"usability_score"`       // 可用性评分
-	ConsistencyScore    float64                `json:"consistency_score"`     // 一致性评分
+	APIDesignScore     float64 `json:"api_design_score"`     // API设计评分
+	ErrorHandlingScore float64 `json:"error_handling_score"` // 错误处理评分
+	UsabilityScore     float64 `json:"usability_score"`      // 可用性评分
+	ConsistencyScore   float64 `json:"consistency_score"`    // 一致性评分
 
 	// 用户体验要素
-	EaseOfUse           float64                `json:"ease_of_use"`           // 易用性
-	Intuitiveness       float64                `json:"intuitiveness"`         // 直观性
-	ErrorRecovery       float64                `json:"error_recovery"`        // 错误恢复
-	Documentation       float64                `json:"documentation"`         // 文档质量
+	EaseOfUse     float64 `json:"ease_of_use"`    // 易用性
+	Intuitiveness float64 `json:"intuitiveness"`  // 直观性
+	ErrorRecovery float64 `json:"error_recovery"` // 错误恢复
+	Documentation float64 `json:"documentation"`  // 文档质量
 
 	// 具体评估
-	APIAnalysis         APIAnalysis            `json:"api_analysis"`          // API分析
-	ErrorAnalysis       ErrorHandlingAnalysis  `json:"error_analysis"`        // 错误处理分析
-	UsabilityIssues     []UsabilityIssue       `json:"usability_issues"`      // 可用性问题
-	UXRecommendations   []UXRecommendation     `json:"ux_recommendations"`    // 用户体验建议
+	APIAnalysis       APIAnalysis           `json:"api_analysis"`       // API分析
+	ErrorAnalysis     ErrorHandlingAnalysis `json:"error_analysis"`     // 错误处理分析
+	UsabilityIssues   []UsabilityIssue      `json:"usability_issues"`   // 可用性问题
+	UXRecommendations []UXRecommendation    `json:"ux_recommendations"` // 用户体验建议
 }
 
 // APIAnalysis API分析
 type APIAnalysis struct {
-	Consistency         float64                `json:"consistency"`          // API一致性
-	Simplicity          float64                `json:"simplicity"`           // 简洁性
-	Completeness        float64               `json:"completeness"`         // 完整性
-	Flexibility         float64                `json:"flexibility"`          // 灵活性
-	PerformanceDesign   float64                `json:"performance_design"`   // 性能设计
+	Consistency       float64 `json:"consistency"`        // API一致性
+	Simplicity        float64 `json:"simplicity"`         // 简洁性
+	Completeness      float64 `json:"completeness"`       // 完整性
+	Flexibility       float64 `json:"flexibility"`        // 灵活性
+	PerformanceDesign float64 `json:"performance_design"` // 性能设计
 
 	// API质量指标
-	RESTCompliance      float64                `json:"rest_compliance"`      // REST规范遵循
-	VersioningStrategy  string                 `json:"versioning_strategy"`  // 版本管理策略
-	SecurityIntegration float64                `json:"security_integration"` // 安全集成
+	RESTCompliance      float64 `json:"rest_compliance"`      // REST规范遵循
+	VersioningStrategy  string  `json:"versioning_strategy"`  // 版本管理策略
+	SecurityIntegration float64 `json:"security_integration"` // 安全集成
 
 	// 问题和建议
-	APIIssues           []APIIssue             `json:"api_issues"`           // API问题
-	APIRecommendations  []string               `json:"api_recommendations"`  // API建议
+	APIIssues          []APIIssue `json:"api_issues"`          // API问题
+	APIRecommendations []string   `json:"api_recommendations"` // API建议
 }
 
 // APIIssue API问题
 type APIIssue struct {
-	Endpoint    string                         `json:"endpoint"`     // 端点
-	Type        string                         `json:"type"`         // 问题类型
-	Severity    string                         `json:"severity"`     // 严重程度
-	Description string                         `json:"description"`  // 问题描述
-	Suggestion  string                         `json:"suggestion"`   // 修复建议
+	Endpoint    string `json:"endpoint"`    // 端点
+	Type        string `json:"type"`        // 问题类型
+	Severity    string `json:"severity"`    // 严重程度
+	Description string `json:"description"` // 问题描述
+	Suggestion  string `json:"suggestion"`  // 修复建议
 }
 
 // ErrorHandlingAnalysis 错误处理分析
 type ErrorHandlingAnalysis struct {
-	ErrorConsistency    float64                `json:"error_consistency"`    // 错误处理一致性
-	ErrorInformation    float64                `json:"error_information"`    // 错误信息完整性
-	RecoveryOptions     float64                `json:"recovery_options"`     // 恢复选项
-	LoggingQuality      float64                `json:"logging_quality"`      // 日志质量
+	ErrorConsistency float64 `json:"error_consistency"` // 错误处理一致性
+	ErrorInformation float64 `json:"error_information"` // 错误信息完整性
+	RecoveryOptions  float64 `json:"recovery_options"`  // 恢复选项
+	LoggingQuality   float64 `json:"logging_quality"`   // 日志质量
 
 	// 错误类型分析
-	ErrorTypes          []ErrorTypeAnalysis    `json:"error_types"`          // 错误类型分析
-	HandlingPatterns    []HandlingPattern      `json:"handling_patterns"`    // 处理模式
-	ErrorIssues         []ErrorHandlingIssue   `json:"error_issues"`         // 错误处理问题
+	ErrorTypes       []ErrorTypeAnalysis  `json:"error_types"`       // 错误类型分析
+	HandlingPatterns []HandlingPattern    `json:"handling_patterns"` // 处理模式
+	ErrorIssues      []ErrorHandlingIssue `json:"error_issues"`      // 错误处理问题
 }
 
 // ErrorTypeAnalysis 错误类型分析
 type ErrorTypeAnalysis struct {
-	Type        string                         `json:"type"`         // 错误类型
-	Frequency   int                            `json:"frequency"`    // 出现频率
-	Handling    string                         `json:"handling"`     // 处理方式
-	Quality     float64                        `json:"quality"`      // 处理质量
+	Type      string  `json:"type"`      // 错误类型
+	Frequency int     `json:"frequency"` // 出现频率
+	Handling  string  `json:"handling"`  // 处理方式
+	Quality   float64 `json:"quality"`   // 处理质量
 }
 
 // HandlingPattern 处理模式
 type HandlingPattern struct {
-	Pattern     string                         `json:"pattern"`      // 模式名称
-	Usage       int                            `json:"usage"`        // 使用次数
-	Appropriate bool                           `json:"appropriate"`  // 是否恰当
-	Examples    []string                       `json:"examples"`     // 示例
+	Pattern     string   `json:"pattern"`     // 模式名称
+	Usage       int      `json:"usage"`       // 使用次数
+	Appropriate bool     `json:"appropriate"` // 是否恰当
+	Examples    []string `json:"examples"`    // 示例
 }
 
 // ErrorHandlingIssue 错误处理问题
 type ErrorHandlingIssue struct {
-	Location    string                         `json:"location"`     // 问题位置
-	Type        string                         `json:"type"`         // 问题类型
-	Description string                         `json:"description"`  // 问题描述
-	Impact      string                         `json:"impact"`       // 影响
-	Suggestion  string                         `json:"suggestion"`   // 建议
+	Location    string `json:"location"`    // 问题位置
+	Type        string `json:"type"`        // 问题类型
+	Description string `json:"description"` // 问题描述
+	Impact      string `json:"impact"`      // 影响
+	Suggestion  string `json:"suggestion"`  // 建议
 }
 
 // UsabilityIssue 可用性问题
 type UsabilityIssue struct {
-	Component   string                         `json:"component"`    // 组件
-	Issue       string                         `json:"issue"`        // 问题
-	Severity    string                         `json:"severity"`     // 严重程度
-	UserImpact  string                         `json:"user_impact"`  // 用户影响
-	Solution    string                         `json:"solution"`     // 解决方案
+	Component  string `json:"component"`   // 组件
+	Issue      string `json:"issue"`       // 问题
+	Severity   string `json:"severity"`    // 严重程度
+	UserImpact string `json:"user_impact"` // 用户影响
+	Solution   string `json:"solution"`    // 解决方案
 }
 
 // UXRecommendation 用户体验建议
 type UXRecommendation struct {
-	Category    string                         `json:"category"`     // 建议分类
-	Title       string                         `json:"title"`        // 建议标题
-	Description string                         `json:"description"`  // 详细描述
-	Benefit     string                         `json:"benefit"`      // 预期收益
-	Effort      string                         `json:"effort"`       // 实施工作量
-	Priority    int                            `json:"priority"`     // 优先级
+	Category    string `json:"category"`    // 建议分类
+	Title       string `json:"title"`       // 建议标题
+	Description string `json:"description"` // 详细描述
+	Benefit     string `json:"benefit"`     // 预期收益
+	Effort      string `json:"effort"`      // 实施工作量
+	Priority    int    `json:"priority"`    // 优先级
 }
 
 // TechnicalAnalysis 技术分析
 type TechnicalAnalysis struct {
-	TechnologyStack     []TechnologyUsage      `json:"technology_stack"`     // 技术栈使用
-	InnovationScore     float64                `json:"innovation_score"`     // 创新性评分
-	BestPracticeScore   float64                `json:"best_practice_score"`  // 最佳实践评分
-	TechnicalDebt       float64                `json:"technical_debt"`       // 技术债务
-	PerformanceDesign   float64                `json:"performance_design"`   // 性能设计
+	TechnologyStack   []TechnologyUsage `json:"technology_stack"`    // 技术栈使用
+	InnovationScore   float64           `json:"innovation_score"`    // 创新性评分
+	BestPracticeScore float64           `json:"best_practice_score"` // 最佳实践评分
+	TechnicalDebt     float64           `json:"technical_debt"`      // 技术债务
+	PerformanceDesign float64           `json:"performance_design"`  // 性能设计
 
 	// 技术选择评估
-	TechChoiceAnalysis  []TechChoiceAnalysis   `json:"tech_choice_analysis"` // 技术选择分析
-	AlternativeSuggestions []TechAlternative   `json:"alternative_suggestions"` // 替代技术建议
-	TechnicalRisks      []TechnicalRisk        `json:"technical_risks"`      // 技术风险
+	TechChoiceAnalysis     []TechChoiceAnalysis `json:"tech_choice_analysis"`    // 技术选择分析
+	AlternativeSuggestions []TechAlternative    `json:"alternative_suggestions"` // 替代技术建议
+	TechnicalRisks         []TechnicalRisk      `json:"technical_risks"`         // 技术风险
 
 	// 创新性评估
-	InnovativeFeatures  []InnovativeFeature    `json:"innovative_features"`  // 创新特性
-	CreativityScore     float64                `json:"creativity_score"`     // 创造性评分
-	UniquenessFactor    float64                `json:"uniqueness_factor"`    // 独特性因子
+	InnovativeFeatures []InnovativeFeature `json:"innovative_features"` // 创新特性
+	CreativityScore    float64             `json:"creativity_score"`    // 创造性评分
+	UniquenessFactor   float64             `json:"uniqueness_factor"`   // 独特性因子
 }
 
 // TechnologyUsage 技术使用情况
 type TechnologyUsage struct {
-	Name        string                         `json:"name"`         // 技术名称
-	Category    string                         `json:"category"`     // 技术分类
-	Usage       string                         `json:"usage"`        // 使用方式
-	Proficiency float64                        `json:"proficiency"`  // 使用熟练度
-	Appropriate bool                           `json:"appropriate"`  // 是否恰当选择
-	Rationale   string                         `json:"rationale"`    // 选择理由
+	Name        string  `json:"name"`        // 技术名称
+	Category    string  `json:"category"`    // 技术分类
+	Usage       string  `json:"usage"`       // 使用方式
+	Proficiency float64 `json:"proficiency"` // 使用熟练度
+	Appropriate bool    `json:"appropriate"` // 是否恰当选择
+	Rationale   string  `json:"rationale"`   // 选择理由
 }
 
 // TechChoiceAnalysis 技术选择分析
 type TechChoiceAnalysis struct {
-	Technology  string                         `json:"technology"`   // 技术
-	Rationale   string                         `json:"rationale"`    // 选择理由
-	Pros        []string                       `json:"pros"`         // 优点
-	Cons        []string                       `json:"cons"`         // 缺点
-	Score       float64                        `json:"score"`        // 选择评分
+	Technology string   `json:"technology"` // 技术
+	Rationale  string   `json:"rationale"`  // 选择理由
+	Pros       []string `json:"pros"`       // 优点
+	Cons       []string `json:"cons"`       // 缺点
+	Score      float64  `json:"score"`      // 选择评分
 }
 
 // TechAlternative 技术替代建议
 type TechAlternative struct {
-	Current     string                         `json:"current"`      // 当前技术
-	Alternative string                         `json:"alternative"`  // 替代技术
-	Reason      string                         `json:"reason"`       // 建议理由
-	Benefit     string                         `json:"benefit"`      // 预期收益
-	MigrationEffort string                     `json:"migration_effort"` // 迁移工作量
+	Current         string `json:"current"`          // 当前技术
+	Alternative     string `json:"alternative"`      // 替代技术
+	Reason          string `json:"reason"`           // 建议理由
+	Benefit         string `json:"benefit"`          // 预期收益
+	MigrationEffort string `json:"migration_effort"` // 迁移工作量
 }
 
 // TechnicalRisk 技术风险
 type TechnicalRisk struct {
-	Type        string                         `json:"type"`         // 风险类型
-	Description string                         `json:"description"`  // 风险描述
-	Probability string                         `json:"probability"`  // 发生概率
-	Impact      string                         `json:"impact"`       // 影响程度
-	Mitigation  string                         `json:"mitigation"`   // 缓解措施
+	Type        string `json:"type"`        // 风险类型
+	Description string `json:"description"` // 风险描述
+	Probability string `json:"probability"` // 发生概率
+	Impact      string `json:"impact"`      // 影响程度
+	Mitigation  string `json:"mitigation"`  // 缓解措施
 }
 
 // InnovativeFeature 创新特性
 type InnovativeFeature struct {
-	Name        string                         `json:"name"`         // 特性名称
-	Description string                         `json:"description"`  // 特性描述
-	Innovation  string                         `json:"innovation"`   // 创新点
-	Impact      string                         `json:"impact"`       // 影响
-	Uniqueness  float64                        `json:"uniqueness"`   // 独特性评分
+	Name        string  `json:"name"`        // 特性名称
+	Description string  `json:"description"` // 特性描述
+	Innovation  string  `json:"innovation"`  // 创新点
+	Impact      string  `json:"impact"`      // 影响
+	Uniqueness  float64 `json:"uniqueness"`  // 独特性评分
 }
 
 // ProjectStrength 项目优势
 type ProjectStrength struct {
-	Category    string                         `json:"category"`     // 优势分类
-	Title       string                         `json:"title"`        // 优势标题
-	Description string                         `json:"description"`  // 详细描述
-	Evidence    []string                       `json:"evidence"`     // 支撑证据
-	Impact      string                         `json:"impact"`       // 影响价值
+	Category    string   `json:"category"`    // 优势分类
+	Title       string   `json:"title"`       // 优势标题
+	Description string   `json:"description"` // 详细描述
+	Evidence    []string `json:"evidence"`    // 支撑证据
+	Impact      string   `json:"impact"`      // 影响价值
 }
 
 // ProjectWeakness 项目不足
 type ProjectWeakness struct {
-	Category    string                         `json:"category"`     // 不足分类
-	Title       string                         `json:"title"`        // 不足标题
-	Description string                         `json:"description"`  // 详细描述
-	Impact      string                         `json:"impact"`       // 影响评估
-	Severity    string                         `json:"severity"`     // 严重程度
-	Suggestions []string                       `json:"suggestions"`  // 改进建议
+	Category    string   `json:"category"`    // 不足分类
+	Title       string   `json:"title"`       // 不足标题
+	Description string   `json:"description"` // 详细描述
+	Impact      string   `json:"impact"`      // 影响评估
+	Severity    string   `json:"severity"`    // 严重程度
+	Suggestions []string `json:"suggestions"` // 改进建议
 }
 
 // ProjectImprovement 项目改进建议
 type ProjectImprovement struct {
-	Category    string                         `json:"category"`     // 改进分类
-	Title       string                         `json:"title"`        // 改进标题
-	Description string                         `json:"description"`  // 详细描述
-	Benefit     string                         `json:"benefit"`      // 预期收益
-	Effort      string                         `json:"effort"`       // 所需工作量
-	Priority    int                            `json:"priority"`     // 优先级
-	Steps       []ImprovementStep              `json:"steps"`        // 实施步骤
+	Category    string            `json:"category"`    // 改进分类
+	Title       string            `json:"title"`       // 改进标题
+	Description string            `json:"description"` // 详细描述
+	Benefit     string            `json:"benefit"`     // 预期收益
+	Effort      string            `json:"effort"`      // 所需工作量
+	Priority    int               `json:"priority"`    // 优先级
+	Steps       []ImprovementStep `json:"steps"`       // 实施步骤
 }
 
 // ImprovementStep 改进步骤
 type ImprovementStep struct {
-	Order       int                            `json:"order"`        // 步骤顺序
-	Action      string                         `json:"action"`       // 具体行动
-	Expected    string                         `json:"expected"`     // 期望结果
-	TimeFrame   string                         `json:"time_frame"`   // 时间框架
+	Order     int    `json:"order"`      // 步骤顺序
+	Action    string `json:"action"`     // 具体行动
+	Expected  string `json:"expected"`   // 期望结果
+	TimeFrame string `json:"time_frame"` // 时间框架
 }
 
 // NextStep 下一步建议
 type NextStep struct {
-	Phase       string                         `json:"phase"`        // 阶段名称
-	Description string                         `json:"description"`  // 步骤描述
-	Priority    int                            `json:"priority"`     // 优先级
-	Timeline    string                         `json:"timeline"`     // 时间线
-	Resources   []string                       `json:"resources"`    // 所需资源
-	Success     []string                       `json:"success"`      // 成功指标
+	Phase       string   `json:"phase"`       // 阶段名称
+	Description string   `json:"description"` // 步骤描述
+	Priority    int      `json:"priority"`    // 优先级
+	Timeline    string   `json:"timeline"`    // 时间线
+	Resources   []string `json:"resources"`   // 所需资源
+	Success     []string `json:"success"`     // 成功指标
 }
 
 // BenchmarkComparison 基准比较
 type BenchmarkComparison struct {
-	BenchmarkType   string                     `json:"benchmark_type"`   // 基准类型
-	ComparisonScore float64                    `json:"comparison_score"` // 比较评分
-	Percentile      float64                    `json:"percentile"`       // 百分位数
-	StrongerAreas   []string                   `json:"stronger_areas"`   // 优势领域
-	WeakerAreas     []string                   `json:"weaker_areas"`     // 薄弱领域
+	BenchmarkType   string   `json:"benchmark_type"`   // 基准类型
+	ComparisonScore float64  `json:"comparison_score"` // 比较评分
+	Percentile      float64  `json:"percentile"`       // 百分位数
+	StrongerAreas   []string `json:"stronger_areas"`   // 优势领域
+	WeakerAreas     []string `json:"weaker_areas"`     // 薄弱领域
 }
 
 // PeerComparison 同级比较
 type PeerComparison struct {
-	PeerGroup       string                     `json:"peer_group"`       // 同级组别
-	Ranking         int                        `json:"ranking"`          // 排名
-	TotalPeers      int                        `json:"total_peers"`      // 总数
-	RelativeScore   float64                    `json:"relative_score"`   // 相对得分
-	CompetitiveEdge []string                   `json:"competitive_edge"` // 竞争优势
-	ImprovementAreas []string                  `json:"improvement_areas"` // 改进领域
+	PeerGroup        string   `json:"peer_group"`        // 同级组别
+	Ranking          int      `json:"ranking"`           // 排名
+	TotalPeers       int      `json:"total_peers"`       // 总数
+	RelativeScore    float64  `json:"relative_score"`    // 相对得分
+	CompetitiveEdge  []string `json:"competitive_edge"`  // 竞争优势
+	ImprovementAreas []string `json:"improvement_areas"` // 改进领域
 }
 
 // NewProjectEvaluator 创建项目评估器
@@ -954,11 +954,11 @@ func (pe *ProjectEvaluator) analyzeBuildSystem(projectPath string, build *BuildS
 	// 检查构建相关文件
 	build.HasGoMod = pe.fileExists(filepath.Join(projectPath, "go.mod"))
 	build.HasMakefile = pe.fileExists(filepath.Join(projectPath, "Makefile")) ||
-					   pe.fileExists(filepath.Join(projectPath, "makefile"))
+		pe.fileExists(filepath.Join(projectPath, "makefile"))
 	build.HasDockerfile = pe.fileExists(filepath.Join(projectPath, "Dockerfile"))
 	build.HasGitHubActions = pe.fileExists(filepath.Join(projectPath, ".github/workflows"))
 	build.HasGoReleaser = pe.fileExists(filepath.Join(projectPath, ".goreleaser.yml")) ||
-						  pe.fileExists(filepath.Join(projectPath, ".goreleaser.yaml"))
+		pe.fileExists(filepath.Join(projectPath, ".goreleaser.yaml"))
 
 	// 计算构建质量评分
 	build.BuildQuality = pe.calculateBuildQuality(build)
@@ -1021,10 +1021,10 @@ func (pe *ProjectEvaluator) calculateDeploymentReadiness(build *BuildSystemInfo)
 func (pe *ProjectEvaluator) analyzeDocumentation(projectPath string, doc *DocumentationInfo) {
 	// 检查文档文件
 	doc.HasReadme = pe.fileExists(filepath.Join(projectPath, "README.md")) ||
-					pe.fileExists(filepath.Join(projectPath, "readme.md"))
+		pe.fileExists(filepath.Join(projectPath, "readme.md"))
 	doc.HasChangelog = pe.fileExists(filepath.Join(projectPath, "CHANGELOG.md"))
 	doc.HasLicense = pe.fileExists(filepath.Join(projectPath, "LICENSE")) ||
-					 pe.fileExists(filepath.Join(projectPath, "LICENSE.md"))
+		pe.fileExists(filepath.Join(projectPath, "LICENSE.md"))
 	doc.HasContributing = pe.fileExists(filepath.Join(projectPath, "CONTRIBUTING.md"))
 
 	// 计算文档质量
@@ -1249,7 +1249,7 @@ func (pe *ProjectEvaluator) setProjectMetadata(projectPath string, info *Project
 func (pe *ProjectEvaluator) detectProjectType(projectPath string) string {
 	// 检查main.go或cmd目录
 	if pe.fileExists(filepath.Join(projectPath, "main.go")) ||
-	   pe.fileExists(filepath.Join(projectPath, "cmd")) {
+		pe.fileExists(filepath.Join(projectPath, "cmd")) {
 		return "application"
 	}
 
@@ -1299,22 +1299,22 @@ func (pe *ProjectEvaluator) getCriteriaForStage(stage int) []EvaluationCriteria 
 	// 简化实现，返回基础评估标准
 	return []EvaluationCriteria{
 		{
-			ID:         "functionality",
-			Category:   "core",
-			Name:       "功能完整性",
-			Weight:     0.3,
-			MaxScore:   100.0,
-			Automated:  true,
-			Threshold:  70.0,
+			ID:        "functionality",
+			Category:  "core",
+			Name:      "功能完整性",
+			Weight:    0.3,
+			MaxScore:  100.0,
+			Automated: true,
+			Threshold: 70.0,
 		},
 		{
-			ID:         "architecture",
-			Category:   "design",
-			Name:       "架构质量",
-			Weight:     0.25,
-			MaxScore:   100.0,
-			Automated:  true,
-			Threshold:  70.0,
+			ID:        "architecture",
+			Category:  "design",
+			Name:      "架构质量",
+			Weight:    0.25,
+			MaxScore:  100.0,
+			Automated: true,
+			Threshold: 70.0,
 		},
 	}
 }
@@ -1367,8 +1367,8 @@ func (pe *ProjectEvaluator) evaluateArchitecture() error {
 
 	// 综合架构得分
 	archScore := (analysis.ModularityScore + analysis.CouplingScore +
-				  analysis.CohesionScore + analysis.InterfaceDesign +
-				  analysis.DependencyManagement) / 5
+		analysis.CohesionScore + analysis.InterfaceDesign +
+		analysis.DependencyManagement) / 5
 
 	pe.results.DimensionScores["architecture"] = archScore
 	pe.results.ArchitectureAnalysis = analysis
@@ -1416,7 +1416,7 @@ func (pe *ProjectEvaluator) evaluateUserExperience() error {
 
 	// 综合用户体验得分
 	uxScore := (uxAnalysis.APIDesignScore + uxAnalysis.ErrorHandlingScore +
-				uxAnalysis.UsabilityScore + uxAnalysis.ConsistencyScore) / 4
+		uxAnalysis.UsabilityScore + uxAnalysis.ConsistencyScore) / 4
 
 	pe.results.DimensionScores["user_experience"] = uxScore
 	pe.results.UserExperienceAnalysis = uxAnalysis
@@ -1482,7 +1482,7 @@ func (pe *ProjectEvaluator) evaluateTechnicalDepth() error {
 
 	// 综合技术深度得分
 	techScore := (techAnalysis.BestPracticeScore + techAnalysis.InnovationScore +
-				  (100 - techAnalysis.TechnicalDebt)) / 3
+		(100 - techAnalysis.TechnicalDebt)) / 3
 
 	pe.results.DimensionScores["technical_depth"] = techScore
 	pe.results.TechnicalAnalysis = techAnalysis
@@ -1493,12 +1493,12 @@ func (pe *ProjectEvaluator) evaluateTechnicalDepth() error {
 func (pe *ProjectEvaluator) analyzeTechnologyStack() []TechnologyUsage {
 	return []TechnologyUsage{
 		{
-			Name:         "Go",
-			Category:     "programming_language",
-			Usage:        "primary",
-			Proficiency:  85.0,
-			Appropriate:  true,
-			Rationale:    "主要开发语言",
+			Name:        "Go",
+			Category:    "programming_language",
+			Usage:       "primary",
+			Proficiency: 85.0,
+			Appropriate: true,
+			Rationale:   "主要开发语言",
 		},
 	}
 }
@@ -1756,19 +1756,19 @@ func GetProjectEvalDefaultConfig() *ProjectEvalConfig {
 		Stage:            6,
 		RequirementLevel: "intermediate",
 		WeightSettings: ProjectEvalWeights{
-			FunctionalityScore:   0.30,
-			ArchitectureScore:    0.25,
-			UserExperienceScore:  0.20,
-			TechnicalDepthScore:  0.15,
-			EngineeringScore:     0.10,
+			FunctionalityScore:  0.30,
+			ArchitectureScore:   0.25,
+			UserExperienceScore: 0.20,
+			TechnicalDepthScore: 0.15,
+			EngineeringScore:    0.10,
 		},
 		Thresholds: ProjectThresholds{
-			MinFunctionality:  70.0,
-			MinArchitecture:   70.0,
-			MinDocumentation:  60.0,
-			MinTestCoverage:   70.0,
-			MaxComplexity:     10,
-			MinModularity:     70.0,
+			MinFunctionality: 70.0,
+			MinArchitecture:  70.0,
+			MinDocumentation: 60.0,
+			MinTestCoverage:  70.0,
+			MaxComplexity:    10,
+			MinModularity:    70.0,
 		},
 		AnalyzeReadme:       true,
 		AnalyzeDocs:         true,

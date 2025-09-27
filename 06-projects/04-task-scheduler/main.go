@@ -1614,7 +1614,14 @@ func main() {
 	log.Println("- 任务监控统计")
 	log.Println("- Web 管理界面")
 
-	if err := http.ListenAndServe(":"+port, apiServer); err != nil {
+	server := &http.Server{
+		Addr:         ":" + port,
+		Handler:      apiServer,
+		ReadTimeout:  15 * time.Second,
+		WriteTimeout: 15 * time.Second,
+		IdleTimeout:  60 * time.Second,
+	}
+	if err := server.ListenAndServe(); err != nil {
 		log.Fatal("服务器启动失败:", err)
 	}
 }

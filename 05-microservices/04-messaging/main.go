@@ -947,7 +947,14 @@ func main() {
 	fmt.Println("    -H 'Content-Type: application/json' \\")
 	fmt.Println("    -d '{\"id\":\"order_2\",\"user_id\":\"user_2\",\"amount\":149.99,\"status\":\"pending\",\"products\":[{\"id\":\"prod_2\",\"name\":\"Phone\",\"price\":149.99,\"quantity\":1}]}'")
 
-	log.Fatal(http.ListenAndServe(":8080", router))
+	server := &http.Server{
+		Addr:         ":8080",
+		Handler:      router,
+		ReadTimeout:  15 * time.Second,
+		WriteTimeout: 15 * time.Second,
+		IdleTimeout:  60 * time.Second,
+	}
+	log.Fatal(server.ListenAndServe())
 }
 
 /*

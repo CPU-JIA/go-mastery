@@ -25,11 +25,12 @@ package main
 import (
 	"bufio"
 	"context"
+	"crypto/rand"
 	"crypto/tls"
 	"encoding/binary"
 	"fmt"
 	"io"
-	"math/rand"
+	"math/big"
 	"net"
 	"runtime"
 	"strings"
@@ -1395,8 +1396,17 @@ func NewAuditLogger() *AuditLogger                     { return &AuditLogger{} }
 func NewMonitorDashboard() *MonitorDashboard           { return &MonitorDashboard{} }
 
 // 辅助函数
+func secureRandomInt64() int64 {
+	n, err := rand.Int(rand.Reader, big.NewInt(1<<62)) // 避免溢出
+	if err != nil {
+		// 安全fallback：使用时间戳
+		return time.Now().UnixNano()
+	}
+	return n.Int64()
+}
+
 func generateConnectionID() string {
-	return fmt.Sprintf("conn_%d_%d", time.Now().UnixNano(), rand.Int63())
+	return fmt.Sprintf("conn_%d_%d", time.Now().UnixNano(), secureRandomInt64())
 }
 
 // ==================

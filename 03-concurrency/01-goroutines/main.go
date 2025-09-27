@@ -1,12 +1,43 @@
 package main
 
 import (
+	"crypto/rand"
 	"fmt"
-	"math/rand"
+	"math/big"
 	"runtime"
 	"sync"
 	"time"
 )
+
+// 安全随机数生成函数
+func secureRandomInt(max int) int {
+	n, err := rand.Int(rand.Reader, big.NewInt(int64(max)))
+	if err != nil {
+		// 安全fallback：使用时间戳
+		// G115安全修复：确保转换不会溢出
+		fallback := time.Now().UnixNano() % int64(max)
+		// 检查是否在int范围内
+		if fallback > int64(^uint(0)>>1) {
+			fallback = fallback % int64(^uint(0)>>1)
+		}
+		return int(fallback)
+	}
+	// G115安全修复：检查int64到int的安全转换
+	result := n.Int64()
+	if result > int64(^uint(0)>>1) {
+		result = result % int64(max)
+	}
+	return int(result)
+}
+
+func secureRandomFloat32() float32 {
+	n, err := rand.Int(rand.Reader, big.NewInt(1<<24))
+	if err != nil {
+		// 安全fallback：使用时间戳
+		return float32(time.Now().UnixNano()%1000) / 1000.0
+	}
+	return float32(n.Int64()) / float32(1<<24)
+}
 
 // =============================================================================
 // 1. Goroutine 基础概念
@@ -60,7 +91,7 @@ func worker(id int, jobs <-chan int, results chan<- int) {
 		fmt.Printf("Worker %d 开始处理任务 %d\n", id, job)
 
 		// 模拟工作
-		time.Sleep(time.Duration(rand.Intn(1000)) * time.Millisecond)
+		time.Sleep(time.Duration(secureRandomInt(1000)) * time.Millisecond)
 
 		// 计算结果（这里简单地将任务ID乘以2）
 		result := job * 2
@@ -122,7 +153,7 @@ func demonstrateWaitGroup() {
 			fmt.Printf("Goroutine %d 开始工作\n", id)
 
 			// 模拟不同的工作时间
-			workTime := time.Duration(rand.Intn(1000)) * time.Millisecond
+			workTime := time.Duration(secureRandomInt(1000)) * time.Millisecond
 			time.Sleep(workTime)
 
 			fmt.Printf("Goroutine %d 完成工作，耗时 %v\n", id, workTime)
@@ -361,11 +392,11 @@ func mockDownload(task DownloadTask) DownloadResult {
 	start := time.Now()
 
 	// 模拟网络延迟
-	delay := time.Duration(rand.Intn(2000)) * time.Millisecond
+	delay := time.Duration(secureRandomInt(2000)) * time.Millisecond
 	time.Sleep(delay)
 
 	// 模拟随机失败
-	success := rand.Float32() > 0.2 // 80% 成功率
+	success := secureRandomFloat32() > 0.2 // 80% 成功率
 
 	result := DownloadResult{
 		TaskID:   task.ID,
@@ -530,7 +561,7 @@ func main() {
 	fmt.Println("=============================")
 
 	// 设置随机种子
-	rand.Seed(time.Now().UnixNano())
+	// 注意：crypto/rand不需要设置种子
 
 	demonstrateBasicGoroutines()
 	demonstrateWaitGroup()

@@ -23,15 +23,62 @@
 package main
 
 import (
+	"crypto/rand"
 	"fmt"
 	"io"
-	mathrand "math/rand"
+	"math/big"
 	"sort"
 	"sync"
 	"sync/atomic"
 	"time"
 	"unsafe"
 )
+
+// 安全随机数生成函数
+func secureRandomInt(max int) int {
+	n, err := rand.Int(rand.Reader, big.NewInt(int64(max)))
+	if err != nil {
+		// G115安全修复：确保转换不会溢出
+		fallback := time.Now().UnixNano() % int64(max)
+		if fallback > int64(^uint(0)>>1) {
+			fallback = fallback % int64(^uint(0)>>1)
+		}
+		return int(fallback)
+	}
+	// G115安全修复：检查int64到int的安全转换
+	result := n.Int64()
+	if result > int64(^uint(0)>>1) {
+		result = result % int64(max)
+	}
+	return int(result)
+}
+
+func secureRandomInt63() int64 {
+	n, err := rand.Int(rand.Reader, big.NewInt(1<<62))
+	if err != nil {
+		// 安全fallback：使用时间戳
+		return time.Now().UnixNano()
+	}
+	return n.Int64()
+}
+
+func secureRandomUint32(max uint32) uint32 {
+	n, err := rand.Int(rand.Reader, big.NewInt(int64(max)))
+	if err != nil {
+		// G115安全修复：确保转换不会溢出
+		fallback := time.Now().UnixNano() % int64(max)
+		if fallback > int64(max) {
+			fallback = fallback % int64(max)
+		}
+		return uint32(fallback)
+	}
+	// G115安全修复：检查int64到uint32的安全转换
+	result := n.Int64()
+	if result > int64(max) {
+		result = result % int64(max)
+	}
+	return uint32(result)
+}
 
 // Windows compatible syscall constants
 const (
@@ -2146,7 +2193,7 @@ type MockEventReader struct{}
 
 func (mer *MockEventReader) ReadEvent() ([]byte, error) {
 	// 模拟事件数据
-	event := fmt.Sprintf("event_%d_%d", time.Now().Unix(), mathrand.Intn(1000))
+	event := fmt.Sprintf("event_%d_%d", time.Now().Unix(), secureRandomInt(1000))
 	return []byte(event), nil
 }
 
@@ -2154,17 +2201,17 @@ type MockEventParser struct{}
 
 func (mep *MockEventParser) ParseEvent(data []byte) (*KernelEvent, error) {
 	return &KernelEvent{
-		ID:        uint64(mathrand.Int63()),
+		ID:        uint64(secureRandomInt63()),
 		Timestamp: time.Now(),
 		Source:    "mock_source",
-		Type:      EventType(mathrand.Intn(8)),
-		Category:  EventCategory(mathrand.Intn(7)),
-		Severity:  EventSeverity(mathrand.Intn(9)),
+		Type:      EventType(secureRandomInt(8)),
+		Category:  EventCategory(secureRandomInt(7)),
+		Severity:  EventSeverity(secureRandomInt(9)),
 		Message:   string(data),
 		Data:      make(map[string]interface{}),
-		ProcessID: uint32(mathrand.Intn(10000)),
-		ThreadID:  uint32(mathrand.Intn(10000)),
-		CPU:       uint32(mathrand.Intn(8)),
+		ProcessID: secureRandomUint32(10000),
+		ThreadID:  secureRandomUint32(10000),
+		CPU:       secureRandomUint32(8),
 	}, nil
 }
 

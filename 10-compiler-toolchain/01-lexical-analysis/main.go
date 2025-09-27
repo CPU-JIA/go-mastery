@@ -23,7 +23,7 @@
 package main
 
 import (
-	"crypto/md5"
+	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
 	"regexp"
@@ -1881,7 +1881,7 @@ func (tc *TokenCache) Put(input, language string, tokens []*Token) {
 func (tc *TokenCache) makeKey(input, language string) string {
 	// Create hash for large inputs to save memory
 	if len(input) > 100 {
-		hasher := md5.New()
+		hasher := sha256.New()
 		hasher.Write([]byte(fmt.Sprintf("%s:%s", language, input)))
 		return hex.EncodeToString(hasher.Sum(nil))
 	}

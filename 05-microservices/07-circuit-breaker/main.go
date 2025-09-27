@@ -27,16 +27,27 @@ package main
 
 import (
 	"context"
+	"crypto/rand"
 	"errors"
 	"fmt"
 	"log"
-	"math/rand"
+	"math/big"
 	"net/http"
 	"strings"
 	"sync"
 	"sync/atomic"
 	"time"
 )
+
+// 安全随机数生成函数
+func secureRandomFloat64() float64 {
+	n, err := rand.Int(rand.Reader, big.NewInt(1<<53))
+	if err != nil {
+		// 安全fallback：使用时间戳
+		return float64(time.Now().UnixNano()%1000) / 1000.0
+	}
+	return float64(n.Int64()) / float64(1<<53)
+}
 
 // CircuitBreakerState 熔断器状态
 type CircuitBreakerState int
@@ -62,19 +73,19 @@ func (s CircuitBreakerState) String() string {
 
 // CircuitBreakerConfig 熔断器配置
 type CircuitBreakerConfig struct {
-	FailureThreshold   int           // 失败阈值
-	SuccessThreshold   int           // 恢复成功阈值
-	Timeout           time.Duration // 超时时间
-	RecoveryTimeout   time.Duration // 恢复超时
-	SlidingWindow     time.Duration // 滑动窗口大小
-	MaxRequests       int           // Half-Open状态最大请求数
+	FailureThreshold int           // 失败阈值
+	SuccessThreshold int           // 恢复成功阈值
+	Timeout          time.Duration // 超时时间
+	RecoveryTimeout  time.Duration // 恢复超时
+	SlidingWindow    time.Duration // 滑动窗口大小
+	MaxRequests      int           // Half-Open状态最大请求数
 }
 
 // DefaultConfig 默认配置
 func DefaultConfig() CircuitBreakerConfig {
 	return CircuitBreakerConfig{
-		FailureThreshold:  5,
-		SuccessThreshold:  3,
+		FailureThreshold: 5,
+		SuccessThreshold: 3,
 		Timeout:          2 * time.Second,
 		RecoveryTimeout:  30 * time.Second,
 		SlidingWindow:    time.Minute,
@@ -84,11 +95,11 @@ func DefaultConfig() CircuitBreakerConfig {
 
 // CircuitBreakerStats 统计信息
 type CircuitBreakerStats struct {
-	TotalRequests    int64 `json:"total_requests"`
-	SuccessRequests  int64 `json:"success_requests"`
-	FailureRequests  int64 `json:"failure_requests"`
-	RejectedRequests int64 `json:"rejected_requests"`
-	State            string `json:"state"`
+	TotalRequests    int64     `json:"total_requests"`
+	SuccessRequests  int64     `json:"success_requests"`
+	FailureRequests  int64     `json:"failure_requests"`
+	RejectedRequests int64     `json:"rejected_requests"`
+	State            string    `json:"state"`
 	LastFailureTime  time.Time `json:"last_failure_time"`
 	LastSuccessTime  time.Time `json:"last_success_time"`
 }
@@ -294,7 +305,7 @@ type UnstableService struct {
 func NewUnstableService(failureRate float64, delay time.Duration) *UnstableService {
 	return &UnstableService{
 		failureRate: failureRate,
-		delay:      delay,
+		delay:       delay,
 	}
 }
 
@@ -306,7 +317,7 @@ func (s *UnstableService) Call() error {
 	}
 
 	// 模拟随机失败
-	if rand.Float64() < s.failureRate {
+	if secureRandomFloat64() < s.failureRate {
 		return errors.New("service temporarily unavailable")
 	}
 
@@ -401,8 +412,8 @@ func main() {
 
 	// 1. 创建熔断器配置
 	config := DefaultConfig()
-	config.FailureThreshold = 3    // 3次失败后熔断
-	config.SuccessThreshold = 2    // 2次成功后恢复
+	config.FailureThreshold = 3              // 3次失败后熔断
+	config.SuccessThreshold = 2              // 2次成功后恢复
 	config.RecoveryTimeout = 5 * time.Second // 5秒后尝试恢复
 
 	// 2. 创建熔断器
@@ -435,7 +446,15 @@ func main() {
 
 		log.Println("监控端点启动: http://localhost:8080/metrics")
 		log.Println("健康检查端点: http://localhost:8080/health")
-		log.Fatal(http.ListenAndServe(":8080", nil))
+
+		server := &http.Server{
+			Addr:         ":8080",
+			Handler:      nil,
+			ReadTimeout:  15 * time.Second,
+			WriteTimeout: 15 * time.Second,
+			IdleTimeout:  60 * time.Second,
+		}
+		log.Fatal(server.ListenAndServe())
 	}()
 
 	// 7. 模拟服务调用

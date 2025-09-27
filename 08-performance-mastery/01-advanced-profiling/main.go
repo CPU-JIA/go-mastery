@@ -23,18 +23,28 @@
 package main
 
 import (
+	"crypto/rand"
 	"fmt"
 	"log"
 	"math"
-	"math/rand"
+	"math/big"
 	"net/http"
-	_ "net/http/pprof"
 	"runtime"
 	"sort"
 	"strings"
 	"sync"
 	"time"
 )
+
+// 安全随机数生成函数
+func secureRandomFloat64() float64 {
+	n, err := rand.Int(rand.Reader, big.NewInt(1<<53))
+	if err != nil {
+		// 安全fallback：使用时间戳
+		return float64(time.Now().UnixNano()%1000) / 1000.0
+	}
+	return float64(n.Int64()) / float64(1<<53)
+}
 
 // ==================
 // 1. 高级采样器框架
@@ -1158,7 +1168,14 @@ func demonstrateAdvancedProfiling() {
 	// 2. 启动HTTP pprof服务器
 	go func() {
 		log.Println("pprof server starting on :6060")
-		log.Println(http.ListenAndServe("localhost:6060", nil))
+		server := &http.Server{
+			Addr:         "localhost:6060",
+			Handler:      nil,
+			ReadTimeout:  15 * time.Second,
+			WriteTimeout: 15 * time.Second,
+			IdleTimeout:  60 * time.Second,
+		}
+		log.Println(server.ListenAndServe())
 	}()
 
 	// 3. 创建一些性能负载
@@ -1202,7 +1219,7 @@ func demonstrateAdvancedProfiling() {
 	for _, result := range results {
 		// 更新基线（模拟历史数据）
 		for i := 0; i < 10; i++ {
-			baselineValue := float64(result.NsPerOp) * (0.9 + rand.Float64()*0.2)
+			baselineValue := float64(result.NsPerOp) * (0.9 + secureRandomFloat64()*0.2)
 			detector.UpdateBaseline(result.Name, baselineValue)
 		}
 

@@ -202,10 +202,10 @@ type SlidingWindow struct {
 // NewSlidingWindow 创建滑动窗口限流器
 func NewSlidingWindow(limit int, window time.Duration) *SlidingWindow {
 	return &SlidingWindow{
-		limit:     limit,
-		window:    window,
+		limit:      limit,
+		window:     window,
 		timestamps: make([]time.Time, 0, limit*2),
-		lastReset: time.Now(),
+		lastReset:  time.Now(),
 	}
 }
 
@@ -319,11 +319,11 @@ func (sw *SlidingWindow) Reset() {
 
 // FixedWindow 固定窗口限流器
 type FixedWindow struct {
-	limit    int           // 窗口内最大请求数
-	window   time.Duration // 窗口大小
-	counter  int64         // 当前计数
-	windowStart time.Time  // 窗口开始时间
-	mutex    sync.Mutex
+	limit       int           // 窗口内最大请求数
+	window      time.Duration // 窗口大小
+	counter     int64         // 当前计数
+	windowStart time.Time     // 窗口开始时间
+	mutex       sync.Mutex
 
 	// 统计信息
 	totalRequests   int64
@@ -625,9 +625,9 @@ func main() {
 	// 1. 创建不同算法的限流器
 	fmt.Println("\n📊 创建不同算法的限流器...")
 
-	tokenBucket := NewTokenBucket(10.0, 20)    // 10 tokens/second, 容量20
+	tokenBucket := NewTokenBucket(10.0, 20)            // 10 tokens/second, 容量20
 	slidingWindow := NewSlidingWindow(15, time.Minute) // 15 requests/minute
-	fixedWindow := NewFixedWindow(12, 30*time.Second)   // 12 requests/30s
+	fixedWindow := NewFixedWindow(12, 30*time.Second)  // 12 requests/30s
 
 	// 2. 创建监控器
 	monitor := NewRateLimiterMonitor()
@@ -653,7 +653,15 @@ func main() {
 
 		log.Println("监控端点: http://localhost:8080/rate-limit-metrics")
 		log.Println("受保护API: http://localhost:8080/api/protected")
-		log.Fatal(http.ListenAndServe(":8080", nil))
+
+		server := &http.Server{
+			Addr:         ":8080",
+			Handler:      nil,
+			ReadTimeout:  15 * time.Second,
+			WriteTimeout: 15 * time.Second,
+			IdleTimeout:  60 * time.Second,
+		}
+		log.Fatal(server.ListenAndServe())
 	}()
 
 	// 4. 测试不同算法
@@ -700,7 +708,7 @@ func main() {
 	// 5. 多层限流演示
 	fmt.Println("\n🔗 多层限流演示...")
 	multiTier := NewMultiTierRateLimiter()
-	multiTier.AddLimiter("per-second", NewTokenBucket(5.0, 10))  // 每秒5个
+	multiTier.AddLimiter("per-second", NewTokenBucket(5.0, 10))           // 每秒5个
 	multiTier.AddLimiter("per-minute", NewSlidingWindow(50, time.Minute)) // 每分钟50个
 
 	fmt.Println("测试多层限流 (需要同时满足所有限流器):")

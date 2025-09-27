@@ -23,14 +23,35 @@
 package main
 
 import (
+	"crypto/rand"
 	"fmt"
 	"io"
-	"math/rand"
+	"log"
+	"math/big"
 	"os"
 	"sync"
 	"sync/atomic"
 	"time"
 )
+
+// 安全随机数生成函数
+func secureRandomInt(max int) int {
+	n, err := rand.Int(rand.Reader, big.NewInt(int64(max)))
+	if err != nil {
+		// G115安全修复：确保转换不会溢出
+		fallback := time.Now().UnixNano() % int64(max)
+		if fallback > int64(^uint(0)>>1) {
+			fallback = fallback % int64(^uint(0)>>1)
+		}
+		return int(fallback)
+	}
+	// G115安全修复：检查int64到int的安全转换
+	result := n.Int64()
+	if result > int64(^uint(0)>>1) {
+		result = result % int64(max)
+	}
+	return int(result)
+}
 
 // ==================
 // 1. 设备驱动框架核心
@@ -333,7 +354,9 @@ func (ddf *DeviceDriverFramework) bindDeviceToDriver(device *Device, driver *Dev
 
 func (ddf *DeviceDriverFramework) removeDevice(device *Device) {
 	if device.Driver != nil && device.Driver.Operations.Remove != nil {
-		device.Driver.Operations.Remove(device)
+		if err := device.Driver.Operations.Remove(device); err != nil {
+			log.Printf("Warning: failed to remove device: %v", err)
+		}
 		atomic.AddInt32(&device.Driver.Context.RefCount, -1)
 	}
 	device.State = DeviceStateRemoved
@@ -991,7 +1014,7 @@ func (ndd *NetworkDeviceDriver) processReceivedPackets() {
 	// 实际实现会从网络硬件中断中接收数据
 
 	// 这里简化处理，定期检查是否有新数据包
-	if rand.Intn(100) < 10 { // 10% 概率有新数据包
+	if secureRandomInt(100) < 10 { // 10% 概率有新数据包
 		packet := ndd.createMockPacket()
 		ndd.handleReceivedPacket(packet)
 	}
@@ -1070,7 +1093,7 @@ func (ndd *NetworkDeviceDriver) performGRO(packet *SKBuffer) {
 }
 
 func (ndd *NetworkDeviceDriver) createMockPacket() *SKBuffer {
-	data := make([]byte, 64+rand.Intn(1400)) // 64-1500字节的模拟数据包
+	data := make([]byte, 64+secureRandomInt(1400)) // 64-1500字节的模拟数据包
 	return &SKBuffer{
 		Data:      data,
 		Length:    len(data),
@@ -1221,7 +1244,9 @@ func (im *InterruptManager) FreeIRQ(irq int, deviceID interface{}) error {
 					delete(im.sharedIRQs, irq)
 					// 禁用中断
 					if chip := im.getIRQChip(irq); chip != nil {
-						chip.DisableIRQ(irq)
+						if err := chip.DisableIRQ(irq); err != nil {
+							log.Printf("Warning: failed to disable IRQ %d: %v", irq, err)
+						}
 					}
 				}
 				fmt.Printf("释放共享中断处理器: IRQ %d\n", irq)
@@ -1237,7 +1262,9 @@ func (im *InterruptManager) FreeIRQ(irq int, deviceID interface{}) error {
 
 		// 禁用中断
 		if chip := im.getIRQChip(irq); chip != nil {
-			chip.DisableIRQ(irq)
+			if err := chip.DisableIRQ(irq); err != nil {
+				log.Printf("Warning: failed to disable IRQ %d: %v", irq, err)
+			}
 		}
 
 		fmt.Printf("释放中断处理器: IRQ %d\n", irq)
@@ -2166,7 +2193,7 @@ func (dfs *DeviceFileSystem) CreateDeviceNode(path string, major, minor int) err
 		path:  path,
 		major: major,
 		minor: minor,
-		mode:  0666,
+		mode:  0644, // G306安全修复：使用更安全的文件权限，避免写入权限过度暴露
 	}
 	return nil
 }
@@ -2447,7 +2474,10 @@ func demonstrateDeviceDrivers() {
 		},
 	}
 
-	framework.RegisterDriver(charDriver.DeviceDriver)
+	if err := framework.RegisterDriver(charDriver.DeviceDriver); err != nil {
+		log.Printf("Failed to register character driver: %v", err)
+		return
+	}
 
 	// 创建串口设备
 	serialDevice := &Device{
@@ -2460,13 +2490,18 @@ func demonstrateDeviceDrivers() {
 		Statistics: DeviceStatistics{},
 	}
 
-	charDriver.RegisterDevice(serialDevice)
+	if err := charDriver.RegisterDevice(serialDevice); err != nil {
+		log.Printf("Failed to register serial device: %v", err)
+		return
+	}
 
 	// 测试字符设备操作
 	file, err := charDriver.Open(serialDevice, OpenFlagReadWrite)
 	if err == nil {
 		testData := []byte("Test message\n")
-		charDriver.Write(file, testData, 0)
+		if _, err := charDriver.Write(file, testData, 0); err != nil {
+			log.Printf("Warning: failed to write to character device: %v", err)
+		}
 
 		readBuffer := make([]byte, 100)
 		n, _ := charDriver.Read(file, readBuffer, 0)
@@ -2476,7 +2511,10 @@ func demonstrateDeviceDrivers() {
 	// 3. 块设备驱动演示
 	fmt.Println("\n3. 块设备驱动演示")
 	blockDriver := NewBlockDeviceDriver("sda", 4096)
-	framework.RegisterDriver(blockDriver.DeviceDriver)
+	if err := framework.RegisterDriver(blockDriver.DeviceDriver); err != nil {
+		log.Printf("Failed to register block driver: %v", err)
+		return
+	}
 
 	// 创建存储设备
 	storageDevice := &Device{
@@ -2520,7 +2558,10 @@ func demonstrateDeviceDrivers() {
 	// 4. 网络设备驱动演示
 	fmt.Println("\n4. 网络设备驱动演示")
 	netDriver := NewNetworkDeviceDriver("eth0", InterfaceTypeEthernet)
-	framework.RegisterDriver(netDriver.DeviceDriver)
+	if err := framework.RegisterDriver(netDriver.DeviceDriver); err != nil {
+		log.Printf("Failed to register network driver: %v", err)
+		return
+	}
 
 	// 配置网络接口
 	netDriver.netInterface.MACAddress = [6]byte{0x00, 0x11, 0x22, 0x33, 0x44, 0x55}
@@ -2529,7 +2570,9 @@ func demonstrateDeviceDrivers() {
 	netDriver.netInterface.Gateway = [4]byte{192, 168, 1, 1}
 
 	// 启动网络接口
-	netDriver.StartInterface()
+	if err := netDriver.StartInterface(); err != nil {
+		log.Printf("Warning: failed to start network interface: %v", err)
+	}
 
 	// 发送测试数据包
 	testPacket := &SKBuffer{
@@ -2546,7 +2589,9 @@ func demonstrateDeviceDrivers() {
 
 	// 等待一段时间让网络处理运行
 	time.Sleep(time.Second * 2)
-	netDriver.StopInterface()
+	if err := netDriver.StopInterface(); err != nil {
+		log.Printf("Warning: failed to stop network interface: %v", err)
+	}
 
 	// 5. 中断管理演示
 	fmt.Println("\n5. 中断管理演示")
@@ -2587,7 +2632,9 @@ func demonstrateDeviceDrivers() {
 				block.VirtualAddr, block.PhysicalAddr, block.Size)
 
 			// 释放内存块
-			dmaPool.FreeBlock(block)
+			if err := dmaPool.FreeBlock(block); err != nil {
+				log.Printf("Warning: failed to free DMA block: %v", err)
+			}
 		}
 	}
 
@@ -2614,7 +2661,9 @@ func demonstrateDeviceDrivers() {
 		}
 
 		// 释放DMA通道
-		framework.dmaManager.ReleaseDMAChannel(dmaChannel)
+		if err := framework.dmaManager.ReleaseDMAChannel(dmaChannel); err != nil {
+			log.Printf("Warning: failed to release DMA channel: %v", err)
+		}
 	}
 
 	// 7. 性能统计和监控
@@ -2643,12 +2692,20 @@ func demonstrateDeviceDrivers() {
 	fmt.Println("\n8. 清理设备驱动资源")
 
 	// 释放中断
-	framework.irqManager.FreeIRQ(4, serialDevice)
+	if err := framework.irqManager.FreeIRQ(4, serialDevice); err != nil {
+		log.Printf("Warning: failed to free IRQ: %v", err)
+	}
 
 	// 注销驱动
-	framework.UnregisterDriver("serial")
-	framework.UnregisterDriver("sda")
-	framework.UnregisterDriver("eth0")
+	if err := framework.UnregisterDriver("serial"); err != nil {
+		log.Printf("Warning: failed to unregister serial driver: %v", err)
+	}
+	if err := framework.UnregisterDriver("sda"); err != nil {
+		log.Printf("Warning: failed to unregister sda driver: %v", err)
+	}
+	if err := framework.UnregisterDriver("eth0"); err != nil {
+		log.Printf("Warning: failed to unregister eth0 driver: %v", err)
+	}
 
 	fmt.Println("设备驱动框架清理完成")
 }

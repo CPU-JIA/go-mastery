@@ -1,0 +1,144 @@
+version: '3.8'
+
+services:
+  # E-commerce API Service
+  ecommerce-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ecommerce-backend-api
+    ports:
+      - "8080:8080"
+    environment:
+      - ECOMMERCE_SERVER_MODE=release
+      - ECOMMERCE_DATABASE_DRIVER=postgres
+      - ECOMMERCE_DATABASE_POSTGRES_HOST=postgres
+      - ECOMMERCE_DATABASE_POSTGRES_PORT=5432
+      - ECOMMERCE_DATABASE_POSTGRES_USER=ecommerce_user
+      - ECOMMERCE_DATABASE_POSTGRES_PASSWORD=ecommerce_password
+      - ECOMMERCE_DATABASE_POSTGRES_DBNAME=ecommerce_system
+      - ECOMMERCE_JWT_SECRET=super-secret-jwt-key-for-production
+      - ECOMMERCE_REDIS_ADDR=redis:6379
+    volumes:
+      - ./logs:/app/logs
+      - ./uploads:/app/uploads
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - ecommerce-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: ecommerce-postgres
+    environment:
+      - POSTGRES_USER=ecommerce_user
+      - POSTGRES_PASSWORD=ecommerce_password
+      - POSTGRES_DB=ecommerce_system
+      - POSTGRES_INITDB_ARGS=--encoding=UTF-8 --lc-collate=C --lc-ctype=C
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    ports:
+      - "5432:5432"
+    networks:
+      - ecommerce-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ecommerce_user -d ecommerce_system"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: ecommerce-redis
+    command: redis-server --requirepass redis_password --appendonly yes
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+    networks:
+      - ecommerce-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  # Nginx Reverse Proxy (Optional)
+  nginx:
+    image: nginx:alpine
+    container_name: ecommerce-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+      - ./uploads:/var/www/uploads:ro
+    depends_on:
+      - ecommerce-api
+    networks:
+      - ecommerce-network
+    restart: unless-stopped
+    profiles:
+      - with-nginx
+
+  # Database Admin Tool (Development)
+  adminer:
+    image: adminer:latest
+    container_name: ecommerce-adminer
+    ports:
+      - "8081:8080"
+    environment:
+      - ADMINER_DEFAULT_SERVER=postgres
+    depends_on:
+      - postgres
+    networks:
+      - ecommerce-network
+    restart: unless-stopped
+    profiles:
+      - dev
+
+  # Redis Admin Tool (Development)
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: ecommerce-redis-commander
+    ports:
+      - "8082:8081"
+    environment:
+      - REDIS_HOSTS=local:redis:6379:0:redis_password
+    depends_on:
+      - redis
+    networks:
+      - ecommerce-network
+    restart: unless-stopped
+    profiles:
+      - dev
+
+# Volumes
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+
+# Networks
+networks:
+  ecommerce-network:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.21.0.0/16

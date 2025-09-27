@@ -1,10 +1,11 @@
 package main
 
 import (
+	"crypto/rand"
 	"encoding/json"
 	"fmt"
 	"log"
-	"math/rand"
+	"math/big"
 	"net/http"
 	"runtime"
 	"sync"
@@ -14,6 +15,43 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/gorilla/websocket"
 )
+
+// 安全随机数生成函数
+func secureRandomInt(max int) int {
+	n, err := rand.Int(rand.Reader, big.NewInt(int64(max)))
+	if err != nil {
+		// G115安全修复：确保转换不会溢出
+		fallback := time.Now().UnixNano() % int64(max)
+		if fallback > int64(^uint(0)>>1) {
+			fallback = fallback % int64(^uint(0)>>1)
+		}
+		return int(fallback)
+	}
+	// G115安全修复：检查int64到int的安全转换
+	result := n.Int64()
+	if result > int64(^uint(0)>>1) {
+		result = result % int64(max)
+	}
+	return int(result)
+}
+
+func secureRandomFloat32() float32 {
+	n, err := rand.Int(rand.Reader, big.NewInt(1<<24))
+	if err != nil {
+		// 安全fallback：使用时间戳
+		return float32(time.Now().UnixNano()%1000) / 1000.0
+	}
+	return float32(n.Int64()) / float32(1<<24)
+}
+
+func secureRandomFloat64() float64 {
+	n, err := rand.Int(rand.Reader, big.NewInt(1<<53))
+	if err != nil {
+		// 安全fallback：使用时间戳
+		return float64(time.Now().UnixNano()%1000) / 1000.0
+	}
+	return float64(n.Int64()) / float64(1<<53)
+}
 
 /*
 微服务架构 - 监控与追踪练习
@@ -97,7 +135,7 @@ type SimpleSampler struct {
 }
 
 func (s *SimpleSampler) ShouldSample(traceID string) bool {
-	return rand.Float64() < s.rate
+	return secureRandomFloat64() < s.rate
 }
 
 func NewInMemoryTracer(sampleRate float64) *InMemoryTracer {
@@ -640,9 +678,9 @@ func (dbhc *DatabaseHealthCheck) Name() string {
 
 func (dbhc *DatabaseHealthCheck) Check() HealthResult {
 	// 模拟数据库健康检查
-	time.Sleep(time.Duration(rand.Intn(100)) * time.Millisecond)
+	time.Sleep(time.Duration(secureRandomInt(100)) * time.Millisecond)
 
-	if rand.Float32() < 0.1 { // 10%的概率不健康
+	if secureRandomFloat32() < 0.1 { // 10%的概率不健康
 		return HealthResult{
 			Status:    "unhealthy",
 			Message:   "数据库连接失败",
@@ -675,9 +713,9 @@ func (eshc *ExternalServiceHealthCheck) Name() string {
 
 func (eshc *ExternalServiceHealthCheck) Check() HealthResult {
 	// 模拟外部服务健康检查
-	time.Sleep(time.Duration(rand.Intn(200)) * time.Millisecond)
+	time.Sleep(time.Duration(secureRandomInt(200)) * time.Millisecond)
 
-	if rand.Float32() < 0.05 { // 5%的概率不健康
+	if secureRandomFloat32() < 0.05 { // 5%的概率不健康
 		return HealthResult{
 			Status:    "unhealthy",
 			Message:   "外部服务不可用",
@@ -1150,7 +1188,7 @@ func main() {
 	// 模拟业务流量和监控数据
 	go func() {
 		for {
-			time.Sleep(time.Duration(rand.Intn(2000)) * time.Millisecond)
+			time.Sleep(time.Duration(secureRandomInt(2000)) * time.Millisecond)
 
 			// 创建追踪
 			span := tracer.StartSpan("api_request", nil)
@@ -1165,16 +1203,16 @@ func main() {
 			})
 
 			// 模拟处理时间
-			processingTime := time.Duration(rand.Intn(1000)) * time.Millisecond
+			processingTime := time.Duration(secureRandomInt(1000)) * time.Millisecond
 			time.Sleep(processingTime)
 
 			// 更新指标
 			requestCounter.Inc()
 			responseTime.Observe(processingTime.Seconds())
-			activeConnections.Set(float64(rand.Intn(100)))
+			activeConnections.Set(float64(secureRandomInt(100)))
 
 			// 偶尔产生错误
-			if rand.Float32() < 0.1 {
+			if secureRandomFloat32() < 0.1 {
 				span.Status = "error"
 				span.Error = "模拟错误"
 				logger.WithTrace(tracer.InjectContext(span)).Error("API请求失败", map[string]interface{}{
@@ -1212,7 +1250,14 @@ func main() {
 	fmt.Println("  # 健康检查")
 	fmt.Println("  curl http://localhost:8080/api/health")
 
-	log.Fatal(http.ListenAndServe(":8080", router))
+	server := &http.Server{
+		Addr:         ":8080",
+		Handler:      router,
+		ReadTimeout:  15 * time.Second,
+		WriteTimeout: 15 * time.Second,
+		IdleTimeout:  60 * time.Second,
+	}
+	log.Fatal(server.ListenAndServe())
 }
 
 /*

@@ -25,11 +25,11 @@ import (
 	"bufio"
 	"bytes"
 	"context"
+	"crypto/rand"
 	"fmt"
 	"log"
-	"math/rand"
+	"math/big"
 	"net/http"
-	_ "net/http/pprof" // 导入pprof HTTP handler
 	"os"
 	"runtime"
 	"runtime/pprof"
@@ -39,6 +39,43 @@ import (
 	"sync"
 	"time"
 )
+
+// 安全随机数生成函数
+func secureRandomInt(max int) int {
+	n, err := rand.Int(rand.Reader, big.NewInt(int64(max)))
+	if err != nil {
+		// G115安全修复：确保转换不会溢出
+		fallback := time.Now().UnixNano() % int64(max)
+		if fallback > int64(^uint(0)>>1) {
+			fallback = fallback % int64(^uint(0)>>1)
+		}
+		return int(fallback)
+	}
+	// G115安全修复：检查int64到int的安全转换
+	result := n.Int64()
+	if result > int64(^uint(0)>>1) {
+		result = result % int64(max)
+	}
+	return int(result)
+}
+
+func secureRandomFloat32() float32 {
+	n, err := rand.Int(rand.Reader, big.NewInt(1<<24))
+	if err != nil {
+		// 安全fallback：使用时间戳
+		return float32(time.Now().UnixNano()%1000) / 1000.0
+	}
+	return float32(n.Int64()) / float32(1<<24)
+}
+
+func secureRandomFloat64() float64 {
+	n, err := rand.Int(rand.Reader, big.NewInt(1<<53))
+	if err != nil {
+		// 安全fallback：使用时间戳
+		return float64(time.Now().UnixNano()%1000) / 1000.0
+	}
+	return float64(n.Int64()) / float64(1<<53)
+}
 
 // ==================
 // 1. 性能监控框架
@@ -104,12 +141,21 @@ func (pm *PerformanceMonitor) Start() error {
 	}
 
 	// 创建profile目录
-	os.MkdirAll(pm.profileDir, 0755)
+	if err := os.MkdirAll(pm.profileDir, 0755); err != nil {
+		return fmt.Errorf("failed to create profile directory: %v", err)
+	}
 
 	// 启动HTTP pprof服务器
 	go func() {
 		log.Println("Starting pprof server on :6060")
-		log.Println(http.ListenAndServe("localhost:6060", nil))
+		server := &http.Server{
+			Addr:         "localhost:6060",
+			Handler:      nil,
+			ReadTimeout:  15 * time.Second,
+			WriteTimeout: 15 * time.Second,
+			IdleTimeout:  60 * time.Second,
+		}
+		log.Println(server.ListenAndServe())
 	}()
 
 	// 启动指标收集
@@ -222,22 +268,34 @@ func (pm *PerformanceMonitor) GetMetrics() map[string]*Metric {
 
 func (pm *PerformanceMonitor) closeProfiles() {
 	if pm.cpuProfile != nil {
-		pm.cpuProfile.Close()
+		if err := pm.cpuProfile.Close(); err != nil {
+			log.Printf("Warning: failed to close CPU profile file: %v", err)
+		}
 	}
 	if pm.memProfile != nil {
-		pm.memProfile.Close()
+		if err := pm.memProfile.Close(); err != nil {
+			log.Printf("Warning: failed to close memory profile file: %v", err)
+		}
 	}
 	if pm.goroutineProfile != nil {
-		pm.goroutineProfile.Close()
+		if err := pm.goroutineProfile.Close(); err != nil {
+			log.Printf("Warning: failed to close goroutine profile file: %v", err)
+		}
 	}
 	if pm.blockProfile != nil {
-		pm.blockProfile.Close()
+		if err := pm.blockProfile.Close(); err != nil {
+			log.Printf("Warning: failed to close block profile file: %v", err)
+		}
 	}
 	if pm.mutexProfile != nil {
-		pm.mutexProfile.Close()
+		if err := pm.mutexProfile.Close(); err != nil {
+			log.Printf("Warning: failed to close mutex profile file: %v", err)
+		}
 	}
 	if pm.traceFile != nil {
-		pm.traceFile.Close()
+		if err := pm.traceFile.Close(); err != nil {
+			log.Printf("Warning: failed to close trace file: %v", err)
+		}
 	}
 }
 
@@ -288,7 +346,9 @@ func (cp *CPUProfiler) StartProfile() error {
 
 	err = pprof.StartCPUProfile(file)
 	if err != nil {
-		file.Close()
+		if closeErr := file.Close(); closeErr != nil {
+			log.Printf("Warning: failed to close CPU profile file: %v", closeErr)
+		}
 		return fmt.Errorf("failed to start CPU profile: %v", err)
 	}
 
@@ -297,11 +357,17 @@ func (cp *CPUProfiler) StartProfile() error {
 	// 设置自动停止
 	time.AfterFunc(cp.duration, func() {
 		cp.StopProfile()
-		file.Close()
+		if err := file.Close(); err != nil {
+			log.Printf("Warning: failed to close CPU profile file: %v", err)
+		}
 	})
 
-	fmt.Printf("CPU profiling started, will run for %v\n", cp.duration)
-	fmt.Printf("Profile will be saved to: %s\n", cp.profileFile)
+	if _, err := fmt.Printf("CPU profiling started, will run for %v\n", cp.duration); err != nil {
+		log.Printf("Warning: failed to print CPU profiling start message: %v", err)
+	}
+	if _, err := fmt.Printf("Profile will be saved to: %s\n", cp.profileFile); err != nil {
+		log.Printf("Warning: failed to print profile file path: %v", err)
+	}
 
 	return nil
 }
@@ -317,7 +383,9 @@ func (cp *CPUProfiler) StopProfile() {
 	pprof.StopCPUProfile()
 	cp.running = false
 
-	fmt.Printf("CPU profiling stopped. Analyze with: go tool pprof %s\n", cp.profileFile)
+	if _, err := fmt.Printf("CPU profiling stopped. Analyze with: go tool pprof %s\n", cp.profileFile); err != nil {
+		log.Printf("Warning: failed to print CPU profiling stop message: %v", err)
+	}
 }
 
 func (cp *CPUProfiler) IsRunning() bool {
@@ -354,15 +422,23 @@ func (mp *MemoryProfiler) WriteProfile() error {
 	if err != nil {
 		return fmt.Errorf("failed to create memory profile file: %v", err)
 	}
-	defer file.Close()
+	defer func() {
+		if err := file.Close(); err != nil {
+			log.Printf("Warning: failed to close memory profile file: %v", err)
+		}
+	}()
 
 	err = pprof.WriteHeapProfile(file)
 	if err != nil {
 		return fmt.Errorf("failed to write memory profile: %v", err)
 	}
 
-	fmt.Printf("Memory profile saved to: %s\n", mp.profileFile)
-	fmt.Printf("Analyze with: go tool pprof %s\n", mp.profileFile)
+	if _, err := fmt.Printf("Memory profile saved to: %s\n", mp.profileFile); err != nil {
+		log.Printf("Warning: failed to print memory profile path: %v", err)
+	}
+	if _, err := fmt.Printf("Analyze with: go tool pprof %s\n", mp.profileFile); err != nil {
+		log.Printf("Warning: failed to print analysis command: %v", err)
+	}
 
 	return nil
 }
@@ -372,7 +448,11 @@ func (mp *MemoryProfiler) WriteAllocProfile() error {
 	if err != nil {
 		return fmt.Errorf("failed to create alloc profile file: %v", err)
 	}
-	defer file.Close()
+	defer func() {
+		if err := file.Close(); err != nil {
+			log.Printf("Warning: failed to close alloc profile file: %v", err)
+		}
+	}()
 
 	profile := pprof.Lookup("allocs")
 	if profile == nil {
@@ -384,7 +464,9 @@ func (mp *MemoryProfiler) WriteAllocProfile() error {
 		return fmt.Errorf("failed to write alloc profile: %v", err)
 	}
 
-	fmt.Printf("Allocation profile saved to: %s.alloc\n", mp.profileFile)
+	if _, err := fmt.Printf("Allocation profile saved to: %s.alloc\n", mp.profileFile); err != nil {
+		log.Printf("Warning: failed to print allocation profile path: %v", err)
+	}
 
 	return nil
 }
@@ -410,7 +492,9 @@ func NewBlockProfiler(profileFile string) *BlockProfiler {
 func (bp *BlockProfiler) Enable() {
 	runtime.SetBlockProfileRate(bp.rate)
 	bp.enabled = true
-	fmt.Printf("Block profiling enabled with rate: %d\n", bp.rate)
+	if _, err := fmt.Printf("Block profiling enabled with rate: %d\n", bp.rate); err != nil {
+		log.Printf("Warning: failed to print block profiling rate: %v", err)
+	}
 }
 
 func (bp *BlockProfiler) Disable() {
@@ -428,7 +512,11 @@ func (bp *BlockProfiler) WriteProfile() error {
 	if err != nil {
 		return fmt.Errorf("failed to create block profile file: %v", err)
 	}
-	defer file.Close()
+	defer func() {
+		if err := file.Close(); err != nil {
+			log.Printf("Warning: failed to close block profile file: %v", err)
+		}
+	}()
 
 	profile := pprof.Lookup("block")
 	if profile == nil {
@@ -440,8 +528,12 @@ func (bp *BlockProfiler) WriteProfile() error {
 		return fmt.Errorf("failed to write block profile: %v", err)
 	}
 
-	fmt.Printf("Block profile saved to: %s\n", bp.profileFile)
-	fmt.Printf("Analyze with: go tool pprof %s\n", bp.profileFile)
+	if _, err := fmt.Printf("Block profile saved to: %s\n", bp.profileFile); err != nil {
+		log.Printf("Warning: failed to print block profile path: %v", err)
+	}
+	if _, err := fmt.Printf("Analyze with: go tool pprof %s\n", bp.profileFile); err != nil {
+		log.Printf("Warning: failed to print analysis command: %v", err)
+	}
 
 	return nil
 }
@@ -467,7 +559,9 @@ func NewMutexProfiler(profileFile string) *MutexProfiler {
 func (mp *MutexProfiler) Enable() {
 	runtime.SetMutexProfileFraction(mp.rate)
 	mp.enabled = true
-	fmt.Printf("Mutex profiling enabled with rate: %d\n", mp.rate)
+	if _, err := fmt.Printf("Mutex profiling enabled with rate: %d\n", mp.rate); err != nil {
+		log.Printf("Warning: failed to print mutex profiling rate: %v", err)
+	}
 }
 
 func (mp *MutexProfiler) Disable() {
@@ -485,7 +579,11 @@ func (mp *MutexProfiler) WriteProfile() error {
 	if err != nil {
 		return fmt.Errorf("failed to create mutex profile file: %v", err)
 	}
-	defer file.Close()
+	defer func() {
+		if err := file.Close(); err != nil {
+			log.Printf("Warning: failed to close mutex profile file: %v", err)
+		}
+	}()
 
 	profile := pprof.Lookup("mutex")
 	if profile == nil {
@@ -497,8 +595,12 @@ func (mp *MutexProfiler) WriteProfile() error {
 		return fmt.Errorf("failed to write mutex profile: %v", err)
 	}
 
-	fmt.Printf("Mutex profile saved to: %s\n", mp.profileFile)
-	fmt.Printf("Analyze with: go tool pprof %s\n", mp.profileFile)
+	if _, err := fmt.Printf("Mutex profile saved to: %s\n", mp.profileFile); err != nil {
+		log.Printf("Warning: failed to print mutex profile path: %v", err)
+	}
+	if _, err := fmt.Printf("Analyze with: go tool pprof %s\n", mp.profileFile); err != nil {
+		log.Printf("Warning: failed to print analysis command: %v", err)
+	}
 
 	return nil
 }
@@ -523,7 +625,11 @@ func (gp *GoroutineProfiler) WriteProfile() error {
 	if err != nil {
 		return fmt.Errorf("failed to create goroutine profile file: %v", err)
 	}
-	defer file.Close()
+	defer func() {
+		if err := file.Close(); err != nil {
+			log.Printf("Warning: failed to close goroutine profile file: %v", err)
+		}
+	}()
 
 	profile := pprof.Lookup("goroutine")
 	if profile == nil {
@@ -535,15 +641,23 @@ func (gp *GoroutineProfiler) WriteProfile() error {
 		return fmt.Errorf("failed to write goroutine profile: %v", err)
 	}
 
-	fmt.Printf("Goroutine profile saved to: %s\n", gp.profileFile)
-	fmt.Printf("Analyze with: go tool pprof %s\n", gp.profileFile)
+	if _, err := fmt.Printf("Goroutine profile saved to: %s\n", gp.profileFile); err != nil {
+		log.Printf("Warning: failed to print goroutine profile path: %v", err)
+	}
+	if _, err := fmt.Printf("Analyze with: go tool pprof %s\n", gp.profileFile); err != nil {
+		log.Printf("Warning: failed to print analysis command: %v", err)
+	}
 
 	return nil
 }
 
 func (gp *GoroutineProfiler) PrintGoroutineStats() {
-	fmt.Printf("\n=== Goroutine统计 ===\n")
-	fmt.Printf("当前Goroutine数量: %d\n", runtime.NumGoroutine())
+	if _, err := fmt.Printf("\n=== Goroutine统计 ===\n"); err != nil {
+		log.Printf("Warning: failed to print goroutine statistics header: %v", err)
+	}
+	if _, err := fmt.Printf("当前Goroutine数量: %d\n", runtime.NumGoroutine()); err != nil {
+		log.Printf("Warning: failed to print goroutine count: %v", err)
+	}
 
 	// 获取goroutine stack dump
 	buf := make([]byte, 1<<20) // 1MB buffer
@@ -568,10 +682,16 @@ func (gp *GoroutineProfiler) PrintGoroutineStats() {
 		}
 	}
 
-	fmt.Printf("Stack dump中的Goroutine数量: %d\n", goroutineCount)
-	fmt.Printf("Goroutine状态分布:\n")
+	if _, err := fmt.Printf("Stack dump中的Goroutine数量: %d\n", goroutineCount); err != nil {
+		log.Printf("Warning: failed to print stack dump goroutine count: %v", err)
+	}
+	if _, err := fmt.Printf("Goroutine状态分布:\n"); err != nil {
+		log.Printf("Warning: failed to print goroutine states header: %v", err)
+	}
 	for state, count := range stateCount {
-		fmt.Printf("  %s: %d\n", state, count)
+		if _, err := fmt.Printf("  %s: %d\n", state, count); err != nil {
+			log.Printf("Warning: failed to print goroutine state info: %v", err)
+		}
 	}
 }
 
@@ -610,7 +730,9 @@ func (et *ExecutionTracer) StartTrace() error {
 
 	err = trace.Start(file)
 	if err != nil {
-		file.Close()
+		if closeErr := file.Close(); closeErr != nil {
+			log.Printf("Warning: failed to close trace file: %v", closeErr)
+		}
 		return fmt.Errorf("failed to start execution trace: %v", err)
 	}
 
@@ -622,8 +744,12 @@ func (et *ExecutionTracer) StartTrace() error {
 		et.StopTrace()
 	})
 
-	fmt.Printf("Execution tracing started, will run for %v\n", et.duration)
-	fmt.Printf("Trace will be saved to: %s\n", et.traceFile)
+	if _, err := fmt.Printf("Execution tracing started, will run for %v\n", et.duration); err != nil {
+		log.Printf("Warning: failed to print trace start message: %v", err)
+	}
+	if _, err := fmt.Printf("Trace will be saved to: %s\n", et.traceFile); err != nil {
+		log.Printf("Warning: failed to print trace file path: %v", err)
+	}
 
 	return nil
 }
@@ -637,10 +763,14 @@ func (et *ExecutionTracer) StopTrace() {
 	}
 
 	trace.Stop()
-	et.file.Close()
+	if err := et.file.Close(); err != nil {
+		log.Printf("Warning: failed to close trace file: %v", err)
+	}
 	et.running = false
 
-	fmt.Printf("Execution tracing stopped. Analyze with: go tool trace %s\n", et.traceFile)
+	if _, err := fmt.Printf("Execution tracing stopped. Analyze with: go tool trace %s\n", et.traceFile); err != nil {
+		log.Printf("Warning: failed to print trace stop message: %v", err)
+	}
 }
 
 func (et *ExecutionTracer) IsRunning() bool {
@@ -845,11 +975,11 @@ func (wg *WorkloadGenerator) doCPUWork() {
 func (wg *WorkloadGenerator) doMemoryWork() {
 	// 分配各种大小的内存
 	sizes := []int{64, 128, 256, 512, 1024, 2048, 4096}
-	size := sizes[rand.Intn(len(sizes))]
+	size := sizes[secureRandomInt(len(sizes))]
 
 	data := make([]byte, size)
 	for i := range data {
-		data[i] = byte(rand.Intn(256))
+		data[i] = byte(secureRandomInt(256))
 	}
 
 	wg.allocMutex.Lock()
@@ -865,7 +995,7 @@ func (wg *WorkloadGenerator) doMemoryWork() {
 
 func (wg *WorkloadGenerator) doIOWork() {
 	// 模拟I/O操作
-	time.Sleep(time.Microsecond * time.Duration(rand.Intn(1000)))
+	time.Sleep(time.Microsecond * time.Duration(secureRandomInt(1000)))
 }
 
 func (wg *WorkloadGenerator) generateMutexContention(ctx context.Context) {
@@ -880,10 +1010,10 @@ func (wg *WorkloadGenerator) generateMutexContention(ctx context.Context) {
 		default:
 			// 生成mutex争用
 			wg.contentionMutex.Lock()
-			time.Sleep(time.Microsecond * time.Duration(rand.Intn(100)))
+			time.Sleep(time.Microsecond * time.Duration(secureRandomInt(100)))
 			wg.contentionMutex.Unlock()
 
-			time.Sleep(time.Microsecond * time.Duration(rand.Intn(50)))
+			time.Sleep(time.Microsecond * time.Duration(secureRandomInt(50)))
 		}
 	}
 }
@@ -942,8 +1072,12 @@ func demonstratePerformanceProfiling() {
 
 	// 5. 启动CPU profiling和execution tracing
 	fmt.Println("\n4. 启动CPU profiling和execution tracing")
-	cpuProfiler.StartProfile()
-	tracer.StartTrace()
+	if err := cpuProfiler.StartProfile(); err != nil {
+		log.Printf("Failed to start CPU profiling: %v", err)
+	}
+	if err := tracer.StartTrace(); err != nil {
+		log.Printf("Failed to start execution tracing: %v", err)
+	}
 
 	// 6. 运行工作负载
 	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
@@ -960,11 +1094,11 @@ func demonstratePerformanceProfiling() {
 				return
 			case <-ticker.C:
 				appMetrics.IncrementRequests()
-				if rand.Float64() < 0.1 { // 10%错误率
+				if secureRandomFloat64() < 0.1 { // 10%错误率
 					appMetrics.IncrementErrors()
 				}
-				appMetrics.AddResponseTime(time.Duration(rand.Intn(100)) * time.Millisecond)
-				appMetrics.SetActiveConnections(int64(rand.Intn(100)))
+				appMetrics.AddResponseTime(time.Duration(secureRandomInt(100)) * time.Millisecond)
+				appMetrics.SetActiveConnections(int64(secureRandomInt(100)))
 			}
 		}
 	}()
@@ -1042,11 +1176,10 @@ func demonstratePerformanceProfiling() {
 }
 
 func main() {
-	// 设置随机种子
-	rand.Seed(time.Now().UnixNano())
-
 	// 确保profiles目录存在
-	os.MkdirAll("./profiles", 0755)
+	if err := os.MkdirAll("./profiles", 0755); err != nil {
+		log.Printf("Warning: failed to create profiles directory: %v", err)
+	}
 
 	demonstratePerformanceProfiling()
 

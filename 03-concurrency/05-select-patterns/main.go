@@ -1,12 +1,43 @@
 package main
 
 import (
+	"crypto/rand"
 	"fmt"
-	"math/rand"
+	"math/big"
 	"reflect"
 	"sync"
 	"time"
 )
+
+// 安全随机数生成函数
+func secureRandomInt(max int) int {
+	n, err := rand.Int(rand.Reader, big.NewInt(int64(max)))
+	if err != nil {
+		// 安全fallback：使用时间戳
+		// G115安全修复：确保转换不会溢出
+		fallback := time.Now().UnixNano() % int64(max)
+		// 检查是否在int范围内
+		if fallback > int64(^uint(0)>>1) {
+			fallback = fallback % int64(^uint(0)>>1)
+		}
+		return int(fallback)
+	}
+	// G115安全修复：检查int64到int的安全转换
+	result := n.Int64()
+	if result > int64(^uint(0)>>1) {
+		result = result % int64(max)
+	}
+	return int(result)
+}
+
+func secureRandomFloat32() float32 {
+	n, err := rand.Int(rand.Reader, big.NewInt(1<<24))
+	if err != nil {
+		// 安全fallback：使用时间戳
+		return float32(time.Now().UnixNano()%1000) / 1000.0
+	}
+	return float32(n.Int64()) / float32(1<<24)
+}
 
 // =============================================================================
 // 1. Select 语句高级概念
@@ -402,7 +433,7 @@ func demonstrateEventBusPattern() {
 		for i := 0; i < 10; i++ {
 			// 随机产生不同类型的事件
 			eventTypes := []string{"user", "order", "system"}
-			eventType := eventTypes[rand.Intn(len(eventTypes))]
+			eventType := eventTypes[secureRandomInt(len(eventTypes))]
 
 			var eventData interface{}
 			switch eventType {
@@ -640,19 +671,19 @@ func demonstrateHealthCheckPattern() {
 	// 模拟数据库健康检查
 	dbChecker := NewHealthChecker("数据库", func() bool {
 		// 模拟数据库连接检查
-		return rand.Float32() > 0.3 // 70% 成功率
+		return secureRandomFloat32() > 0.3 // 70% 成功率
 	}, 1*time.Second, 500*time.Millisecond)
 
 	// 模拟API健康检查
 	apiChecker := NewHealthChecker("API服务", func() bool {
 		// 模拟API响应检查
-		return rand.Float32() > 0.2 // 80% 成功率
+		return secureRandomFloat32() > 0.2 // 80% 成功率
 	}, 1*time.Second, 800*time.Millisecond)
 
 	// 模拟缓存健康检查
 	cacheChecker := NewHealthChecker("缓存服务", func() bool {
 		// 模拟缓存连接检查
-		return rand.Float32() > 0.1 // 90% 成功率
+		return secureRandomFloat32() > 0.1 // 90% 成功率
 	}, 2*time.Second, 300*time.Millisecond)
 
 	monitor.AddChecker(dbChecker)
@@ -908,9 +939,6 @@ func demonstrateSelectBestPractices() {
 func main() {
 	fmt.Println("Go 并发编程 - 高级 Select 模式")
 	fmt.Println("==============================")
-
-	// 设置随机种子
-	rand.Seed(time.Now().UnixNano())
 
 	demonstrateBasicSelect()
 	demonstrateMultiProducerSingleConsumer()

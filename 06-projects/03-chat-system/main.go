@@ -19,6 +19,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"html"
 	"log"
 	"net/http"
 	"os"
@@ -379,7 +380,25 @@ var upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
 	WriteBufferSize: 1024,
 	CheckOrigin: func(r *http.Request) bool {
-		return true // 允许所有来源 (生产环境需要限制)
+		// 安全修复：验证来源以防止CSRF攻击
+		origin := r.Header.Get("Origin")
+		// 在生产环境中，应该检查允许的来源列表
+		// 这里允许本地开发环境和常见开发端口
+		allowedOrigins := []string{
+			"http://localhost:8080",
+			"http://127.0.0.1:8080",
+			"http://localhost:3000", // 开发服务器
+			"http://127.0.0.1:3000",
+		}
+
+		for _, allowed := range allowedOrigins {
+			if origin == allowed {
+				return true
+			}
+		}
+
+		// 如果没有Origin头（可能是直接WebSocket连接），也允许
+		return origin == ""
 	},
 }
 
@@ -639,13 +658,18 @@ func (c *Client) writePump() {
 			if err != nil {
 				return
 			}
-			w.Write(message)
+			// XSS安全修复：转义用户消息防止XSS攻击
+			escapedMessage := []byte(html.EscapeString(string(message)))
+			w.Write(escapedMessage)
 
 			// 批量发送缓冲中的消息
 			n := len(c.Send)
 			for i := 0; i < n; i++ {
 				w.Write([]byte{'\n'})
-				w.Write(<-c.Send)
+				// XSS安全修复：转义用户消息防止XSS攻击
+				message := <-c.Send
+				escapedMessage := []byte(html.EscapeString(string(message)))
+				w.Write(escapedMessage)
 			}
 
 			if err := w.Close(); err != nil {
@@ -871,6 +895,14 @@ func (s *ChatServer) handleStaticFiles(w http.ResponseWriter, r *http.Request) {
 	// Remove the /static/ prefix and serve the file
 	filePath := strings.TrimPrefix(r.URL.Path, "/static/")
 
+	// 安全修复：防止路径遍历攻击
+	// 清理路径并确保不能访问上级目录
+	filePath = filepath.Clean(filePath)
+	if strings.Contains(filePath, "..") || strings.HasPrefix(filePath, "/") {
+		http.Error(w, "Invalid file path", http.StatusBadRequest)
+		return
+	}
+
 	// Determine content type based on file extension
 	var contentType string
 	if strings.HasSuffix(filePath, ".css") {
@@ -883,6 +915,12 @@ func (s *ChatServer) handleStaticFiles(w http.ResponseWriter, r *http.Request) {
 
 	// Try to read the file
 	fullPath := filepath.Join("static", filePath)
+	// 二次安全检查：确保最终路径在static目录内
+	if !strings.HasPrefix(filepath.Clean(fullPath), "static"+string(filepath.Separator)) && fullPath != "static" {
+		http.Error(w, "Access denied", http.StatusForbidden)
+		return
+	}
+
 	if data, err := os.ReadFile(fullPath); err == nil {
 		w.Header().Set("Content-Type", contentType)
 		w.Write(data)

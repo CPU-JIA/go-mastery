@@ -1,0 +1,128 @@
+version: '3.8'
+
+services:
+  # Blog System API 服务
+  blog-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: blog-system-api
+    ports:
+      - "8080:8080"
+    environment:
+      - BLOG_SERVER_MODE=release
+      - BLOG_DATABASE_DRIVER=postgres
+      - BLOG_DATABASE_POSTGRES_HOST=postgres
+      - BLOG_DATABASE_POSTGRES_PORT=5432
+      - BLOG_DATABASE_POSTGRES_USER=blog_user
+      - BLOG_DATABASE_POSTGRES_PASSWORD=blog_password
+      - BLOG_DATABASE_POSTGRES_DBNAME=blog_system
+      - BLOG_JWT_SECRET=super-secret-jwt-key-for-production
+      - BLOG_REDIS_ADDR=redis:6379
+    volumes:
+      - ./logs:/app/logs
+      - ./uploads:/app/uploads
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - blog-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # PostgreSQL 数据库
+  postgres:
+    image: postgres:15-alpine
+    container_name: blog-system-postgres
+    environment:
+      - POSTGRES_USER=blog_user
+      - POSTGRES_PASSWORD=blog_password
+      - POSTGRES_DB=blog_system
+      - POSTGRES_INITDB_ARGS=--encoding=UTF-8 --lc-collate=C --lc-ctype=C
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    ports:
+      - "5432:5432"
+    networks:
+      - blog-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U blog_user -d blog_system"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis 缓存
+  redis:
+    image: redis:7-alpine
+    container_name: blog-system-redis
+    command: redis-server --requirepass redis_password --appendonly yes
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+    networks:
+      - blog-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  # Nginx 反向代理 (可选)
+  nginx:
+    image: nginx:alpine
+    container_name: blog-system-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+      - ./uploads:/var/www/uploads:ro
+    depends_on:
+      - blog-api
+    networks:
+      - blog-network
+    restart: unless-stopped
+    profiles:
+      - with-nginx
+
+  # 数据库管理工具 (开发环境)
+  adminer:
+    image: adminer:latest
+    container_name: blog-system-adminer
+    ports:
+      - "8081:8080"
+    environment:
+      - ADMINER_DEFAULT_SERVER=postgres
+    depends_on:
+      - postgres
+    networks:
+      - blog-network
+    restart: unless-stopped
+    profiles:
+      - dev
+
+# 数据卷
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+
+# 网络
+networks:
+  blog-network:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.20.0.0/16

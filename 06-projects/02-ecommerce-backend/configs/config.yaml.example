@@ -1,0 +1,71 @@
+server:
+  host: "0.0.0.0"
+  port: 8080
+  mode: "debug" # debug, release, test
+  read_timeout: 60s
+  write_timeout: 60s
+
+database:
+  driver: "sqlite" # sqlite, postgres
+  sqlite:
+    path: "ecommerce.db"
+  postgres:
+    host: "localhost"
+    port: 5432
+    user: "ecommerce_user"
+    password: "ecommerce_password"
+    dbname: "ecommerce_system"
+    sslmode: "disable"
+
+redis:
+  addr: "localhost:6379"
+  password: ""
+  db: 0
+  pool_size: 10
+
+jwt:
+  secret: "your-super-secret-jwt-key-change-in-production"
+  expires_in: 24h
+  refresh_expires_in: 168h # 7 days
+
+logging:
+  level: "info"
+  format: "json"
+  file: "logs/app.log"
+  max_size: 100
+  max_backups: 3
+  max_age: 30
+
+pagination:
+  default_page_size: 20
+  max_page_size: 100
+
+upload:
+  max_size: 10485760 # 10MB
+  path: "uploads/"
+
+features:
+  registration_enabled: true
+  email_verification: false
+  order_notification: true
+  inventory_tracking: true
+
+security:
+  bcrypt_cost: 12
+  session_timeout: 3600s
+  rate_limit:
+    requests: 100
+    window: 60s
+
+payment:
+  currency: "USD"
+  tax_rate: 0.08
+  shipping_fee: 9.99
+  free_shipping_min: 50.0
+  gateways:
+    stripe:
+      public_key: "pk_test_..."
+      secret_key: "sk_test_..."
+    paypal:
+      client_id: "your_paypal_client_id"
+      client_secret: "your_paypal_client_secret"

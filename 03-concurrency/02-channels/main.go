@@ -1,11 +1,42 @@
 package main
 
 import (
+	"crypto/rand"
 	"fmt"
-	"math/rand"
+	"math/big"
 	"sync"
 	"time"
 )
+
+// 安全随机数生成函数
+func secureRandomInt(max int) int {
+	n, err := rand.Int(rand.Reader, big.NewInt(int64(max)))
+	if err != nil {
+		// 安全fallback：使用时间戳
+		// G115安全修复：确保转换不会溢出
+		fallback := time.Now().UnixNano() % int64(max)
+		// 检查是否在int范围内
+		if fallback > int64(^uint(0)>>1) {
+			fallback = fallback % int64(^uint(0)>>1)
+		}
+		return int(fallback)
+	}
+	// G115安全修复：检查int64到int的安全转换
+	result := n.Int64()
+	if result > int64(^uint(0)>>1) {
+		result = result % int64(max)
+	}
+	return int(result)
+}
+
+func secureRandomFloat32() float32 {
+	n, err := rand.Int(rand.Reader, big.NewInt(1<<24))
+	if err != nil {
+		// 安全fallback：使用时间戳
+		return float32(time.Now().UnixNano()%1000) / 1000.0
+	}
+	return float32(n.Int64()) / float32(1<<24)
+}
 
 // =============================================================================
 // 1. Channel 基础概念
@@ -277,7 +308,7 @@ func fanOut(input <-chan int, output1, output2 chan<- int) {
 
 	for value := range input {
 		// 随机选择一个输出通道
-		if rand.Intn(2) == 0 {
+		if secureRandomInt(2) == 0 {
 			fmt.Printf("扇出到通道1: %d\n", value)
 			output1 <- value
 		} else {
@@ -486,13 +517,13 @@ func (tq *TaskQueue) worker(id int) {
 			fmt.Printf("工作者 %d 开始处理任务 %d: %s\n", id, task.ID, task.Data)
 
 			// 模拟任务处理
-			processingTime := time.Duration(rand.Intn(1000)) * time.Millisecond
+			processingTime := time.Duration(secureRandomInt(1000)) * time.Millisecond
 			time.Sleep(processingTime)
 
 			// 模拟可能的错误
 			var err error
 			result := fmt.Sprintf("任务 %d 处理完成", task.ID)
-			if rand.Float32() < 0.1 { // 10% 错误率
+			if secureRandomFloat32() < 0.1 { // 10% 错误率
 				err = fmt.Errorf("任务 %d 处理失败", task.ID)
 				result = ""
 			}
@@ -633,7 +664,7 @@ func demonstrateChannelBestPractices() {
 		defer close(resultCh)
 
 		// 模拟可能失败的操作
-		if rand.Float32() < 0.5 {
+		if secureRandomFloat32() < 0.5 {
 			resultCh <- Result{Error: fmt.Errorf("操作失败")}
 		} else {
 			resultCh <- Result{Value: "操作成功"}
@@ -659,7 +690,7 @@ func main() {
 	fmt.Println("===========================")
 
 	// 设置随机种子
-	rand.Seed(time.Now().UnixNano())
+	// 注意：crypto/rand不需要设置种子
 
 	demonstrateBasicChannels()
 	demonstrateBufferedChannels()

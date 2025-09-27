@@ -92,14 +92,14 @@ type GRPCConfig struct {
 }
 
 type ServerConfig struct {
-	Address     string        `yaml:"address"`
-	Port        int           `yaml:"port"`
-	EnableTLS   bool          `yaml:"enable_tls"`
-	CertFile    string        `yaml:"cert_file"`
-	KeyFile     string        `yaml:"key_file"`
-	EnableH2C   bool          `yaml:"enable_h2c"`
-	MaxRecvSize int           `yaml:"max_recv_size"`
-	MaxSendSize int           `yaml:"max_send_size"`
+	Address     string `yaml:"address"`
+	Port        int    `yaml:"port"`
+	EnableTLS   bool   `yaml:"enable_tls"`
+	CertFile    string `yaml:"cert_file"`
+	KeyFile     string `yaml:"key_file"`
+	EnableH2C   bool   `yaml:"enable_h2c"`
+	MaxRecvSize int    `yaml:"max_recv_size"`
+	MaxSendSize int    `yaml:"max_send_size"`
 
 	// Keep-Alive配置
 	KeepAlive ServerKeepAliveConfig `yaml:"keep_alive"`
@@ -112,8 +112,8 @@ type ServerConfig struct {
 	EnableCompression bool `yaml:"enable_compression"`
 
 	// 反射和健康检查
-	EnableReflection   bool `yaml:"enable_reflection"`
-	EnableHealthCheck  bool `yaml:"enable_health_check"`
+	EnableReflection  bool `yaml:"enable_reflection"`
+	EnableHealthCheck bool `yaml:"enable_health_check"`
 }
 
 type ServerKeepAliveConfig struct {
@@ -590,6 +590,7 @@ type User struct {
 }
 
 type UserStatus int32
+
 const (
 	UserStatus_USER_STATUS_UNSPECIFIED UserStatus = 0
 	UserStatus_USER_STATUS_ACTIVE      UserStatus = 1
@@ -599,30 +600,33 @@ const (
 )
 
 type ActivityType int32
+
 const (
-	ActivityType_ACTIVITY_TYPE_UNSPECIFIED   ActivityType = 0
-	ActivityType_ACTIVITY_TYPE_LOGIN         ActivityType = 1
-	ActivityType_ACTIVITY_TYPE_LOGOUT        ActivityType = 2
-	ActivityType_ACTIVITY_TYPE_PROFILE_UPDATE ActivityType = 3
+	ActivityType_ACTIVITY_TYPE_UNSPECIFIED     ActivityType = 0
+	ActivityType_ACTIVITY_TYPE_LOGIN           ActivityType = 1
+	ActivityType_ACTIVITY_TYPE_LOGOUT          ActivityType = 2
+	ActivityType_ACTIVITY_TYPE_PROFILE_UPDATE  ActivityType = 3
 	ActivityType_ACTIVITY_TYPE_PASSWORD_CHANGE ActivityType = 4
-	ActivityType_ACTIVITY_TYPE_ROLE_CHANGE    ActivityType = 5
+	ActivityType_ACTIVITY_TYPE_ROLE_CHANGE     ActivityType = 5
 )
 
 type HealthStatus int32
+
 const (
-	HealthStatus_HEALTH_STATUS_UNSPECIFIED    HealthStatus = 0
-	HealthStatus_HEALTH_STATUS_SERVING        HealthStatus = 1
-	HealthStatus_HEALTH_STATUS_NOT_SERVING    HealthStatus = 2
+	HealthStatus_HEALTH_STATUS_UNSPECIFIED     HealthStatus = 0
+	HealthStatus_HEALTH_STATUS_SERVING         HealthStatus = 1
+	HealthStatus_HEALTH_STATUS_NOT_SERVING     HealthStatus = 2
 	HealthStatus_HEALTH_STATUS_SERVICE_UNKNOWN HealthStatus = 3
 )
 
 type MessageType int32
+
 const (
 	MessageType_MESSAGE_TYPE_UNSPECIFIED MessageType = 0
-	MessageType_MESSAGE_TYPE_TEXT         MessageType = 1
-	MessageType_MESSAGE_TYPE_IMAGE        MessageType = 2
-	MessageType_MESSAGE_TYPE_FILE         MessageType = 3
-	MessageType_MESSAGE_TYPE_SYSTEM       MessageType = 4
+	MessageType_MESSAGE_TYPE_TEXT        MessageType = 1
+	MessageType_MESSAGE_TYPE_IMAGE       MessageType = 2
+	MessageType_MESSAGE_TYPE_FILE        MessageType = 3
+	MessageType_MESSAGE_TYPE_SYSTEM      MessageType = 4
 )
 
 // 请求/响应消息占位符
@@ -645,7 +649,8 @@ type CreateUserResponse struct {
 type GetUserRequest struct {
 	Identifier interface{} // oneof
 }
-func (r *GetUserRequest) GetUserId() string    { return "" }
+
+func (r *GetUserRequest) GetUserId() string   { return "" }
 func (r *GetUserRequest) GetUsername() string { return "" }
 func (r *GetUserRequest) GetEmail() string    { return "" }
 
@@ -1337,12 +1342,12 @@ func main() {
 
 	// 解析命令行参数
 	var (
-		serverMode   = flag.Bool("server", true, "运行服务器模式")
-		clientMode   = flag.Bool("client", false, "运行客户端测试")
-		perfTest     = flag.Bool("perf", false, "运行性能测试")
-		streamTest   = flag.Bool("stream", false, "运行流式测试")
-		serverAddr   = flag.String("addr", "localhost:9090", "服务器地址")
-		configFile   = flag.String("config", "", "配置文件路径")
+		serverMode = flag.Bool("server", true, "运行服务器模式")
+		clientMode = flag.Bool("client", false, "运行客户端测试")
+		perfTest   = flag.Bool("perf", false, "运行性能测试")
+		streamTest = flag.Bool("stream", false, "运行流式测试")
+		serverAddr = flag.String("addr", "localhost:9090", "服务器地址")
+		configFile = flag.String("config", "", "配置文件路径")
 	)
 	flag.Parse()
 
@@ -1408,12 +1413,14 @@ func main() {
 
 // Prometheus处理器占位符
 type promhttpHandler struct{}
+
 func (promhttpHandler) Handler() http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("# Prometheus metrics placeholder\n"))
 	})
 }
+
 var promhttp = promhttpHandler{}
 
 /*

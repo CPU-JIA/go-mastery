@@ -1,5 +1,5 @@
 module chat-system
 
-go 1.24.3
+go 1.24.6
 
 require github.com/gorilla/websocket v1.5.3

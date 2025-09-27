@@ -507,8 +507,12 @@ func demonstrateMiddleware() {
 	mux.Handle("/logged", loggedEndpoint)
 
 	server := &http.Server{
-		Addr:    ":8081",
-		Handler: mux,
+		Addr:              ":8081",
+		Handler:           mux,
+		ReadTimeout:       15 * time.Second,
+		WriteTimeout:      15 * time.Second,
+		ReadHeaderTimeout: 10 * time.Second,
+		IdleTimeout:       60 * time.Second,
 	}
 
 	fmt.Println("中间件演示服务器启动在 :8081")
@@ -594,8 +598,12 @@ func demonstrateFileServer() {
 	})
 
 	server := &http.Server{
-		Addr:    ":8082",
-		Handler: mux,
+		Addr:              ":8082",
+		Handler:           mux,
+		ReadTimeout:       15 * time.Second,
+		WriteTimeout:      15 * time.Second,
+		ReadHeaderTimeout: 10 * time.Second,
+		IdleTimeout:       60 * time.Second,
 	}
 
 	fmt.Println("文件服务器启动在 :8082")
@@ -624,8 +632,12 @@ func demonstrateGracefulShutdown() {
 	})
 
 	server := &http.Server{
-		Addr:    ":8083",
-		Handler: mux,
+		Addr:              ":8083",
+		Handler:           mux,
+		ReadTimeout:       15 * time.Second,
+		WriteTimeout:      15 * time.Second,
+		ReadHeaderTimeout: 10 * time.Second,
+		IdleTimeout:       60 * time.Second,
 	}
 
 	// 在goroutine中启动服务器
@@ -731,7 +743,11 @@ func main() {
 	for {
 		showMenu()
 
-		input, _ := reader.ReadString('\n')
+		input, err := reader.ReadString('\n')
+		if err != nil {
+			fmt.Printf("读取输入失败: %v\n", err)
+			continue
+		}
 		choice := strings.TrimSpace(input)
 
 		switch choice {
@@ -757,7 +773,9 @@ func main() {
 		}
 
 		fmt.Println("\n按 Enter 键继续...")
-		reader.ReadString('\n')
+		if _, err := reader.ReadString('\n'); err != nil {
+			fmt.Printf("读取输入失败: %v\n", err)
+		}
 	}
 }
 

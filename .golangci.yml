@@ -1,168 +1,408 @@
+# 🚀 Go-Mastery项目 - 2025年标准golangci-lint配置
+# 基于golangci-lint v1.64.8和最新Go质量标准
+
+# yaml-language-server: $schema=https://golangci-lint.run/jsonschema/golangci.jsonschema.json
+
+# 运行设置
 run:
-  deadline: 5m
+  timeout: 10m
   issues-exit-code: 1
   tests: true
-  skip-dirs:
-    - vendor
-    - third_party
-  skip-files:
-    - ".*\\.pb\\.go$"
-    - ".*_mock\\.go$"
-    - "wire_gen\\.go$"
+  go: "1.24"
 
+# 输出配置
 output:
-  format: colored-line-number
+  formats:
+    - format: colored-line-number
+      path: stdout
   print-issued-lines: true
   print-linter-name: true
 
+# 问题设置 - 2025年优化版
+issues:
+  # 基本设置
+  exclude-use-default: false
+  exclude-case-sensitive: false
+  max-issues-per-linter: 0
+  max-same-issues: 0
+  new: false
+  fix: false
+  uniq-by-line: true
+
+  # 排除目录
+  exclude-dirs:
+    - vendor
+    - third_party
+    - testdata
+    - examples
+
+  # 排除文件
+  exclude-files:
+    - ".*\\.pb\\.go$"
+    - ".*_generated\\.go$"
+    - ".*_mock\\.go$"
+    - "wire_gen\\.go$"
+
+  # 排除规则
+  exclude-rules:
+    # 测试文件可以有放松的要求
+    - path: _test\.go
+      linters:
+        - gocyclo        # 测试函数可以更复杂
+        - errcheck       # 测试中的错误处理可以放松
+        - dupl           # 测试中允许重复
+        - gosec          # 测试中的安全检查放松
+        - funlen         # 测试函数可以更长
+        - gocognit       # 测试认知复杂度放松
+        - mnd          # 测试中允许魔数
+        - lll            # 测试行长度放松
+
+    # 主函数可以稍长
+    - path: main\.go
+      linters:
+        - funlen
+        - gocyclo
+
+    # 示例代码放松要求
+    - path: examples/
+      linters:
+        - errcheck
+        - gosec
+        - godox         # 示例中允许TODO
+        - mnd
+        - funlen
+
+    # 生成代码跳过所有检查
+    - path: ".*\\.pb\\.go"
+      linters:
+        - all
+    - path: ".*_generated\\.go"
+      linters:
+        - all
+    - path: "wire_gen\\.go"
+      linters:
+        - all
+
+    # Go generate生成的行跳过行长度检查
+    - linters:
+        - lll
+      source: "^//go:generate "
+
+    # 工具目录的subprocess执行豁免
+    - linters:
+        - gosec
+      text: "G204"
+      path: tools/
+
+    # 特定gosec规则的豁免
+    - linters:
+        - gosec
+      text: "G304"  # 文件路径注入 (某些情况下是安全的)
+      path: "internal/config/"
+
+    # 允许某些TODO标记
+    - linters:
+        - godox
+      text: "TODO.*refactor"
+
+    # 在初始化函数中允许一些复杂度
+    - text: "cognitive complexity.*of func.*init.*is high"
+      linters:
+        - gocognit
+
+    # 允许某些长变量名
+    - text: "var-naming: don't use underscores in Go names"
+      linters:
+        - revive
+      source: ".*_test.*"
+
+    # 允许特定的magic numbers
+    - text: "Magic number: 200"
+      linters:
+        - mnd
+    - text: "Magic number: 404"
+      linters:
+        - mnd
+    - text: "Magic number: 500"
+      linters:
+        - mnd
+
+
+# Linter设置
 linters-settings:
+  # Go vet设置
   govet:
-    check-shadowing: true
     enable-all: true
-  golint:
-    min-confidence: 0.8
+    disable:
+      - fieldalignment  # 可选禁用字段对齐检查
+
+  # 安全检查设置 - 2025年增强版
+  gosec:
+    severity: medium
+    confidence: medium
+    excludes:
+      - G104  # 审计错误不检查 (由errcheck处理)
+    config:
+      G101:
+        pattern: "(?i)passwd|pass|password|pwd|secret|token|key"
+        ignore_entropy: false
+        per_char_threshold: "3.0"
+        truncate: "32"
+      G401:
+        pattern: "crypto/md5|crypto/sha1"
+      G501:
+        pattern: "crypto/md5"
+      G502:
+        pattern: "crypto/des"
+      G503:
+        pattern: "crypto/rc4"
+
+  # 圈复杂度设置
   gocyclo:
     min-complexity: 15
-  maligned:
-    suggest-new: true
+
+  # 认知复杂度设置
+  gocognit:
+    min-complexity: 20
+
+  # 重复代码检测
   dupl:
     threshold: 100
+
+  # 常量检测
   goconst:
     min-len: 3
     min-occurrences: 3
-  depguard:
-    list-type: blacklist
-    include-go-root: false
-    packages:
-      - github.com/pkg/errors
-    packages-with-error-message:
-      - github.com/pkg/errors: "use standard library errors package"
-  misspell:
-    locale: US
+    numbers: false
+
+  # 函数长度检查
+  funlen:
+    lines: 100
+    statements: 60
+    ignore-comments: true
+
+  # 行长度检查
   lll:
     line-length: 120
+
+  # 魔数检测 - 2025年增强版
+  mnd:
+    checks:
+      - argument
+      - case
+      - condition
+      - operation
+      - return
+      - assign
+    ignored-numbers:
+      - '0'
+      - '1'
+      - '2'
+      - '3'
+      - '10'
+      - '100'
+      - '1000'
+    ignored-functions:
+      - 'make'
+      - 'strconv.FormatInt'
+      - 'strconv.ParseInt'
+
+  # 嵌套if复杂度
+  nestif:
+    min-complexity: 5
+
+  # 预分配检查
+  prealloc:
+    simple: true
+    range-loops: true
+    for-loops: false
+
+  # revive设置 (golint的现代替代)
+  revive:
+    severity: warning
+    rules:
+      - name: var-naming
+        severity: warning
+      - name: package-comments
+        severity: warning
+      - name: exported
+        severity: warning
+      - name: var-declaration
+        severity: warning
+      - name: blank-imports
+        severity: warning
+      - name: context-as-argument
+        severity: warning
+      - name: dot-imports
+        severity: warning
+      - name: error-return
+        severity: warning
+      - name: error-strings
+        severity: warning
+      - name: error-naming
+        severity: warning
+      - name: increment-decrement
+        severity: warning
+      - name: range
+        severity: warning
+      - name: receiver-naming
+        severity: warning
+      - name: time-naming
+        severity: warning
+      - name: unexported-return
+        severity: warning
+      - name: indent-error-flow
+        severity: warning
+      - name: errorf
+        severity: warning
+      - name: empty-block
+        severity: warning
+      - name: superfluous-else
+        severity: warning
+      - name: unused-parameter
+        severity: warning
+      - name: unreachable-code
+        severity: warning
+      - name: redefines-builtin-id
+        severity: warning
+
+  # 导入检查
   goimports:
-    local-prefixes: github.com/go-mastery/advanced-go-learning
+    local-prefixes: github.com/go-mastery
+
+  # 高级Go代码检查
   gocritic:
     enabled-tags:
       - performance
       - style
       - experimental
+      - diagnostic
+      - opinionated
     disabled-checks:
       - commentedOutCode
       - whyNoLint
-  funlen:
-    lines: 100
-    statements: 50
-  gocognit:
-    min-complexity: 20
-  nestif:
-    min-complexity: 4
-  unparam:
-    check-exported: false
+      - unnamedResult
+    settings:
+      captLocal:
+        paramsOnly: true
+      elseif:
+        skipBalanced: true
+      hugeParam:
+        sizeThreshold: 80
+      rangeExprCopy:
+        sizeThreshold: 512
+      rangeValCopy:
+        sizeThreshold: 128
+
+  # 拼写检查
+  misspell:
+    locale: US
+    ignore-words:
+      - "color"
+      - "behaviour"
+
+  # 裸返回检查
   nakedret:
     max-func-lines: 30
-  prealloc:
-    simple: true
-    range-loops: true
-    for-loops: false
-  gomodguard:
-    allowed:
-      modules:
-        - gopkg.in/yaml.v3
-      domains:
-        - golang.org
-        - github.com
-        - google.golang.org
-    blocked:
-      modules:
-        - github.com/pkg/errors:
-            recommendations:
-              - errors
-              - fmt
-      versions:
-        - "github.com/mitchellh/go-homedir":
-            version: "< 1.0.0"
-            reason: "use os.UserHomeDir() instead"
 
+  # 未使用参数检查
+  unparam:
+    check-exported: false
+
+  # 错误检查设置
+  errcheck:
+    check-type-assertions: true
+    check-blank: true
+    exclude-functions:
+      - fmt:.*
+      - io/ioutil:^Read.*
+
+  # 静态检查设置
+  staticcheck:
+    checks: ["all"]
+
+  # 样式检查设置
+  stylecheck:
+    checks: ["all", "-ST1000", "-ST1003", "-ST1016", "-ST1020", "-ST1021", "-ST1022"]
+
+  # 空白字符检查
+  whitespace:
+    multi-if: false
+    multi-func: false
+
+  # TODO/FIXME检查
+  godox:
+    keywords:
+      - NOTE
+      - OPTIMIZE
+      - HACK
+      - TODO
+      - BUG
+      - FIXME
+
+# Linter启用/禁用配置 - 2025年标准
 linters:
   enable:
-    - bodyclose
-    - deadcode
-    - depguard
-    - dogsled
-    - dupl
-    - errcheck
-    - exportloopref
-    - exhaustive
-    - funlen
-    - gochecknoinits
-    - goconst
-    - gocritic
-    - gocyclo
-    - gofmt
-    - goimports
-    - gomnd
-    - goprintffuncname
-    - gosec
-    - gosimple
-    - govet
-    - ineffassign
-    - interfacer
-    - lll
-    - misspell
-    - nakedret
-    - noctx
-    - nolintlint
-    - rowserrcheck
-    - scopelint
-    - staticcheck
-    - structcheck
-    - stylecheck
-    - typecheck
-    - unconvert
-    - unparam
-    - unused
-    - varcheck
-    - whitespace
-    - gocognit
-    - nestif
-    - prealloc
-    - godox
-    - gomodguard
-  disable:
-    - maligned
-    - golint
+    # 基础静态分析 (必需)
+    - govet          # Go官方vet工具
+    - errcheck       # 检查未处理的错误
+    - staticcheck    # 高质量静态分析
+    - ineffassign    # 检查无效赋值
+    - unused         # 检查未使用代码
+    - typecheck      # 类型检查
+    - gosimple       # 简化代码建议
+
+    # 安全相关 (关键)
+    - gosec          # 安全漏洞检测
+
+    # 代码质量 (重要)
+    - dupl           # 重复代码检测
+    - gocyclo        # 圈复杂度检查
+    - gocognit       # 认知复杂度检查
+    - funlen         # 函数长度检查
+    - nestif         # 嵌套if复杂度
+
+    # 代码风格 (标准化)
+    - gofmt          # Go代码格式化
+    - gofumpt        # 更严格的gofmt
+    - goimports      # Go导入格式化
+    - revive         # golint的现代替代品
+    - stylecheck     # 样式检查
+    - misspell       # 拼写检查
+    - whitespace     # 空白字符检查
+
+    # 性能相关 (优化)
+    - prealloc       # 切片预分配检查
+    - gocritic       # 高级Go代码检查
+
+    # 代码健康性
+    - unconvert      # 不必要的类型转换
+    - goconst        # 重复常量检测
+    - mnd            # 魔数检测 (替代gomnd)
+    - unparam        # 未使用参数检测
+    - nakedret       # 裸返回检查
+
+    # 并发安全
+    - rowserrcheck   # SQL行错误检查
+    - sqlclosecheck  # SQL关闭检查
+
+    # 资源管理
+    - bodyclose      # HTTP响应体关闭检查
+    - noctx          # HTTP请求上下文检查
+
+    # 代码检查增强
+    - copyloopvar    # 循环变量引用检查 (替代exportloopref)
+    - exhaustive     # switch语句完整性检查
+    - gochecknoinits # 禁止init函数检查
+    - goprintffuncname # printf函数名检查
+    - nolintlint     # nolint指令检查
+    - predeclared    # 预定义标识符遮蔽检查
+
+    # 2025年新增推荐
+    - godox          # TODO/FIXME检查
+    - dogsled        # 空白标识符检查
+    - lll            # 行长度检查
+
+  disable: []
+
   fast: false
-
-issues:
-  exclude-rules:
-    # Exclude some linters from running on tests files.
-    - path: _test\.go
-      linters:
-        - gocyclo
-        - errcheck
-        - dupl
-        - gosec
-        - funlen
-        - gocognit
-    # Exclude known linters from partially hard-to-fix issues
-    - linters:
-        - lll
-      source: "^//go:generate "
-    # Exclude godox from TODO and FIXME comments in example code
-    - path: examples/
-      linters:
-        - godox
-    # Exclude gosec G204 for subprocess execution in build tools
-    - linters:
-        - gosec
-      text: "G204"
-      path: tools/
-  exclude-use-default: false
-  max-issues-per-linter: 0
-  max-same-issues: 0
-  new: false
-
-# golangci.com configuration
-# https://github.com/golangci/golangci-lint/blob/master/.golangci.yml

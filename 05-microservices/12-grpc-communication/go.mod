@@ -1,6 +1,6 @@
 module github.com/go-mastery/microservices/grpc-communication
 
-go 1.24
+go 1.24.6
 
 require (
 	github.com/grpc-ecosystem/go-grpc-middleware/v2 v2.1.0
@@ -21,9 +21,9 @@ require (
 	github.com/stretchr/testify v1.10.0 // indirect
 	go.opentelemetry.io/otel/metric v1.32.0 // indirect
 	go.opentelemetry.io/otel/trace v1.32.0 // indirect
-	golang.org/x/net v0.30.0 // indirect
-	golang.org/x/sys v0.26.0 // indirect
-	golang.org/x/text v0.19.0 // indirect
+	golang.org/x/net v0.38.0 // indirect
+	golang.org/x/sys v0.31.0 // indirect
+	golang.org/x/text v0.23.0 // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20241015192408-796eee8c2d53 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20241015192408-796eee8c2d53 // indirect
 )

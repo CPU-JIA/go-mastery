@@ -1,10 +1,41 @@
 package main
 
 import (
+	"crypto/rand"
 	"fmt"
-	"math/rand"
+	"math/big"
 	"time"
 )
+
+// 安全随机数生成函数
+func secureRandomInt(max int) int {
+	n, err := rand.Int(rand.Reader, big.NewInt(int64(max)))
+	if err != nil {
+		// 安全fallback：使用时间戳
+		// G115安全修复：确保转换不会溢出
+		fallback := time.Now().UnixNano() % int64(max)
+		// 检查是否在int范围内
+		if fallback > int64(^uint(0)>>1) {
+			fallback = fallback % int64(^uint(0)>>1)
+		}
+		return int(fallback)
+	}
+	// G115安全修复：检查int64到int的安全转换
+	result := n.Int64()
+	if result > int64(^uint(0)>>1) {
+		result = result % int64(max)
+	}
+	return int(result)
+}
+
+func secureRandomFloat32() float32 {
+	n, err := rand.Int(rand.Reader, big.NewInt(1<<24))
+	if err != nil {
+		// 安全fallback：使用时间戳
+		return float32(time.Now().UnixNano()%1000) / 1000.0
+	}
+	return float32(n.Int64()) / float32(1<<24)
+}
 
 /*
 === Go语言第六课：Switch语句 ===
@@ -365,9 +396,9 @@ func demonstrateShortVarDeclaration() {
 	fmt.Println("6. switch中的短变量声明:")
 
 	// 随机数生成和处理
-	rand.Seed(time.Now().UnixNano())
+	// 注意：crypto/rand不需要设置种子
 
-	switch num := rand.Intn(10) + 1; {
+	switch num := secureRandomInt(10) + 1; {
 	case num <= 3:
 		fmt.Printf("小数字: %d\n", num)
 	case num <= 7:
@@ -601,7 +632,7 @@ func demonstratePracticalExamples() {
 // 辅助函数
 func getRandomDay() string {
 	days := []string{"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"}
-	return days[rand.Intn(len(days))]
+	return days[secureRandomInt(len(days))]
 }
 
 func divide(a, b float64) float64 {

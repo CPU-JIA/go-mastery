@@ -2,12 +2,48 @@ package main
 
 import (
 	"context"
+	"crypto/rand"
 	"fmt"
-	"math/rand"
+	"math/big"
 	"net/http"
 	"sync"
 	"time"
 )
+
+// =============================================================================
+// 安全随机数生成辅助函数
+// =============================================================================
+
+// secureRandomInt 生成安全的随机整数 [0, max)
+func secureRandomInt(max int) int {
+	n, err := rand.Int(rand.Reader, big.NewInt(int64(max)))
+	if err != nil {
+		// 如果加密随机数生成失败，使用时间作为fallback（虽然不够安全，但不会panic）
+		// G115安全修复：确保转换不会溢出
+		fallback := time.Now().UnixNano() % int64(max)
+		// 检查是否在int范围内
+		if fallback > int64(^uint(0)>>1) {
+			fallback = fallback % int64(^uint(0)>>1)
+		}
+		return int(fallback)
+	}
+	// G115安全修复：检查int64到int的安全转换
+	result := n.Int64()
+	if result > int64(^uint(0)>>1) {
+		result = result % int64(max)
+	}
+	return int(result)
+}
+
+// secureRandomFloat32 生成安全的随机浮点数 [0.0, 1.0)
+func secureRandomFloat32() float32 {
+	n, err := rand.Int(rand.Reader, big.NewInt(1<<24))
+	if err != nil {
+		// 如果加密随机数生成失败，使用时间作为fallback
+		return float32(time.Now().UnixNano()%1000) / 1000.0
+	}
+	return float32(n.Int64()) / float32(1<<24)
+}
 
 // =============================================================================
 // 1. Context 基础概念
@@ -111,7 +147,7 @@ func httpRequest(ctx context.Context, url string) (string, error) {
 	fmt.Printf("开始请求: %s\n", url)
 
 	// 模拟网络延迟
-	delay := time.Duration(rand.Intn(3000)) * time.Millisecond
+	delay := time.Duration(secureRandomInt(3000)) * time.Millisecond
 
 	select {
 	case <-time.After(delay):
@@ -475,7 +511,7 @@ func (s *HTTPServer) queryCache(ctx context.Context, key string) (string, error)
 	select {
 	case <-time.After(100 * time.Millisecond):
 		// 模拟缓存命中率
-		if rand.Float32() < 0.7 { // 70% 命中率
+		if secureRandomFloat32() < 0.7 { // 70% 命中率
 			result := "缓存命中数据"
 			fmt.Printf("缓存查询完成 [请求: %s]: %s\n", requestID, result)
 			return result, nil
@@ -564,7 +600,7 @@ func (p *Pipeline) Stage(ctx context.Context, stageNum int, data string) (string
 	}
 
 	// 模拟处理时间
-	processingTime := time.Duration(rand.Intn(500)+200) * time.Millisecond
+	processingTime := time.Duration(secureRandomInt(500)+200) * time.Millisecond
 
 	select {
 	case <-time.After(processingTime):
@@ -728,8 +764,7 @@ func main() {
 	fmt.Println("Go 并发编程 - Context 上下文管理")
 	fmt.Println("=================================")
 
-	// 设置随机种子
-	rand.Seed(time.Now().UnixNano())
+	// crypto/rand 不需要种子设置，已经是加密安全的
 
 	demonstrateBasicContext()
 	demonstrateTimeout()

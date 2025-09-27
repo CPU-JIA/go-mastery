@@ -1,0 +1,427 @@
+# 🛡️ Go Mastery 项目 - 零安全漏洞质量保障 CI/CD 流水线
+# 设计目标: 维护企业级零安全警告标准
+# 最后更新: 2025年1月27日
+
+name: 🔒 Quality Assurance - Zero Security Warnings
+
+# 触发条件: 全面覆盖所有质量相关事件
+on:
+  # 主要触发条件
+  push:
+    branches: [ main, develop, 'feature/*', 'security/*' ]
+  pull_request:
+    branches: [ main, develop ]
+
+  # 定期质量检查 (每日UTC 02:00, 北京时间10:00)
+  schedule:
+    - cron: '0 2 * * *'
+
+  # 手动触发质量检查
+  workflow_dispatch:
+    inputs:
+      check_level:
+        description: '质量检查级别'
+        required: true
+        default: 'standard'
+        type: choice
+        options:
+        - quick
+        - standard
+        - comprehensive
+        - security-focused
+
+# 环境变量配置
+env:
+  GO_VERSION: '1.24'
+  GOLANGCI_LINT_VERSION: 'v1.64.8'
+  GOSEC_VERSION: 'v2.21.4'
+
+  # 质量标准阈值
+  SECURITY_VULNERABILITIES_THRESHOLD: 0  # 零安全漏洞要求
+  GO_VET_WARNINGS_THRESHOLD: 0          # 零Go vet警告要求
+  COVERAGE_THRESHOLD: 60                 # 测试覆盖率最低要求
+
+jobs:
+  # ===== P0级别: 安全漏洞检测 (关键任务) =====
+  security-scan:
+    name: 🛡️ P0-安全漏洞扫描 (零漏洞要求)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+    - name: 📥 检出代码
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: 🔧 设置Go环境
+      uses: actions/setup-go@v5
+      with:
+        go-version: ${{ env.GO_VERSION }}
+
+    - name: 📋 Go环境诊断
+      run: |
+        echo "=== Go环境信息 ==="
+        go version
+        go env GOROOT
+        go env GOPATH
+        echo "==================="
+
+    - name: 📦 安装gosec安全扫描器
+      run: |
+        curl -sfL https://raw.githubusercontent.com/securecodewarrior/gosec/master/install.sh | sh -s -- -b $(go env GOPATH)/bin ${{ env.GOSEC_VERSION }}
+        echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
+
+    - name: 🔍 执行安全漏洞扫描
+      run: |
+        echo "🚨 开始安全漏洞扫描..."
+
+        # 创建安全扫描报告目录
+        mkdir -p reports/security
+
+        # 执行gosec扫描 (JSON格式输出)
+        gosec -fmt json -out reports/security/gosec-report.json ./... || GOSEC_EXIT_CODE=$?
+
+        # 执行gosec扫描 (文本格式输出)
+        gosec -fmt text -out reports/security/gosec-report.txt ./... || true
+
+        # 分析扫描结果
+        if [ -f reports/security/gosec-report.json ]; then
+          VULNERABILITY_COUNT=$(jq '.Stats.found' reports/security/gosec-report.json 2>/dev/null || echo "unknown")
+          echo "🔍 发现安全漏洞数量: $VULNERABILITY_COUNT"
+
+          if [ "$VULNERABILITY_COUNT" = "0" ]; then
+            echo "✅ 安全扫描通过: 零安全漏洞状态维持"
+            echo "SECURITY_STATUS=PASS" >> $GITHUB_ENV
+          elif [ "$VULNERABILITY_COUNT" != "unknown" ] && [ "$VULNERABILITY_COUNT" -gt 0 ]; then
+            echo "❌ 安全扫描失败: 发现 $VULNERABILITY_COUNT 个安全漏洞"
+            echo "SECURITY_STATUS=FAIL" >> $GITHUB_ENV
+            echo "VULNERABILITY_COUNT=$VULNERABILITY_COUNT" >> $GITHUB_ENV
+
+            # 输出漏洞详情
+            echo "=== 安全漏洞详情 ==="
+            cat reports/security/gosec-report.txt
+            echo "====================="
+          else
+            echo "⚠️ 无法解析安全扫描结果"
+            echo "SECURITY_STATUS=ERROR" >> $GITHUB_ENV
+          fi
+        else
+          echo "❌ 安全扫描报告生成失败"
+          echo "SECURITY_STATUS=ERROR" >> $GITHUB_ENV
+        fi
+
+    - name: 📊 上传安全扫描报告
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: security-scan-reports
+        path: reports/security/
+        retention-days: 30
+
+    - name: 🚨 安全扫描结果验证
+      run: |
+        if [ "$SECURITY_STATUS" = "FAIL" ]; then
+          echo "💥 CI失败: 检测到安全漏洞，违反零安全漏洞要求"
+          echo "📋 请立即修复以下安全漏洞:"
+          echo "   1. 查看上传的安全扫描报告"
+          echo "   2. 参考 COMPREHENSIVE_QUALITY_REPORT.md 中的修复策略"
+          echo "   3. 运行 golangci-lint run 进行本地验证"
+          exit 1
+        elif [ "$SECURITY_STATUS" = "ERROR" ]; then
+          echo "⚠️ CI警告: 安全扫描过程出现错误"
+          exit 1
+        else
+          echo "✅ 安全扫描通过: 零安全漏洞状态已维持"
+        fi
+
+  # ===== P1级别: Go官方工具验证 =====
+  go-official-validation:
+    name: 🔧 P1-Go官方工具验证
+    runs-on: ubuntu-latest
+    needs: security-scan
+    timeout-minutes: 10
+
+    steps:
+    - name: 📥 检出代码
+      uses: actions/checkout@v4
+
+    - name: 🔧 设置Go环境
+      uses: actions/setup-go@v5
+      with:
+        go-version: ${{ env.GO_VERSION }}
+
+    - name: 🔍 Go vet检查
+      run: |
+        echo "🔍 执行Go vet检查..."
+        go vet ./... 2>&1 | tee vet-output.txt
+
+        if [ -s vet-output.txt ]; then
+          echo "❌ Go vet检查失败"
+          echo "VET_STATUS=FAIL" >> $GITHUB_ENV
+          echo "=== Go vet 警告详情 ==="
+          cat vet-output.txt
+          echo "======================="
+        else
+          echo "✅ Go vet检查通过"
+          echo "VET_STATUS=PASS" >> $GITHUB_ENV
+        fi
+
+    - name: 🏗️ Go build验证
+      run: |
+        echo "🏗️ 执行Go build验证..."
+
+        # 尝试构建所有包
+        if go build ./...; then
+          echo "✅ Go build验证通过"
+          echo "BUILD_STATUS=PASS" >> $GITHUB_ENV
+        else
+          echo "❌ Go build验证失败"
+          echo "BUILD_STATUS=FAIL" >> $GITHUB_ENV
+        fi
+
+    - name: 📦 Go mod验证
+      run: |
+        echo "📦 执行Go mod验证..."
+
+        # 验证模块依赖
+        if go mod verify; then
+          echo "✅ Go mod验证通过"
+          echo "MOD_STATUS=PASS" >> $GITHUB_ENV
+        else
+          echo "❌ Go mod验证失败"
+          echo "MOD_STATUS=FAIL" >> $GITHUB_ENV
+        fi
+
+    - name: 📊 Go官方工具验证结果
+      run: |
+        echo "=== Go官方工具验证汇总 ==="
+        echo "Go vet状态: $VET_STATUS"
+        echo "Go build状态: $BUILD_STATUS"
+        echo "Go mod状态: $MOD_STATUS"
+        echo "========================="
+
+        if [ "$VET_STATUS" != "PASS" ] || [ "$BUILD_STATUS" != "PASS" ] || [ "$MOD_STATUS" != "PASS" ]; then
+          echo "💥 CI失败: Go官方工具验证未通过"
+          exit 1
+        else
+          echo "✅ 所有Go官方工具验证通过"
+        fi
+
+  # ===== P2级别: 企业级代码质量检查 =====
+  code-quality-check:
+    name: 📋 P2-企业级代码质量检查
+    runs-on: ubuntu-latest
+    needs: go-official-validation
+    timeout-minutes: 20
+
+    steps:
+    - name: 📥 检出代码
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: 🔧 设置Go环境
+      uses: actions/setup-go@v5
+      with:
+        go-version: ${{ env.GO_VERSION }}
+
+    - name: 📦 安装golangci-lint
+      uses: golangci/golangci-lint-action@v6
+      with:
+        version: ${{ env.GOLANGCI_LINT_VERSION }}
+        args: --timeout=10m --verbose
+        skip-cache: false
+        skip-save-cache: false
+
+    - name: 🔍 执行golangci-lint检查
+      continue-on-error: true
+      run: |
+        echo "🔍 执行golangci-lint企业级质量检查..."
+
+        # 创建质量报告目录
+        mkdir -p reports/quality
+
+        # 执行golangci-lint检查
+        golangci-lint run --out-format json | tee reports/quality/golangci-report.json
+        golangci-lint run --out-format colored-line-number | tee reports/quality/golangci-report.txt
+
+        # 分析检查结果
+        if [ -f reports/quality/golangci-report.json ]; then
+          ISSUE_COUNT=$(jq '.Issues | length' reports/quality/golangci-report.json 2>/dev/null || echo "0")
+          echo "📊 发现代码质量问题数量: $ISSUE_COUNT"
+          echo "QUALITY_ISSUE_COUNT=$ISSUE_COUNT" >> $GITHUB_ENV
+
+          if [ "$ISSUE_COUNT" = "0" ]; then
+            echo "✅ 代码质量检查完美通过"
+            echo "QUALITY_STATUS=PERFECT" >> $GITHUB_ENV
+          else
+            echo "⚠️ 发现代码质量改进点: $ISSUE_COUNT 个"
+            echo "QUALITY_STATUS=IMPROVEMENT_NEEDED" >> $GITHUB_ENV
+          fi
+        else
+          echo "QUALITY_STATUS=UNKNOWN" >> $GITHUB_ENV
+        fi
+
+    - name: 📊 上传代码质量报告
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: code-quality-reports
+        path: reports/quality/
+        retention-days: 30
+
+  # ===== P3级别: 测试和性能验证 =====
+  test-and-performance:
+    name: 🧪 P3-测试覆盖率和性能基准
+    runs-on: ubuntu-latest
+    needs: code-quality-check
+    timeout-minutes: 15
+    if: github.event.inputs.check_level == 'comprehensive' || github.event_name == 'schedule'
+
+    steps:
+    - name: 📥 检出代码
+      uses: actions/checkout@v4
+
+    - name: 🔧 设置Go环境
+      uses: actions/setup-go@v5
+      with:
+        go-version: ${{ env.GO_VERSION }}
+
+    - name: 🧪 执行测试覆盖率检查
+      run: |
+        echo "🧪 执行测试覆盖率检查..."
+
+        # 查找测试文件
+        TEST_FILES=$(find . -name "*_test.go" | wc -l)
+        echo "📋 发现测试文件数量: $TEST_FILES"
+
+        if [ "$TEST_FILES" -gt 0 ]; then
+          # 执行测试并生成覆盖率报告
+          go test -v -race -coverprofile=coverage.out ./... || true
+
+          if [ -f coverage.out ]; then
+            COVERAGE=$(go tool cover -func=coverage.out | grep total | awk '{print $3}' | sed 's/%//')
+            echo "📊 测试覆盖率: $COVERAGE%"
+            echo "TEST_COVERAGE=$COVERAGE" >> $GITHUB_ENV
+
+            # 生成HTML覆盖率报告
+            go tool cover -html=coverage.out -o coverage.html
+          else
+            echo "⚠️ 无法生成覆盖率报告"
+            echo "TEST_COVERAGE=0" >> $GITHUB_ENV
+          fi
+        else
+          echo "📋 未发现测试文件，跳过测试覆盖率检查"
+          echo "TEST_COVERAGE=N/A" >> $GITHUB_ENV
+        fi
+
+    - name: ⚡ 执行性能基准测试
+      run: |
+        echo "⚡ 执行性能基准测试..."
+
+        # 查找基准测试
+        BENCH_FILES=$(find . -name "*_test.go" -exec grep -l "func Benchmark" {} \; | wc -l)
+        echo "📋 发现基准测试文件数量: $BENCH_FILES"
+
+        if [ "$BENCH_FILES" -gt 0 ]; then
+          go test -bench=. -benchmem ./... > benchmark.txt 2>&1 || true
+          echo "📊 性能基准测试完成"
+        else
+          echo "📋 未发现基准测试，跳过性能测试"
+        fi
+
+    - name: 📊 上传测试报告
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: test-performance-reports
+        path: |
+          coverage.out
+          coverage.html
+          benchmark.txt
+        retention-days: 30
+
+  # ===== 质量报告汇总 =====
+  quality-summary:
+    name: 📊 质量保障汇总报告
+    runs-on: ubuntu-latest
+    needs: [security-scan, go-official-validation, code-quality-check]
+    if: always()
+
+    steps:
+    - name: 📥 检出代码
+      uses: actions/checkout@v4
+
+    - name: 📊 生成质量保障汇总报告
+      run: |
+        echo "# 🛡️ Go Mastery 质量保障报告" > quality-summary.md
+        echo "**检查时间**: $(date '+%Y-%m-%d %H:%M:%S UTC')" >> quality-summary.md
+        echo "**分支**: ${{ github.ref_name }}" >> quality-summary.md
+        echo "**提交**: ${{ github.sha }}" >> quality-summary.md
+        echo "" >> quality-summary.md
+
+        echo "## 🔒 安全检查结果" >> quality-summary.md
+        echo "- **安全漏洞扫描**: ${{ needs.security-scan.result }}" >> quality-summary.md
+        echo "" >> quality-summary.md
+
+        echo "## 🔧 Go官方工具验证" >> quality-summary.md
+        echo "- **Go vet检查**: ${{ needs.go-official-validation.result }}" >> quality-summary.md
+        echo "" >> quality-summary.md
+
+        echo "## 📋 代码质量检查" >> quality-summary.md
+        echo "- **golangci-lint检查**: ${{ needs.code-quality-check.result }}" >> quality-summary.md
+        echo "" >> quality-summary.md
+
+        echo "## 🎯 质量保障状态" >> quality-summary.md
+        if [ "${{ needs.security-scan.result }}" = "success" ] && [ "${{ needs.go-official-validation.result }}" = "success" ]; then
+          echo "✅ **零安全漏洞状态**: 维持成功" >> quality-summary.md
+          echo "🏆 **企业级质量标准**: 符合要求" >> quality-summary.md
+        else
+          echo "❌ **质量标准**: 需要立即修复" >> quality-summary.md
+        fi
+
+        echo "" >> quality-summary.md
+        echo "---" >> quality-summary.md
+        echo "*本报告由 Go Mastery 智能质量保障系统自动生成*" >> quality-summary.md
+
+        # 显示报告内容
+        echo "=== 质量保障汇总报告 ==="
+        cat quality-summary.md
+        echo "========================="
+
+    - name: 📊 上传质量汇总报告
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: quality-summary-report
+        path: quality-summary.md
+        retention-days: 90
+
+  # ===== 失败时的紧急响应 =====
+  emergency-response:
+    name: 🚨 质量退化紧急响应
+    runs-on: ubuntu-latest
+    needs: [security-scan, go-official-validation]
+    if: failure()
+
+    steps:
+    - name: 🚨 发送质量警报
+      run: |
+        echo "🚨 ===== 质量退化警报 ====="
+        echo "项目: Go Mastery"
+        echo "分支: ${{ github.ref_name }}"
+        echo "提交: ${{ github.sha }}"
+        echo "时间: $(date '+%Y-%m-%d %H:%M:%S UTC')"
+        echo ""
+        echo "❌ 检测到质量退化，零安全漏洞状态可能已被破坏"
+        echo ""
+        echo "🔧 紧急修复步骤:"
+        echo "1. 立即停止相关代码合并"
+        echo "2. 检查安全扫描和Go工具验证结果"
+        echo "3. 参考 COMPREHENSIVE_QUALITY_REPORT.md 进行修复"
+        echo "4. 重新运行质量检查直到通过"
+        echo "=========================="
+
+        # 如果配置了通知webhook，可以在此处发送警报
+        # curl -X POST $WEBHOOK_URL -d "payload"

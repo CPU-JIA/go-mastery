@@ -1,7 +1,7 @@
 package main
 
 import (
-	"crypto/md5"
+	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
@@ -114,9 +114,13 @@ func NewFileHandler() *FileHandler {
 	}
 
 	// 确保上传目录存在
-	os.MkdirAll(config.UploadDir, 0755)
+	if err := os.MkdirAll(config.UploadDir, 0755); err != nil {
+		log.Printf("创建上传目录失败: %v", err)
+	}
 	for size := range config.ImageSizes {
-		os.MkdirAll(filepath.Join(config.UploadDir, size), 0755)
+		if err := os.MkdirAll(filepath.Join(config.UploadDir, size), 0755); err != nil {
+			log.Printf("创建尺寸目录失败: %v", err)
+		}
 	}
 
 	return &FileHandler{
@@ -252,13 +256,19 @@ func (fh *FileHandler) validateFile(header *multipart.FileHeader) error {
 func (fh *FileHandler) detectMimeType(file multipart.File) (string, error) {
 	// 读取文件头部用于MIME类型检测
 	buffer := make([]byte, 512)
-	_, err := file.Read(buffer)
+	n, err := file.Read(buffer)
 	if err != nil {
 		return "", err
 	}
+	// 如果读取的字节数不足，调整buffer大小
+	if n < 512 {
+		buffer = buffer[:n]
+	}
 
 	// 重置文件指针
-	file.Seek(0, 0)
+	if _, err := file.Seek(0, 0); err != nil {
+		return "", fmt.Errorf("重置文件指针失败: %v", err)
+	}
 
 	// 检测MIME类型
 	mimeType := http.DetectContentType(buffer)
@@ -272,14 +282,16 @@ func (fh *FileHandler) detectMimeType(file multipart.File) (string, error) {
 }
 
 func (fh *FileHandler) calculateHash(file multipart.File) (string, error) {
-	hash := md5.New()
+	hash := sha256.New()
 	_, err := io.Copy(hash, file)
 	if err != nil {
 		return "", err
 	}
 
 	// 重置文件指针
-	file.Seek(0, 0)
+	if _, err := file.Seek(0, 0); err != nil {
+		return "", err
+	}
 
 	return hex.EncodeToString(hash.Sum(nil)), nil
 }
@@ -447,17 +459,21 @@ func (fh *FileHandler) HandleMultipleUpload(w http.ResponseWriter, r *http.Reque
 
 	// 返回响应
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(map[string]interface{}{
+	if err := json.NewEncoder(w).Encode(map[string]interface{}{
 		"success": len(errors) == 0,
 		"files":   uploadedFiles,
 		"errors":  errors,
-	})
+	}); err != nil {
+		log.Printf("编码响应失败: %v", err)
+	}
 }
 
 // 图片处理
 func (fh *FileHandler) processImage(file multipart.File, filename, mimeType string, fileInfo *FileInfo) error {
 	// 重置文件指针
-	file.Seek(0, 0)
+	if _, err := file.Seek(0, 0); err != nil {
+		return err
+	}
 
 	// 获取图片信息
 	imageInfo, err := fh.processor.GetImageInfo(file)
@@ -472,7 +488,9 @@ func (fh *FileHandler) processImage(file multipart.File, filename, mimeType stri
 	}
 
 	// 重置文件指针
-	file.Seek(0, 0)
+	if _, err := file.Seek(0, 0); err != nil {
+		return err
+	}
 
 	// 解码图片
 	img, err := fh.processor.Process(file, mimeType)
@@ -498,7 +516,9 @@ func (fh *FileHandler) processImage(file multipart.File, filename, mimeType stri
 		}
 
 		err = fh.processor.Save(resizedImg, thumbFile, mimeType, sizeConfig.Quality)
-		thumbFile.Close()
+		if closeErr := thumbFile.Close(); closeErr != nil {
+			log.Printf("关闭缩略图文件失败: %v", closeErr)
+		}
 		if err != nil {
 			return err
 		}
@@ -532,7 +552,7 @@ func (fh *FileHandler) HandleChunkUploadInit(w http.ResponseWriter, r *http.Requ
 	}
 
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		http.Error(w, "解析请求失败", http.StatusBadRequest)
+		http.Error(w, "解析请求失败: "+err.Error(), http.StatusBadRequest)
 		return
 	}
 
@@ -544,7 +564,11 @@ func (fh *FileHandler) HandleChunkUploadInit(w http.ResponseWriter, r *http.Requ
 
 	// 创建临时目录
 	tempDir := filepath.Join(fh.config.UploadDir, "chunks", chunkID)
-	os.MkdirAll(tempDir, 0755)
+	// G306安全修复：检查目录创建错误，使用安全权限
+	if err := os.MkdirAll(tempDir, 0750); err != nil {
+		http.Error(w, "创建临时目录失败", http.StatusInternalServerError)
+		return
+	}
 
 	response := map[string]interface{}{
 		"chunk_id":     chunkID,
@@ -553,7 +577,9 @@ func (fh *FileHandler) HandleChunkUploadInit(w http.ResponseWriter, r *http.Requ
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(response)
+	if err := json.NewEncoder(w).Encode(response); err != nil {
+		log.Printf("编码响应失败: %v", err)
+	}
 }
 
 // 上传文件块
@@ -566,7 +592,12 @@ func (fh *FileHandler) HandleChunkUpload(w http.ResponseWriter, r *http.Request)
 	}
 
 	chunkID := r.FormValue("chunk_id")
-	chunkIndex, _ := strconv.Atoi(r.FormValue("chunk_index"))
+	chunkIndexStr := r.FormValue("chunk_index")
+	chunkIndex, err := strconv.Atoi(chunkIndexStr)
+	if err != nil {
+		http.Error(w, "无效的块索引: "+err.Error(), http.StatusBadRequest)
+		return
+	}
 
 	file, _, err := r.FormFile("chunk")
 	if err != nil {
@@ -591,10 +622,12 @@ func (fh *FileHandler) HandleChunkUpload(w http.ResponseWriter, r *http.Request)
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(map[string]interface{}{
+	if err := json.NewEncoder(w).Encode(map[string]interface{}{
 		"success":     true,
 		"chunk_index": chunkIndex,
-	})
+	}); err != nil {
+		log.Printf("编码响应失败: %v", err)
+	}
 }
 
 // 完成分块上传
@@ -606,7 +639,7 @@ func (fh *FileHandler) HandleChunkUploadComplete(w http.ResponseWriter, r *http.
 	}
 
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		http.Error(w, "解析请求失败", http.StatusBadRequest)
+		http.Error(w, "解析请求失败: "+err.Error(), http.StatusBadRequest)
 		return
 	}
 
@@ -636,7 +669,9 @@ func (fh *FileHandler) HandleChunkUploadComplete(w http.ResponseWriter, r *http.
 		}
 
 		_, err = io.Copy(finalFile, chunkFile)
-		chunkFile.Close()
+		if err := chunkFile.Close(); err != nil {
+			log.Printf("关闭文件块失败: %v", err)
+		}
 		if err != nil {
 			http.Error(w, fmt.Sprintf("合并文件块 %d 失败", i), http.StatusInternalServerError)
 			return
@@ -644,7 +679,9 @@ func (fh *FileHandler) HandleChunkUploadComplete(w http.ResponseWriter, r *http.
 	}
 
 	// 清理临时文件
-	os.RemoveAll(chunksDir)
+	if err := os.RemoveAll(chunksDir); err != nil {
+		log.Printf("清理临时文件失败: %v", err)
+	}
 
 	// 获取文件信息
 	fileInfo, err := os.Stat(finalPath)
@@ -666,10 +703,12 @@ func (fh *FileHandler) HandleChunkUploadComplete(w http.ResponseWriter, r *http.
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(map[string]interface{}{
+	if err := json.NewEncoder(w).Encode(map[string]interface{}{
 		"success": true,
 		"file":    result,
-	})
+	}); err != nil {
+		log.Printf("编码响应失败: %v", err)
+	}
 }
 
 // === 文件管理API ===
@@ -702,9 +741,15 @@ func (fh *FileHandler) HandleFileList(w http.ResponseWriter, r *http.Request) {
 			// 检测MIME类型
 			if file, err := os.Open(path); err == nil {
 				buffer := make([]byte, 512)
-				file.Read(buffer)
-				fileInfo.MimeType = http.DetectContentType(buffer)
-				file.Close()
+				if n, readErr := file.Read(buffer); readErr == nil {
+					if n < 512 {
+						buffer = buffer[:n]
+					}
+					fileInfo.MimeType = http.DetectContentType(buffer)
+				}
+				if closeErr := file.Close(); closeErr != nil {
+					log.Printf("关闭文件失败: %v", closeErr)
+				}
 			}
 
 			files = append(files, fileInfo)
@@ -719,10 +764,12 @@ func (fh *FileHandler) HandleFileList(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(map[string]interface{}{
+	if err := json.NewEncoder(w).Encode(map[string]interface{}{
 		"files": files,
 		"total": len(files),
-	})
+	}); err != nil {
+		log.Printf("编码响应失败: %v", err)
+	}
 }
 
 // 删除文件
@@ -748,14 +795,18 @@ func (fh *FileHandler) HandleFileDelete(w http.ResponseWriter, r *http.Request) 
 	for sizeName := range fh.config.ImageSizes {
 		thumbFilename := fmt.Sprintf("%s_%s%s", baseName, sizeName, ext)
 		thumbPath := filepath.Join(sizeName, thumbFilename)
-		fh.storage.Delete(thumbPath) // 忽略错误
+		if err := fh.storage.Delete(thumbPath); err != nil {
+			log.Printf("删除缩略图失败: %v", err)
+		}
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(map[string]interface{}{
+	if err := json.NewEncoder(w).Encode(map[string]interface{}{
 		"success": true,
 		"message": "文件删除成功",
-	})
+	}); err != nil {
+		log.Printf("编码响应失败: %v", err)
+	}
 }
 
 // === 辅助函数 ===
@@ -949,7 +1000,9 @@ const uploadHTML = `
 
 func handleUploadPage(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	w.Write([]byte(uploadHTML))
+	if _, err := w.Write([]byte(uploadHTML)); err != nil {
+		log.Printf("写入响应失败: %v", err)
+	}
 }
 
 func main() {
@@ -997,7 +1050,14 @@ func main() {
 	fmt.Println()
 	fmt.Println("服务器运行在 http://localhost:8080")
 
-	log.Fatal(http.ListenAndServe(":8080", router))
+	server := &http.Server{
+		Addr:         ":8080",
+		Handler:      router,
+		ReadTimeout:  15 * time.Second,
+		WriteTimeout: 15 * time.Second,
+		IdleTimeout:  60 * time.Second,
+	}
+	log.Fatal(server.ListenAndServe())
 }
 
 /*

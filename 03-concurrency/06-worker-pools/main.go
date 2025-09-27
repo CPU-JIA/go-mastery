@@ -2,12 +2,34 @@ package main
 
 import (
 	"context"
+	"crypto/rand"
 	"fmt"
-	"math/rand"
+	"math/big"
 	"sync"
 	"sync/atomic"
 	"time"
 )
+
+// 安全随机数生成函数
+func secureRandomInt(max int) int {
+	n, err := rand.Int(rand.Reader, big.NewInt(int64(max)))
+	if err != nil {
+		// 安全fallback：使用时间戳
+		// G115安全修复：确保转换不会溢出
+		fallback := time.Now().UnixNano() % int64(max)
+		// 检查是否在int范围内
+		if fallback > int64(^uint(0)>>1) {
+			fallback = fallback % int64(^uint(0)>>1)
+		}
+		return int(fallback)
+	}
+	// G115安全修复：检查int64到int的安全转换
+	result := n.Int64()
+	if result > int64(^uint(0)>>1) {
+		result = result % int64(max)
+	}
+	return int(result)
+}
 
 // =============================================================================
 // 1. Worker Pool 基础概念
@@ -63,7 +85,7 @@ type SimpleJob struct {
 func (j *SimpleJob) Execute() interface{} {
 	// 模拟工作负载
 	result := j.Data * j.Data
-	time.Sleep(time.Duration(rand.Intn(100)) * time.Millisecond)
+	time.Sleep(time.Duration(secureRandomInt(100)) * time.Millisecond)
 	return result
 }
 
@@ -922,9 +944,6 @@ func demonstrateWorkerPoolBestPractices() {
 func main() {
 	fmt.Println("Go 并发编程 - Worker Pool 工作池模式")
 	fmt.Println("===================================")
-
-	// 设置随机种子
-	rand.Seed(time.Now().UnixNano())
 
 	demonstrateSimpleWorkerPool()
 	demonstrateContextWorkerPool()

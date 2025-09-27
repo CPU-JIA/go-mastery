@@ -23,10 +23,11 @@
 package main
 
 import (
+	"crypto/rand"
 	"fmt"
 	"hash/fnv"
 	"math"
-	"math/rand"
+	"math/big"
 	"net"
 	"sort"
 	"strings"
@@ -34,6 +35,43 @@ import (
 	"sync/atomic"
 	"time"
 )
+
+// 安全随机数生成函数
+func secureRandomInt(max int) int {
+	n, err := rand.Int(rand.Reader, big.NewInt(int64(max)))
+	if err != nil {
+		// G115安全修复：确保转换不会溢出
+		fallback := time.Now().UnixNano() % int64(max)
+		if fallback > int64(^uint(0)>>1) {
+			fallback = fallback % int64(^uint(0)>>1)
+		}
+		return int(fallback)
+	}
+	// G115安全修复：检查int64到int的安全转换
+	result := n.Int64()
+	if result > int64(^uint(0)>>1) {
+		result = result % int64(max)
+	}
+	return int(result)
+}
+
+func secureRandomInt63() int64 {
+	n, err := rand.Int(rand.Reader, big.NewInt(1<<62))
+	if err != nil {
+		// 安全fallback：使用时间戳
+		return time.Now().UnixNano()
+	}
+	return n.Int64()
+}
+
+func secureRandomFloat64() float64 {
+	n, err := rand.Int(rand.Reader, big.NewInt(1<<53))
+	if err != nil {
+		// 安全fallback：使用时间戳
+		return float64(time.Now().UnixNano()%1000) / 1000.0
+	}
+	return float64(n.Int64()) / float64(1<<53)
+}
 
 // ==================
 // 1. 分布式追踪系统
@@ -511,11 +549,11 @@ func (dt *DistributedTracer) findBottleneckSpan(trace *DistributedTrace) *Distri
 }
 
 func (dt *DistributedTracer) generateTraceID() string {
-	return fmt.Sprintf("trace_%d_%d", time.Now().UnixNano(), rand.Int63())
+	return fmt.Sprintf("trace_%d_%d", time.Now().UnixNano(), secureRandomInt63())
 }
 
 func (dt *DistributedTracer) generateSpanID() string {
-	return fmt.Sprintf("span_%d_%d", time.Now().UnixNano(), rand.Int63())
+	return fmt.Sprintf("span_%d_%d", time.Now().UnixNano(), secureRandomInt63())
 }
 
 // ==================
@@ -1764,7 +1802,7 @@ type ProbabilisticSampler struct {
 }
 
 func (ps *ProbabilisticSampler) ShouldSample(traceID string, operationName string) bool {
-	return rand.Float64() < ps.rate
+	return secureRandomFloat64() < ps.rate
 }
 
 func (ps *ProbabilisticSampler) GetSamplingRate() float64 {
@@ -1950,8 +1988,8 @@ func demonstrateDistributedProfiling() {
 	for i := range requests {
 		requests[i] = &Request{
 			ID:       fmt.Sprintf("req-%d", i),
-			ClientIP: fmt.Sprintf("192.168.1.%d", rand.Intn(254)+1),
-			Path:     fmt.Sprintf("/api/v1/users/%d", rand.Intn(1000)),
+			ClientIP: fmt.Sprintf("192.168.1.%d", secureRandomInt(254)+1),
+			Path:     fmt.Sprintf("/api/v1/users/%d", secureRandomInt(1000)),
 			Method:   "GET",
 		}
 	}

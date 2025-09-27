@@ -32,6 +32,7 @@ import (
 	"os/signal"
 	"os/user"
 	"path/filepath"
+	"regexp"
 	"runtime"
 	"sort"
 	"strconv"
@@ -309,6 +310,51 @@ type ProcessStatus struct {
 	Timestamp time.Time
 }
 
+// G204安全修复：输入验证函数防止命令注入
+func validateExecutablePath(path string) error {
+	// 清理路径，移除相对路径引用
+	cleanPath := filepath.Clean(path)
+
+	// 检查路径是否包含目录遍历序列
+	if strings.Contains(cleanPath, "..") {
+		return fmt.Errorf("可执行文件路径不能包含目录遍历序列")
+	}
+
+	// 检查路径长度，防止缓冲区溢出
+	if len(cleanPath) > 260 { // Windows最大路径长度
+		return fmt.Errorf("可执行文件路径过长")
+	}
+
+	// 使用正则表达式验证路径格式（允许字母数字、路径分隔符、点、连字符、下划线）
+	matched, _ := regexp.MatchString(`^[a-zA-Z0-9\\/._-]+$`, cleanPath)
+	if !matched {
+		return fmt.Errorf("可执行文件路径包含非法字符")
+	}
+
+	return nil
+}
+
+func validateProcessArgs(args []string) error {
+	// 危险字符列表，防止shell命令注入
+	dangerousChars := []string{";", "|", "&", "`", "$", ">", "<", "&&", "||", "(", ")", "{", "}"}
+
+	for i, arg := range args {
+		// 检查参数长度
+		if len(arg) > 1024 {
+			return fmt.Errorf("参数 %d 过长", i)
+		}
+
+		// 检查危险字符
+		for _, dangerous := range dangerousChars {
+			if strings.Contains(arg, dangerous) {
+				return fmt.Errorf("参数 %d 包含危险字符: %s", i, dangerous)
+			}
+		}
+	}
+
+	return nil
+}
+
 func NewProcessManager() *ProcessManager {
 	return &ProcessManager{
 		processes: make(map[int]*ManagedProcess),
@@ -316,6 +362,15 @@ func NewProcessManager() *ProcessManager {
 }
 
 func (pm *ProcessManager) StartProcess(name string, args []string, config ProcessConfig) (*ManagedProcess, error) {
+	// G204安全修复：在执行命令前验证输入
+	if err := validateExecutablePath(name); err != nil {
+		return nil, fmt.Errorf("可执行文件路径验证失败: %v", err)
+	}
+
+	if err := validateProcessArgs(args); err != nil {
+		return nil, fmt.Errorf("命令参数验证失败: %v", err)
+	}
+
 	cmd := exec.Command(name, args...)
 
 	// 配置进程属性
@@ -1461,8 +1516,17 @@ func demonstrateSystemProgramming() {
 
 	// 创建命名管道
 	pipeName := "test_pipe"
-	pipePath := "/tmp/test_fifo"
-	pipe, err := ipcManager.CreateNamedPipe(pipeName, pipePath, 0666)
+	// G306安全修复：避免在/tmp目录创建文件，使用更安全的位置和权限
+	// 创建安全的临时目录
+	tempDir, err := os.MkdirTemp("", "ipc_test")
+	if err != nil {
+		fmt.Printf("创建临时目录失败: %v\n", err)
+		return
+	}
+	defer os.RemoveAll(tempDir)
+
+	pipePath := filepath.Join(tempDir, "test_fifo")
+	pipe, err := ipcManager.CreateNamedPipe(pipeName, pipePath, 0600) // 使用更安全的权限
 	if err != nil {
 		fmt.Printf("创建命名管道失败: %v\n", err)
 	} else {

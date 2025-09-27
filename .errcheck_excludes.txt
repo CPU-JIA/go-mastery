@@ -1,0 +1,30 @@
+# errcheck配置文件
+# 用于排除某些不需要检查错误的函数调用
+
+# 输出相关（通常不需要检查错误）
+fmt.Print*
+fmt.Fprint*
+
+# 标准库中通常不会失败的操作
+(*bytes.Buffer).Write
+(*bytes.Buffer).WriteByte
+(*bytes.Buffer).WriteString
+
+# 数据库相关（某些情况下可以忽略）
+(*database/sql.Rows).Close
+(*database/sql.Stmt).Close
+
+# 日志相关（通常不检查错误）
+(*log.Logger).Printf
+(*log.Logger).Print
+(*log.Logger).Println
+
+# 测试相关
+(*testing.T).Log*
+(*testing.T).Error*
+(*testing.T).Fatal*
+
+# 某些特定的关闭操作（在defer中且有其他错误处理机制时）
+# 注意：这些应该谨慎使用
+# (*os.File).Close  # 只有在确定有其他错误处理时才排除
+# (*net.Conn).Close # 只有在确定有其他错误处理时才排除

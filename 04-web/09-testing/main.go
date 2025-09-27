@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"net/http/httptest"
 	"strconv"
@@ -970,7 +971,14 @@ func main() {
 	fmt.Println()
 	fmt.Println("服务器运行在 http://localhost:8080")
 
-	http.ListenAndServe(":8080", router)
+	server := &http.Server{
+		Addr:         ":8080",
+		Handler:      router,
+		ReadTimeout:  15 * time.Second,
+		WriteTimeout: 15 * time.Second,
+		IdleTimeout:  60 * time.Second,
+	}
+	log.Fatal(server.ListenAndServe())
 }
 
 /*

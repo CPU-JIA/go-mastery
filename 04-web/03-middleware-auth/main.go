@@ -897,8 +897,12 @@ func main() {
 
 	// 创建服务器
 	server := &http.Server{
-		Addr:    ":8080",
-		Handler: handler,
+		Addr:              ":8080",
+		Handler:           handler,
+		ReadTimeout:       15 * time.Second,
+		WriteTimeout:      15 * time.Second,
+		ReadHeaderTimeout: 10 * time.Second,
+		IdleTimeout:       60 * time.Second,
 	}
 
 	fmt.Println("认证服务器启动在 :8080")

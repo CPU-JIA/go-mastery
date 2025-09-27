@@ -654,7 +654,14 @@ func main() {
 	fmt.Println("  回声服务: ws://localhost:8080/echo")
 	fmt.Println("  房间信息: http://localhost:8080/room/info?room_id=general")
 
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	server := &http.Server{
+		Addr:         ":8080",
+		Handler:      nil,
+		ReadTimeout:  15 * time.Second,
+		WriteTimeout: 15 * time.Second,
+		IdleTimeout:  60 * time.Second,
+	}
+	log.Fatal(server.ListenAndServe())
 }
 
 /*

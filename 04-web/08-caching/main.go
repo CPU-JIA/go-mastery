@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	"crypto/md5"
+	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
@@ -256,8 +256,11 @@ func (c *LRUCache) estimateSize(value interface{}) int64 {
 		// 对于复杂对象，使用JSON序列化来估算大小
 		if data, err := json.Marshal(v); err == nil {
 			return int64(len(data))
+		} else {
+			// JSON序列化失败时，返回默认大小估算
+			log.Printf("Warning: failed to marshal object for size estimation: %v", err)
+			return 64 // 返回默认估算大小
 		}
-		return 64 // 默认大小
 	}
 }
 
@@ -400,7 +403,9 @@ func (m *MultiLevelCache) Get(key string) (interface{}, bool) {
 	// 然后尝试L2缓存
 	if value, ok := m.l2Cache.Get(key); ok {
 		// 回填到L1缓存
-		m.l1Cache.Set(key, value, 5*time.Minute)
+		if err := m.l1Cache.Set(key, value, 5*time.Minute); err != nil {
+			log.Printf("Warning: failed to update L1 cache: %v", err)
+		}
 		return value, true
 	}
 
@@ -409,17 +414,23 @@ func (m *MultiLevelCache) Get(key string) (interface{}, bool) {
 
 func (m *MultiLevelCache) Set(key string, value interface{}, ttl time.Duration) error {
 	// 同时设置L1和L2缓存
-	m.l1Cache.Set(key, value, ttl)
+	if err := m.l1Cache.Set(key, value, ttl); err != nil {
+		log.Printf("Warning: failed to set L1 cache: %v", err)
+	}
 	return m.l2Cache.Set(key, value, ttl)
 }
 
 func (m *MultiLevelCache) Delete(key string) error {
-	m.l1Cache.Delete(key)
+	if err := m.l1Cache.Delete(key); err != nil {
+		log.Printf("Warning: failed to delete from L1 cache: %v", err)
+	}
 	return m.l2Cache.Delete(key)
 }
 
 func (m *MultiLevelCache) Clear() error {
-	m.l1Cache.Clear()
+	if err := m.l1Cache.Clear(); err != nil {
+		log.Printf("Warning: failed to clear L1 cache: %v", err)
+	}
 	return m.l2Cache.Clear()
 }
 
@@ -503,7 +514,9 @@ func (s *AppService) GetUser(id int) (*User, error) {
 	for _, user := range s.users {
 		if user.ID == id {
 			// 缓存结果
-			s.cache.Set(cacheKey, user, 10*time.Minute)
+			if err := s.cache.Set(cacheKey, user, 10*time.Minute); err != nil {
+				log.Printf("Warning: failed to cache user: %v", err)
+			}
 			return &user, nil
 		}
 	}
@@ -539,7 +552,9 @@ func (s *AppService) GetPosts(page, limit int) ([]Post, error) {
 	result := s.posts[start:end]
 
 	// 缓存结果
-	s.cache.Set(cacheKey, result, 5*time.Minute)
+	if err := s.cache.Set(cacheKey, result, 5*time.Minute); err != nil {
+		log.Printf("Warning: failed to cache posts: %v", err)
+	}
 
 	return result, nil
 }
@@ -578,7 +593,9 @@ func (s *AppService) GetPopularPosts(limit int) ([]Post, error) {
 	result := posts[:limit]
 
 	// 缓存结果（较长时间）
-	s.cache.Set(cacheKey, result, 30*time.Minute)
+	if err := s.cache.Set(cacheKey, result, 30*time.Minute); err != nil {
+		log.Printf("Warning: failed to cache popular posts: %v", err)
+	}
 
 	return result, nil
 }
@@ -620,7 +637,11 @@ func (h *HTTPHandler) GetUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("X-Response-Time", duration.String())
 	w.Header().Set("Content-Type", "application/json")
 
-	json.NewEncoder(w).Encode(user)
+	if err := json.NewEncoder(w).Encode(user); err != nil {
+		log.Printf("Error encoding user response: %v", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
 }
 
 // 获取文章列表API
@@ -656,7 +677,11 @@ func (h *HTTPHandler) GetPosts(w http.ResponseWriter, r *http.Request) {
 		"total": len(posts),
 	}
 
-	json.NewEncoder(w).Encode(response)
+	if err := json.NewEncoder(w).Encode(response); err != nil {
+		log.Printf("Error encoding posts response: %v", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
 }
 
 // 获取热门文章API
@@ -680,10 +705,15 @@ func (h *HTTPHandler) GetPopularPosts(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("X-Response-Time", duration.String())
 	w.Header().Set("Content-Type", "application/json")
 
-	json.NewEncoder(w).Encode(map[string]interface{}{
+	response := map[string]interface{}{
 		"posts": posts,
 		"limit": limit,
-	})
+	}
+	if err := json.NewEncoder(w).Encode(response); err != nil {
+		log.Printf("Error encoding popular posts response: %v", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
 }
 
 // 缓存统计API
@@ -708,7 +738,11 @@ func (h *HTTPHandler) GetCacheStats(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(response)
+	if err := json.NewEncoder(w).Encode(response); err != nil {
+		log.Printf("Error encoding cache stats response: %v", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
 }
 
 // 缓存管理API
@@ -717,15 +751,29 @@ func (h *HTTPHandler) ManageCache(w http.ResponseWriter, r *http.Request) {
 
 	switch action {
 	case "clear":
-		h.cache.Clear()
+		if err := h.cache.Clear(); err != nil {
+			log.Printf("Warning: failed to clear cache: %v", err)
+		}
 		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(map[string]string{"message": "缓存已清空"})
+		w.Header().Set("Content-Type", "application/json")
+		response := map[string]string{"message": "缓存已清空"}
+		if err := json.NewEncoder(w).Encode(response); err != nil {
+			log.Printf("Error encoding clear cache response: %v", err)
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			return
+		}
 
 	case "warmup":
 		// 预热缓存
 		go h.warmupCache()
 		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(map[string]string{"message": "缓存预热已开始"})
+		w.Header().Set("Content-Type", "application/json")
+		response := map[string]string{"message": "缓存预热已开始"}
+		if err := json.NewEncoder(w).Encode(response); err != nil {
+			log.Printf("Error encoding warmup cache response: %v", err)
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			return
+		}
 
 	default:
 		http.Error(w, "无效的操作", http.StatusBadRequest)
@@ -738,16 +786,22 @@ func (h *HTTPHandler) warmupCache() {
 
 	// 预热用户数据
 	for _, user := range []int{1, 2, 3} {
-		h.service.GetUser(user)
+		if _, err := h.service.GetUser(user); err != nil {
+			log.Printf("Warning: failed to warmup user %d: %v", user, err)
+		}
 	}
 
 	// 预热文章列表
 	for page := 1; page <= 3; page++ {
-		h.service.GetPosts(page, 10)
+		if _, err := h.service.GetPosts(page, 10); err != nil {
+			log.Printf("Warning: failed to warmup posts page %d: %v", page, err)
+		}
 	}
 
 	// 预热热门文章
-	h.service.GetPopularPosts(5)
+	if _, err := h.service.GetPopularPosts(5); err != nil {
+		log.Printf("Warning: failed to warmup popular posts: %v", err)
+	}
 
 	log.Println("缓存预热完成")
 }
@@ -831,7 +885,7 @@ func generateCacheKey(prefix string, params ...interface{}) string {
 
 	// 为了防止键过长，可以选择对键进行哈希
 	if len(key) > 100 {
-		hash := md5.Sum([]byte(key))
+		hash := sha256.Sum256([]byte(key))
 		return prefix + ":" + hex.EncodeToString(hash[:])
 	}
 
@@ -910,7 +964,11 @@ func main() {
 	router.HandleFunc("/api/performance", func(w http.ResponseWriter, r *http.Request) {
 		stats := perfMiddleware.GetStats()
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(stats)
+		if err := json.NewEncoder(w).Encode(stats); err != nil {
+			log.Printf("Error encoding performance stats: %v", err)
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			return
+		}
 	}).Methods("GET")
 
 	// 演示缓存模式
@@ -936,7 +994,14 @@ func main() {
 	fmt.Println()
 	fmt.Println("服务器运行在 http://localhost:8080")
 
-	log.Fatal(http.ListenAndServe(":8080", router))
+	server := &http.Server{
+		Addr:         ":8080",
+		Handler:      router,
+		ReadTimeout:  15 * time.Second,
+		WriteTimeout: 15 * time.Second,
+		IdleTimeout:  60 * time.Second,
+	}
+	log.Fatal(server.ListenAndServe())
 }
 
 /*

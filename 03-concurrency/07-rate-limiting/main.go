@@ -2,12 +2,27 @@ package main
 
 import (
 	"context"
+	"crypto/rand"
 	"fmt"
-	"math/rand"
+	"math/big"
 	"sync"
 	"sync/atomic"
 	"time"
 )
+
+// =============================================================================
+// 安全随机数生成辅助函数
+// =============================================================================
+
+// secureRandomFloat64 生成安全的随机浮点数 [0.0, 1.0)
+func secureRandomFloat64() float64 {
+	n, err := rand.Int(rand.Reader, big.NewInt(1<<53))
+	if err != nil {
+		// 如果加密随机数生成失败，使用时间作为fallback
+		return float64(time.Now().UnixNano()%1000000) / 1000000.0
+	}
+	return float64(n.Int64()) / float64(1<<53)
+}
 
 // =============================================================================
 // 1. 限流和节流基础概念
@@ -499,7 +514,7 @@ func demonstrateAdaptiveRateLimiter() {
 				requestCount++
 
 				// 模拟请求处理
-				if rand.Float64() < phase.errorRate {
+				if secureRandomFloat64() < phase.errorRate {
 					limiter.RecordError()
 				} else {
 					limiter.RecordSuccess()

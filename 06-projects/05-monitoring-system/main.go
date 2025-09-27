@@ -1619,7 +1619,14 @@ func main() {
 	log.Println("- 系统资源监控")
 	log.Println("- 可视化仪表板")
 
-	if err := http.ListenAndServe(":"+port, monitoringServer); err != nil {
+	server := &http.Server{
+		Addr:         ":" + port,
+		Handler:      monitoringServer,
+		ReadTimeout:  15 * time.Second,
+		WriteTimeout: 15 * time.Second,
+		IdleTimeout:  60 * time.Second,
+	}
+	if err := server.ListenAndServe(); err != nil {
 		log.Fatal("服务器启动失败:", err)
 	}
 }

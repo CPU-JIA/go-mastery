@@ -124,26 +124,26 @@ type GatewayConfig struct {
 }
 
 type ServerConfig struct {
-	Port            string        `yaml:"port"`
-	ReadTimeout     time.Duration `yaml:"read_timeout"`
-	WriteTimeout    time.Duration `yaml:"write_timeout"`
-	IdleTimeout     time.Duration `yaml:"idle_timeout"`
-	MaxHeaderBytes  int           `yaml:"max_header_bytes"`
-	EnableTLS       bool          `yaml:"enable_tls"`
-	CertFile        string        `yaml:"cert_file"`
-	KeyFile         string        `yaml:"key_file"`
-	EnableHTTP2     bool          `yaml:"enable_http2"`
-	EnableGRPCWeb   bool          `yaml:"enable_grpc_web"`
+	Port           string        `yaml:"port"`
+	ReadTimeout    time.Duration `yaml:"read_timeout"`
+	WriteTimeout   time.Duration `yaml:"write_timeout"`
+	IdleTimeout    time.Duration `yaml:"idle_timeout"`
+	MaxHeaderBytes int           `yaml:"max_header_bytes"`
+	EnableTLS      bool          `yaml:"enable_tls"`
+	CertFile       string        `yaml:"cert_file"`
+	KeyFile        string        `yaml:"key_file"`
+	EnableHTTP2    bool          `yaml:"enable_http2"`
+	EnableGRPCWeb  bool          `yaml:"enable_grpc_web"`
 }
 
 type AuthConfig struct {
-	JWTSecret        string        `yaml:"jwt_secret"`
-	JWTExpiryTime    time.Duration `yaml:"jwt_expiry_time"`
-	RefreshTime      time.Duration `yaml:"refresh_time"`
-	EnableOAuth2     bool          `yaml:"enable_oauth2"`
-	OAuth2Config     OAuth2Config  `yaml:"oauth2"`
-	EnableMTLS       bool          `yaml:"enable_mtls"`
-	ClientCAFile     string        `yaml:"client_ca_file"`
+	JWTSecret         string        `yaml:"jwt_secret"`
+	JWTExpiryTime     time.Duration `yaml:"jwt_expiry_time"`
+	RefreshTime       time.Duration `yaml:"refresh_time"`
+	EnableOAuth2      bool          `yaml:"enable_oauth2"`
+	OAuth2Config      OAuth2Config  `yaml:"oauth2"`
+	EnableMTLS        bool          `yaml:"enable_mtls"`
+	ClientCAFile      string        `yaml:"client_ca_file"`
 	RequireClientCert bool          `yaml:"require_client_cert"`
 }
 
@@ -157,50 +157,50 @@ type OAuth2Config struct {
 }
 
 type TracingConfig struct {
-	Enabled      bool   `yaml:"enabled"`
-	ServiceName  string `yaml:"service_name"`
-	JaegerURL    string `yaml:"jaeger_url"`
-	SampleRate   float64 `yaml:"sample_rate"`
-	Environment  string `yaml:"environment"`
+	Enabled     bool    `yaml:"enabled"`
+	ServiceName string  `yaml:"service_name"`
+	JaegerURL   string  `yaml:"jaeger_url"`
+	SampleRate  float64 `yaml:"sample_rate"`
+	Environment string  `yaml:"environment"`
 }
 
 type MonitoringConfig struct {
-	MetricsEnabled   bool   `yaml:"metrics_enabled"`
-	MetricsPath      string `yaml:"metrics_path"`
-	HealthPath       string `yaml:"health_path"`
-	ReadyPath        string `yaml:"ready_path"`
-	LivenessPath     string `yaml:"liveness_path"`
-	PrometheusPort   string `yaml:"prometheus_port"`
+	MetricsEnabled bool   `yaml:"metrics_enabled"`
+	MetricsPath    string `yaml:"metrics_path"`
+	HealthPath     string `yaml:"health_path"`
+	ReadyPath      string `yaml:"ready_path"`
+	LivenessPath   string `yaml:"liveness_path"`
+	PrometheusPort string `yaml:"prometheus_port"`
 }
 
 type SecurityConfig struct {
-	EnableCORS        bool     `yaml:"enable_cors"`
-	AllowedOrigins    []string `yaml:"allowed_origins"`
-	AllowedMethods    []string `yaml:"allowed_methods"`
-	AllowedHeaders    []string `yaml:"allowed_headers"`
-	EnableCSRF        bool     `yaml:"enable_csrf"`
-	RateLimitEnabled  bool     `yaml:"rate_limit_enabled"`
-	RateLimit         int      `yaml:"rate_limit"`
-	BurstLimit        int      `yaml:"burst_limit"`
-	IPWhitelist       []string `yaml:"ip_whitelist"`
-	IPBlacklist       []string `yaml:"ip_blacklist"`
+	EnableCORS       bool     `yaml:"enable_cors"`
+	AllowedOrigins   []string `yaml:"allowed_origins"`
+	AllowedMethods   []string `yaml:"allowed_methods"`
+	AllowedHeaders   []string `yaml:"allowed_headers"`
+	EnableCSRF       bool     `yaml:"enable_csrf"`
+	RateLimitEnabled bool     `yaml:"rate_limit_enabled"`
+	RateLimit        int      `yaml:"rate_limit"`
+	BurstLimit       int      `yaml:"burst_limit"`
+	IPWhitelist      []string `yaml:"ip_whitelist"`
+	IPBlacklist      []string `yaml:"ip_blacklist"`
 }
 
 type K8sConfig struct {
-	Enabled           bool   `yaml:"enabled"`
-	InCluster         bool   `yaml:"in_cluster"`
-	ConfigPath        string `yaml:"config_path"`
-	Namespace         string `yaml:"namespace"`
-	ServiceDiscovery  bool   `yaml:"service_discovery"`
-	WatchConfigMaps   bool   `yaml:"watch_configmaps"`
+	Enabled          bool   `yaml:"enabled"`
+	InCluster        bool   `yaml:"in_cluster"`
+	ConfigPath       string `yaml:"config_path"`
+	Namespace        string `yaml:"namespace"`
+	ServiceDiscovery bool   `yaml:"service_discovery"`
+	WatchConfigMaps  bool   `yaml:"watch_configmaps"`
 }
 
 // JWT Claims 结构
 type JWTClaims struct {
-	UserID    string   `json:"user_id"`
-	Username  string   `json:"username"`
-	Email     string   `json:"email"`
-	Roles     []string `json:"roles"`
+	UserID      string   `json:"user_id"`
+	Username    string   `json:"username"`
+	Email       string   `json:"email"`
+	Roles       []string `json:"roles"`
 	Permissions []string `json:"permissions"`
 	jwt.StandardClaims
 }
@@ -229,121 +229,121 @@ type RouteRule struct {
 	Enabled     bool              `json:"enabled"`      // 是否启用
 
 	// 2025年新增字段
-	Protocol       string            `json:"protocol"`        // http, https, grpc, ws, wss
-	Version        string            `json:"version"`         // API版本
-	Timeout        time.Duration     `json:"timeout"`         // 请求超时
-	RetryAttempts  int               `json:"retry_attempts"`  // 重试次数
-	RetryBackoff   time.Duration     `json:"retry_backoff"`   // 重试间隔
-	CacheEnabled   bool              `json:"cache_enabled"`   // 是否启用缓存
-	CacheTTL       time.Duration     `json:"cache_ttl"`       // 缓存TTL
-	RateLimit      *RouteLimitConfig `json:"rate_limit"`      // 路由级限流
-	Auth           *RouteAuthConfig  `json:"auth"`            // 路由级认证
-	CORS           *CORSConfig       `json:"cors"`            // CORS配置
-	Headers        *HeadersConfig    `json:"headers"`         // 请求/响应头配置
-	HealthCheck    *HealthConfig     `json:"health_check"`    // 健康检查配置
-	LoadBalancer   *LBConfig         `json:"load_balancer"`   // 负载均衡配置
+	Protocol      string            `json:"protocol"`       // http, https, grpc, ws, wss
+	Version       string            `json:"version"`        // API版本
+	Timeout       time.Duration     `json:"timeout"`        // 请求超时
+	RetryAttempts int               `json:"retry_attempts"` // 重试次数
+	RetryBackoff  time.Duration     `json:"retry_backoff"`  // 重试间隔
+	CacheEnabled  bool              `json:"cache_enabled"`  // 是否启用缓存
+	CacheTTL      time.Duration     `json:"cache_ttl"`      // 缓存TTL
+	RateLimit     *RouteLimitConfig `json:"rate_limit"`     // 路由级限流
+	Auth          *RouteAuthConfig  `json:"auth"`           // 路由级认证
+	CORS          *CORSConfig       `json:"cors"`           // CORS配置
+	Headers       *HeadersConfig    `json:"headers"`        // 请求/响应头配置
+	HealthCheck   *HealthConfig     `json:"health_check"`   // 健康检查配置
+	LoadBalancer  *LBConfig         `json:"load_balancer"`  // 负载均衡配置
 
-	CreatedAt      time.Time         `json:"created_at"`
-	UpdatedAt      time.Time         `json:"updated_at"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 }
 
 // 路由级限流配置
 type RouteLimitConfig struct {
-	Enabled   bool  `json:"enabled"`
-	RPS       int   `json:"rps"`        // 每秒请求数
-	Burst     int   `json:"burst"`      // 突发限制
-	KeyBy     string `json:"key_by"`    // 限流key: ip, user, api_key
+	Enabled   bool     `json:"enabled"`
+	RPS       int      `json:"rps"`       // 每秒请求数
+	Burst     int      `json:"burst"`     // 突发限制
+	KeyBy     string   `json:"key_by"`    // 限流key: ip, user, api_key
 	WhiteList []string `json:"whitelist"` // 白名单
 }
 
 // 路由级认证配置
 type RouteAuthConfig struct {
-	Required     bool     `json:"required"`
-	Methods      []string `json:"methods"`      // jwt, oauth2, api_key, basic
-	Roles        []string `json:"roles"`        // 允许的角色
-	Permissions  []string `json:"permissions"`  // 必需的权限
-	Scopes       []string `json:"scopes"`       // OAuth2 scopes
-	AllowAnonymous bool   `json:"allow_anonymous"` // 允许匿名访问
+	Required       bool     `json:"required"`
+	Methods        []string `json:"methods"`         // jwt, oauth2, api_key, basic
+	Roles          []string `json:"roles"`           // 允许的角色
+	Permissions    []string `json:"permissions"`     // 必需的权限
+	Scopes         []string `json:"scopes"`          // OAuth2 scopes
+	AllowAnonymous bool     `json:"allow_anonymous"` // 允许匿名访问
 }
 
 // CORS配置
 type CORSConfig struct {
-	Enabled        bool     `json:"enabled"`
-	AllowOrigins   []string `json:"allow_origins"`
-	AllowMethods   []string `json:"allow_methods"`
-	AllowHeaders   []string `json:"allow_headers"`
-	ExposeHeaders  []string `json:"expose_headers"`
-	AllowCredentials bool   `json:"allow_credentials"`
-	MaxAge         int      `json:"max_age"`
+	Enabled          bool     `json:"enabled"`
+	AllowOrigins     []string `json:"allow_origins"`
+	AllowMethods     []string `json:"allow_methods"`
+	AllowHeaders     []string `json:"allow_headers"`
+	ExposeHeaders    []string `json:"expose_headers"`
+	AllowCredentials bool     `json:"allow_credentials"`
+	MaxAge           int      `json:"max_age"`
 }
 
 // 请求/响应头配置
 type HeadersConfig struct {
-	RequestHeaders  map[string]string `json:"request_headers"`   // 添加到请求的头
-	ResponseHeaders map[string]string `json:"response_headers"`  // 添加到响应的头
-	RemoveRequest   []string          `json:"remove_request"`    // 移除的请求头
-	RemoveResponse  []string          `json:"remove_response"`   // 移除的响应头
+	RequestHeaders  map[string]string `json:"request_headers"`  // 添加到请求的头
+	ResponseHeaders map[string]string `json:"response_headers"` // 添加到响应的头
+	RemoveRequest   []string          `json:"remove_request"`   // 移除的请求头
+	RemoveResponse  []string          `json:"remove_response"`  // 移除的响应头
 }
 
 // 健康检查配置
 type HealthConfig struct {
-	Enabled    bool          `json:"enabled"`
-	Path       string        `json:"path"`       // 健康检查路径
-	Interval   time.Duration `json:"interval"`   // 检查间隔
-	Timeout    time.Duration `json:"timeout"`    // 超时时间
-	Retries    int           `json:"retries"`    // 重试次数
-	SuccessThreshold int     `json:"success_threshold"` // 成功阈值
-	FailureThreshold int     `json:"failure_threshold"` // 失败阈值
+	Enabled          bool          `json:"enabled"`
+	Path             string        `json:"path"`              // 健康检查路径
+	Interval         time.Duration `json:"interval"`          // 检查间隔
+	Timeout          time.Duration `json:"timeout"`           // 超时时间
+	Retries          int           `json:"retries"`           // 重试次数
+	SuccessThreshold int           `json:"success_threshold"` // 成功阈值
+	FailureThreshold int           `json:"failure_threshold"` // 失败阈值
 }
 
 // 负载均衡配置
 type LBConfig struct {
-	Algorithm    string            `json:"algorithm"`     // round_robin, weighted_round_robin, least_conn, ip_hash
-	HealthCheck  bool              `json:"health_check"`  // 是否启用健康检查
-	StickySession bool             `json:"sticky_session"` // 会话保持
-	Weights      map[string]int    `json:"weights"`       // 权重配置
+	Algorithm     string         `json:"algorithm"`      // round_robin, weighted_round_robin, least_conn, ip_hash
+	HealthCheck   bool           `json:"health_check"`   // 是否启用健康检查
+	StickySession bool           `json:"sticky_session"` // 会话保持
+	Weights       map[string]int `json:"weights"`        // 权重配置
 }
 
 type ServiceEndpoint struct {
-	ServiceName string            `json:"service_name"`
-	Host        string            `json:"host"`
-	Port        int               `json:"port"`
-	Protocol    string            `json:"protocol"` // http, https, grpc
-	Health      string            `json:"health"`   // healthy, unhealthy, unknown
-	Weight      int               `json:"weight"`   // 负载均衡权重
-	Tags        []string          `json:"tags"`
+	ServiceName string   `json:"service_name"`
+	Host        string   `json:"host"`
+	Port        int      `json:"port"`
+	Protocol    string   `json:"protocol"` // http, https, grpc
+	Health      string   `json:"health"`   // healthy, unhealthy, unknown
+	Weight      int      `json:"weight"`   // 负载均衡权重
+	Tags        []string `json:"tags"`
 
 	// 2025年新增字段
-	Zone        string            `json:"zone"`         // 可用区
-	Region      string            `json:"region"`       // 区域
-	Version     string            `json:"version"`      // 服务版本
-	Metadata    map[string]string `json:"metadata"`     // 元数据
-	TLSEnabled  bool              `json:"tls_enabled"`  // 是否启用TLS
-	MaxConns    int               `json:"max_conns"`    // 最大连接数
-	MaxIdleConns int              `json:"max_idle_conns"` // 最大空闲连接数
-	ConnTimeout time.Duration     `json:"conn_timeout"` // 连接超时
-	ReadTimeout time.Duration     `json:"read_timeout"` // 读超时
-	WriteTimeout time.Duration    `json:"write_timeout"` // 写超时
+	Zone         string            `json:"zone"`           // 可用区
+	Region       string            `json:"region"`         // 区域
+	Version      string            `json:"version"`        // 服务版本
+	Metadata     map[string]string `json:"metadata"`       // 元数据
+	TLSEnabled   bool              `json:"tls_enabled"`    // 是否启用TLS
+	MaxConns     int               `json:"max_conns"`      // 最大连接数
+	MaxIdleConns int               `json:"max_idle_conns"` // 最大空闲连接数
+	ConnTimeout  time.Duration     `json:"conn_timeout"`   // 连接超时
+	ReadTimeout  time.Duration     `json:"read_timeout"`   // 读超时
+	WriteTimeout time.Duration     `json:"write_timeout"`  // 写超时
 
 	// 健康检查状态
-	LastHealthCheck time.Time     `json:"last_health_check"`
-	HealthCheckCount int          `json:"health_check_count"`
+	LastHealthCheck     time.Time `json:"last_health_check"`
+	HealthCheckCount    int       `json:"health_check_count"`
 	ConsecutiveFailures int       `json:"consecutive_failures"`
 }
 
 // === 路由管理器 ===
 
 type RouteManager struct {
-	routes      map[string]*RouteRule
-	endpoints   map[string][]*ServiceEndpoint
-	config      *GatewayConfig
-	mutex       sync.RWMutex
+	routes    map[string]*RouteRule
+	endpoints map[string][]*ServiceEndpoint
+	config    *GatewayConfig
+	mutex     sync.RWMutex
 
 	// 2025年新增字段
-	tracer      trace.Tracer
-	k8sClient   dynamic.Interface
-	configWatch chan *GatewayConfig
-	stopCh      chan struct{}
+	tracer        trace.Tracer
+	k8sClient     dynamic.Interface
+	configWatch   chan *GatewayConfig
+	stopCh        chan struct{}
 	healthChecker *HealthChecker
 }
 
@@ -464,17 +464,17 @@ func (rm *RouteManager) checkConfigMapUpdates() {
 func (rm *RouteManager) initDefaultRoutes() {
 	defaultRoutes := []*RouteRule{
 		{
-			ID:          "user-service-route",
-			Path:        "/api/v1/users",
-			Method:      "*",
-			ServiceName: "user-service",
-			TargetPath:  "/users",
-			Rewrite:     true,
-			Middleware:  []string{"cors", "auth", "ratelimit", "logging", "tracing"},
-			Enabled:     true,
-			Protocol:    "http",
-			Version:     "v1",
-			Timeout:     30 * time.Second,
+			ID:            "user-service-route",
+			Path:          "/api/v1/users",
+			Method:        "*",
+			ServiceName:   "user-service",
+			TargetPath:    "/users",
+			Rewrite:       true,
+			Middleware:    []string{"cors", "auth", "ratelimit", "logging", "tracing"},
+			Enabled:       true,
+			Protocol:      "http",
+			Version:       "v1",
+			Timeout:       30 * time.Second,
 			RetryAttempts: 3,
 			RetryBackoff:  100 * time.Millisecond,
 			Auth: &RouteAuthConfig{
@@ -489,36 +489,36 @@ func (rm *RouteManager) initDefaultRoutes() {
 				KeyBy:   "user",
 			},
 			CORS: &CORSConfig{
-				Enabled: true,
+				Enabled:      true,
 				AllowOrigins: []string{"*"},
 				AllowMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 				AllowHeaders: []string{"Content-Type", "Authorization"},
 			},
-			CreatedAt:   time.Now(),
-			UpdatedAt:   time.Now(),
+			CreatedAt: time.Now(),
+			UpdatedAt: time.Now(),
 		},
 		{
-			ID:          "order-service-route",
-			Path:        "/api/v1/orders",
-			Method:      "*",
-			ServiceName: "order-service",
-			TargetPath:  "/orders",
-			Rewrite:     true,
-			Middleware:  []string{"cors", "auth", "ratelimit", "logging", "tracing"},
-			Enabled:     true,
-			Protocol:    "http",
-			Version:     "v1",
-			Timeout:     45 * time.Second,
+			ID:            "order-service-route",
+			Path:          "/api/v1/orders",
+			Method:        "*",
+			ServiceName:   "order-service",
+			TargetPath:    "/orders",
+			Rewrite:       true,
+			Middleware:    []string{"cors", "auth", "ratelimit", "logging", "tracing"},
+			Enabled:       true,
+			Protocol:      "http",
+			Version:       "v1",
+			Timeout:       45 * time.Second,
 			RetryAttempts: 2,
 			RetryBackoff:  200 * time.Millisecond,
 			Auth: &RouteAuthConfig{
-				Required: true,
-				Methods:  []string{"jwt"},
-				Roles:    []string{"user", "admin"},
+				Required:    true,
+				Methods:     []string{"jwt"},
+				Roles:       []string{"user", "admin"},
 				Permissions: []string{"order:read", "order:write"},
 			},
-			CreatedAt:   time.Now(),
-			UpdatedAt:   time.Now(),
+			CreatedAt: time.Now(),
+			UpdatedAt: time.Now(),
 		},
 		{
 			ID:          "websocket-route",
@@ -532,11 +532,11 @@ func (rm *RouteManager) initDefaultRoutes() {
 			Protocol:    "ws",
 			Version:     "v1",
 			Auth: &RouteAuthConfig{
-				Required: false,
+				Required:       false,
 				AllowAnonymous: true,
 			},
-			CreatedAt:   time.Now(),
-			UpdatedAt:   time.Now(),
+			CreatedAt: time.Now(),
+			UpdatedAt: time.Now(),
 		},
 	}
 
@@ -580,9 +580,9 @@ func (rm *RouteManager) initDefaultRoutes() {
 // === 健康检查器 ===
 
 type HealthChecker struct {
-	routeManager *RouteManager
-	client       *http.Client
-	stopCh       chan struct{}
+	routeManager  *RouteManager
+	client        *http.Client
+	stopCh        chan struct{}
 	checkInterval time.Duration
 }
 
@@ -1723,14 +1723,14 @@ func getClientIP(r *http.Request) string {
 func loadDefaultConfig() *GatewayConfig {
 	return &GatewayConfig{
 		Server: ServerConfig{
-			Port:            DefaultPort,
-			ReadTimeout:     DefaultReadTimeout,
-			WriteTimeout:    DefaultWriteTimeout,
-			IdleTimeout:     DefaultIdleTimeout,
-			MaxHeaderBytes:  1 << 20, // 1MB
-			EnableTLS:       false,
-			EnableHTTP2:     true,
-			EnableGRPCWeb:   true,
+			Port:           DefaultPort,
+			ReadTimeout:    DefaultReadTimeout,
+			WriteTimeout:   DefaultWriteTimeout,
+			IdleTimeout:    DefaultIdleTimeout,
+			MaxHeaderBytes: 1 << 20, // 1MB
+			EnableTLS:      false,
+			EnableHTTP2:    true,
+			EnableGRPCWeb:  true,
 		},
 		Auth: AuthConfig{
 			JWTSecret:     DefaultJWTSecret,

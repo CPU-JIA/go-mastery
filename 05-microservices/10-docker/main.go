@@ -178,14 +178,14 @@ func (ms *MicroService) handleStatus(w http.ResponseWriter, r *http.Request) {
 	atomic.AddInt64(&ms.requestCount, 1)
 
 	status := map[string]interface{}{
-		"status":      "running",
-		"healthy":     ms.healthy.Load(),
-		"ready":       ms.ready.Load(),
-		"uptime":      time.Since(ms.startTime).String(),
-		"requests":    atomic.LoadInt64(&ms.requestCount),
-		"errors":      atomic.LoadInt64(&ms.errorCount),
-		"memory":      getMemoryUsage(),
-		"goroutines":  runtime.NumGoroutine(),
+		"status":     "running",
+		"healthy":    ms.healthy.Load(),
+		"ready":      ms.ready.Load(),
+		"uptime":     time.Since(ms.startTime).String(),
+		"requests":   atomic.LoadInt64(&ms.requestCount),
+		"errors":     atomic.LoadInt64(&ms.errorCount),
+		"memory":     getMemoryUsage(),
+		"goroutines": runtime.NumGoroutine(),
 	}
 
 	w.Header().Set("Content-Type", "application/json")
@@ -314,10 +314,10 @@ func getMemoryUsage() map[string]uint64 {
 	runtime.ReadMemStats(&m)
 
 	return map[string]uint64{
-		"alloc_mb":      m.Alloc / 1024 / 1024,
+		"alloc_mb":       m.Alloc / 1024 / 1024,
 		"total_alloc_mb": m.TotalAlloc / 1024 / 1024,
-		"sys_mb":        m.Sys / 1024 / 1024,
-		"gc_runs":       uint64(m.NumGC),
+		"sys_mb":         m.Sys / 1024 / 1024,
+		"gc_runs":        uint64(m.NumGC),
 	}
 }
 

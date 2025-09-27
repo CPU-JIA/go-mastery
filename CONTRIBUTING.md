@@ -40,7 +40,7 @@ Welcome to the Go Mastery project! This guide will help you contribute effective
 
 3. **Install pre-commit hooks** (recommended):
    ```bash
-   pip install pre-commit
+   # Use the built-in setup script
    make dev-setup
    ```
 
@@ -392,27 +392,66 @@ make build-release     # Build release binaries
 
 Run `make help` for all available commands.
 
+### Project Documentation
+
+Our documentation follows a 3-layer architecture:
+
+- **Layer 1**: Core navigation documents (README, CONTRIBUTING, etc.)
+- **Layer 2**: Professional documentation in [docs/](docs/) directory
+- **Layer 3**: Historical reports in [reports/](reports/) directory
+
+Key documentation files:
+- [README.md](README.md) - Project overview and quick start
+- [LEARNING_GUIDE.md](LEARNING_GUIDE.md) - Complete learning pathway
+- [QUICK_REFERENCE.md](QUICK_REFERENCE.md) - Developer quick reference
+- [docs/README.md](docs/README.md) - Documentation navigation center
+- [docs/QUALITY_SYSTEM.md](docs/QUALITY_SYSTEM.md) - Enterprise-grade quality assurance system
+- [reports/](reports/) - Historical project reports and analysis
+
 ## Project Structure
 
 ```
 go-mastery/
 ├── .github/
 │   └── workflows/
-│       └── ci.yml              # CI/CD pipeline
-├── 01-basics/                  # Basic Go concepts
-├── 02-advanced/                # Advanced features
-├── 03-concurrency/             # Concurrency patterns
-├── 04-web/                     # Web development
-├── 05-microservices/           # Microservices
-├── 06-projects/                # Complete projects
-├── common/                     # Shared utilities
-├── coverage/                   # Coverage reports (generated)
-├── dist/                       # Build artifacts (generated)
-├── .pre-commit-config.yaml     # Pre-commit hooks
-├── Makefile                    # Build automation
-├── go.mod                      # Go module definition
-├── README.md                   # Project documentation
-└── CONTRIBUTING.md             # This file
+│       └── quality-assurance.yml   # Enterprise-grade CI/CD pipeline
+├── docs/                           # Professional documentation
+│   ├── README.md                   # Documentation navigation center
+│   ├── QUALITY_SYSTEM.md           # Quality assurance system
+│   ├── ARCHITECTURE_DESIGN.md      # Project architecture design
+│   └── BRANCH_PROTECTION.md        # Git branch protection rules
+├── reports/                        # Historical reports archive
+│   ├── README.md                   # Reports navigation
+│   └── 2025-01-27_*.md            # Historical project reports
+├── examples/                       # Code examples and templates
+│   └── FIX_EXAMPLE.md             # Code fix examples
+├── scripts/                        # Quality assurance scripts
+│   ├── quality-monitor.sh          # Quality monitoring
+│   ├── quality-trends.sh           # Trend analysis
+│   └── pre-commit-hook.sh          # Pre-commit validation
+├── 00-assessment-system/           # Learning assessment system
+├── 01-basics/                      # Basic Go concepts
+├── 02-advanced/                    # Advanced features
+├── 03-concurrency/                 # Concurrency patterns
+├── 04-web/                         # Web development
+├── 05-microservices/               # Microservices architecture
+├── 06-projects/                    # Complete projects
+├── 06.5-performance-fundamentals/  # Performance basics
+├── 07-runtime-internals/           # Runtime internals
+├── 08-performance-mastery/         # Performance optimization
+├── 09-system-programming/          # System programming
+├── 10-compiler-toolchain/          # Compiler toolchain
+├── 11-massive-systems/             # Large-scale systems
+├── 12-ecosystem-contribution/      # Ecosystem contribution
+├── 13-language-design/             # Language design
+├── 14-tech-leadership/             # Technical leadership
+├── 15-opensource-contribution/     # Open source contribution
+├── coverage/                       # Coverage reports (generated)
+├── dist/                           # Build artifacts (generated)
+├── Makefile                        # Build automation
+├── go.mod                          # Go module definition
+├── README.md                       # Project documentation
+└── CONTRIBUTING.md                 # This file
 ```
 
 ## Troubleshooting
@@ -450,14 +489,18 @@ go-mastery/
 
 5. **Pre-commit Hook Issues**
    ```bash
-   # Reinstall hooks
-   pre-commit uninstall
-   pre-commit install
+   # Reinstall development setup
+   make dev-setup
+
+   # Manually run pre-commit checks
+   bash scripts/pre-commit-hook.sh
    ```
 
 ### Getting Help
 
 - Check the [README.md](README.md) for basic setup
+- Browse [docs/README.md](docs/README.md) for complete documentation
+- Review [docs/QUALITY_SYSTEM.md](docs/QUALITY_SYSTEM.md) for quality standards
 - Run `make help` for available commands
 - Check existing issues on GitHub
 - Create a new issue with detailed description

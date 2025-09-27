@@ -323,6 +323,10 @@ type MockSpan struct {
 	FreeIndex  uint16  // 下一个空闲对象索引
 	State      string  // 状态: "idle", "inuse", "manual", "dead"
 	mutex      sync.Mutex
+
+	// SAFETY: 保持底层内存存活，防止GC回收
+	// 在真实的Go运行时中，内存由系统调用分配，不受GC管理
+	backingMemory interface{} // 保持引用以防止GC
 }
 
 // MockCache 模拟mcache结构
@@ -478,22 +482,29 @@ func (ma *MemoryAllocator) allocateLargeObject(size int) unsafe.Pointer {
 	ma.heap.mutex.Lock()
 	defer ma.heap.mutex.Unlock()
 
+	// 创建底层内存并保持引用
+	backingMem := make([]byte, size)
+	memPtr := unsafe.Pointer(&backingMem[0])
+
 	// 创建新的大对象span
 	span := &MockSpan{
-		StartAddr:  uintptr(unsafe.Pointer(&[32768]byte{})), // 模拟地址
-		NPPages:    pages,
-		SizeClass:  0, // 大对象的size class为0
-		ElemSize:   uintptr(size),
-		AllocCount: 1,
-		AllocBits:  []bool{true},
-		State:      "inuse",
+		StartAddr:     uintptr(memPtr), // 从真实指针获取地址
+		NPPages:       pages,
+		SizeClass:     0, // 大对象的size class为0
+		ElemSize:      uintptr(size),
+		AllocCount:    1,
+		AllocBits:     []bool{true},
+		State:         "inuse",
+		backingMemory: backingMem, // SAFETY: 保持内存引用活跃
 	}
 
 	ma.heap.LargeSpans = append(ma.heap.LargeSpans, span)
 	ma.heap.AllSpans = append(ma.heap.AllSpans, span)
 	ma.heap.PagesInUse += int64(pages)
 
-	return unsafe.Pointer(span.StartAddr)
+	// SAFETY: 直接返回原始指针，避免uintptr->unsafe.Pointer转换
+	// 在真实实现中，这里会是系统分配的内存
+	return memPtr
 }
 
 func (ma *MemoryAllocator) getSpanFromCentral(sizeClass int, classInfo SizeClassInfo) *MockSpan {
@@ -578,14 +589,19 @@ func (ma *MemoryAllocator) splitSpan(span *MockSpan, pages int) *MockSpan {
 }
 
 func (ma *MemoryAllocator) createNewSpan(sizeClass int, classInfo SizeClassInfo) *MockSpan {
-	spanID := atomic.AddInt64(&ma.nextSpanID, 1)
+	// 为演示目的创建实际的backing memory
+	// 在真实的Go运行时中，这里会调用系统分配函数
+	memSize := classInfo.Pages * ma.heap.PageSize
+	backingMem := make([]byte, memSize)
+	memPtr := unsafe.Pointer(&backingMem[0])
 
 	span := &MockSpan{
-		StartAddr: uintptr(spanID * 65536), // 模拟地址
-		NPPages:   classInfo.Pages,
-		SizeClass: uint8(sizeClass),
-		ElemSize:  uintptr(classInfo.Size),
-		State:     "inuse",
+		StartAddr:     uintptr(memPtr), // 使用真实内存地址
+		NPPages:       classInfo.Pages,
+		SizeClass:     uint8(sizeClass),
+		ElemSize:      uintptr(classInfo.Size),
+		State:         "inuse",
+		backingMemory: backingMem, // SAFETY: 保持内存引用活跃
 	}
 
 	ma.refillSpan(span, classInfo)
@@ -614,9 +630,32 @@ func (ma *MemoryAllocator) allocateFromSpan(span *MockSpan) unsafe.Pointer {
 			span.AllocBits[span.FreeIndex] = true
 			span.AllocCount++
 
-			objAddr := span.StartAddr + uintptr(span.FreeIndex)*span.ElemSize
-			span.FreeIndex++
-			return unsafe.Pointer(objAddr)
+			// SAFETY: 在真实实现中需要确保指针算术的安全性
+			// 这里为了演示目的，我们检查backingMemory是否存在
+			if span.backingMemory != nil {
+				// 如果有实际的backing memory，使用安全的指针算术
+				if backingSlice, ok := span.backingMemory.([]byte); ok {
+					offset := span.FreeIndex * uint16(span.ElemSize)
+					if int(offset) < len(backingSlice) {
+						span.FreeIndex++
+						return unsafe.Pointer(&backingSlice[offset])
+					}
+				}
+			}
+
+			// 回退到模拟地址（仅用于演示，实际使用中有GC安全问题）
+			// WARNING: 这种模式在生产代码中是不安全的
+			// 在真实的内存分配器中，应该始终有backing memory
+
+			// 为了避免unsafe.Pointer警告，在教学代码中我们选择返回nil
+			// 而不是进行不安全的uintptr到unsafe.Pointer转换
+			// 生产代码应该确保所有span都有有效的backingMemory
+
+			// objAddr := span.StartAddr + uintptr(span.FreeIndex)*span.ElemSize
+			// defer runtime.KeepAlive(span)
+			// return unsafe.Pointer(objAddr) // UNSAFE: 不推荐的模式
+
+			return nil // 安全的回退：拒绝分配而非执行不安全操作
 		}
 		span.FreeIndex++
 	}

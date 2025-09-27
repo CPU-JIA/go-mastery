@@ -23,14 +23,34 @@ package main
 
 import (
 	"context"
+	"crypto/rand"
 	"fmt"
-	"math/rand"
+	"math/big"
 	"runtime"
 	"runtime/trace"
 	"sync"
 	"sync/atomic"
 	"time"
 )
+
+// 安全随机数生成函数
+func secureRandomInt(max int) int {
+	n, err := rand.Int(rand.Reader, big.NewInt(int64(max)))
+	if err != nil {
+		// G115安全修复：确保转换不会溢出
+		fallback := time.Now().UnixNano() % int64(max)
+		if fallback > int64(^uint(0)>>1) {
+			fallback = fallback % int64(^uint(0)>>1)
+		}
+		return int(fallback)
+	}
+	// G115安全修复：检查int64到int的安全转换
+	result := n.Int64()
+	if result > int64(^uint(0)>>1) {
+		result = result % int64(max)
+	}
+	return int(result)
+}
 
 // ==================
 // 1. 调度器状态监控
@@ -266,7 +286,7 @@ func (sim *GMPSimulator) AddWork(work func()) {
 	// 尝试添加到本地队列，否则添加到全局队列
 	if len(sim.processors) > 0 {
 		// 随机选择一个处理器
-		p := sim.processors[rand.Intn(len(sim.processors))]
+		p := sim.processors[secureRandomInt(len(sim.processors))]
 		p.mutex.Lock()
 		if len(p.LocalQueue) < 256 { // 本地队列容量限制
 			p.LocalQueue = append(p.LocalQueue, workItem)
@@ -1065,9 +1085,6 @@ func demonstrateTracing() {
 }
 
 func main() {
-	// 设置随机种子
-	rand.Seed(time.Now().UnixNano())
-
 	demonstrateSchedulerInternals()
 
 	// 可选：演示跟踪分析

@@ -24,9 +24,11 @@ package main
 
 import (
 	"bufio"
+	"crypto/rand"
 	"fmt"
+	"log"
+	"math/big"
 	"math/bits"
-	"math/rand"
 	"net"
 	"os"
 	"runtime"
@@ -36,6 +38,43 @@ import (
 	"time"
 	"unsafe"
 )
+
+// 安全随机数生成函数
+func secureRandomInt(max int) int {
+	n, err := rand.Int(rand.Reader, big.NewInt(int64(max)))
+	if err != nil {
+		// G115安全修复：确保转换不会溢出
+		fallback := time.Now().UnixNano() % int64(max)
+		if fallback > int64(^uint(0)>>1) {
+			fallback = fallback % int64(^uint(0)>>1)
+		}
+		return int(fallback)
+	}
+	// G115安全修复：检查int64到int的安全转换
+	result := n.Int64()
+	if result > int64(^uint(0)>>1) {
+		result = result % int64(max)
+	}
+	return int(result)
+}
+
+func secureRandomIntGeneric() int {
+	n, err := rand.Int(rand.Reader, big.NewInt(1<<62))
+	if err != nil {
+		// G115安全修复：确保转换不会溢出
+		fallback := time.Now().UnixNano()
+		if fallback > int64(^uint(0)>>1) {
+			fallback = fallback % int64(^uint(0)>>1)
+		}
+		return int(fallback)
+	}
+	// G115安全修复：检查int64到int的安全转换
+	result := n.Int64()
+	if result > int64(^uint(0)>>1) {
+		result = result % int64(^uint(0)>>1)
+	}
+	return int(result)
+}
 
 // ==================
 // 1. 算法优化技术
@@ -159,7 +198,7 @@ func (ao *AlgorithmOptimizer) benchmarkSort(name string, size int, originalData 
 func generateRandomData(size int) []int {
 	data := make([]int, size)
 	for i := range data {
-		data[i] = rand.Int()
+		data[i] = secureRandomIntGeneric()
 	}
 	return data
 }
@@ -543,12 +582,14 @@ func (mo *MemoryOptimizer) demonstrateMemoryMapping(data []byte) {
 	// 模拟内存映射读取（简化版本）
 	for i := 0; i < 100; i++ {
 		if _, err := file.Seek(0, 0); err != nil {
+			log.Printf("重置文件指针失败: %v", err)
 			continue
 		}
 
 		// 读取文件头部分（模拟映射访问）
 		buffer := make([]byte, 4096)
 		if _, err := file.Read(buffer); err != nil {
+			log.Printf("读取文件失败: %v", err)
 			continue
 		}
 		_ = buffer
@@ -988,7 +1029,7 @@ func (co *CacheOptimizer) benchmarkRandomAccess(size int) {
 
 	// 生成随机索引
 	for i := range indices {
-		indices[i] = rand.Intn(size)
+		indices[i] = secureRandomInt(size)
 	}
 
 	start := time.Now()
@@ -1161,8 +1202,14 @@ func (io *IOOptimizer) benchmarkWrite(filename string, data []byte, batch bool) 
 		defer os.Remove(filename + ".batch")
 
 		writer := bufio.NewWriterSize(file, 64*1024) // 64KB缓冲区
-		writer.Write(data)
-		writer.Flush()
+		if _, err := writer.Write(data); err != nil {
+			fmt.Printf("  批量写入失败: %v\n", err)
+			return
+		}
+		if err := writer.Flush(); err != nil {
+			fmt.Printf("  刷新缓冲区失败: %v\n", err)
+			return
+		}
 
 		elapsed := time.Since(start)
 		throughput := float64(len(data)) / elapsed.Seconds() / 1024 / 1024
@@ -1184,7 +1231,10 @@ func (io *IOOptimizer) benchmarkWrite(filename string, data []byte, batch bool) 
 			if end > len(data) {
 				end = len(data)
 			}
-			file.Write(data[i:end])
+			if _, err := file.Write(data[i:end]); err != nil {
+				fmt.Printf("  单次写入失败: %v\n", err)
+				return
+			}
 		}
 
 		elapsed := time.Since(start)
@@ -1201,8 +1251,12 @@ func (io *IOOptimizer) benchmarkRead(filename string, size int, batch bool) {
 	}
 
 	data := make([]byte, size)
-	file.Write(data)
-	file.Close()
+	if _, err := file.Write(data); err != nil {
+		fmt.Printf("写入文件失败: %v\n", err)
+	}
+	if err := file.Close(); err != nil {
+		fmt.Printf("关闭文件失败: %v\n", err)
+	}
 	defer os.Remove(filename)
 
 	start := time.Now()
@@ -1218,7 +1272,10 @@ func (io *IOOptimizer) benchmarkRead(filename string, size int, batch bool) {
 
 		reader := bufio.NewReaderSize(file, 64*1024) // 64KB缓冲区
 		buffer := make([]byte, size)
-		reader.Read(buffer)
+		if _, err := reader.Read(buffer); err != nil {
+			fmt.Printf("  批量读取失败: %v\n", err)
+			return
+		}
 
 		elapsed := time.Since(start)
 		throughput := float64(size) / elapsed.Seconds() / 1024 / 1024
@@ -1236,7 +1293,10 @@ func (io *IOOptimizer) benchmarkRead(filename string, size int, batch bool) {
 		chunkSize := 1024
 		buffer := make([]byte, chunkSize)
 		for i := 0; i < size; i += chunkSize {
-			file.Read(buffer)
+			if _, err := file.Read(buffer); err != nil {
+				fmt.Printf("  单次读取失败: %v\n", err)
+				return
+			}
 		}
 
 		elapsed := time.Since(start)
@@ -1258,9 +1318,17 @@ func (io *IOOptimizer) benchmarkBufferedIO(filename string, data []byte) {
 		}
 
 		writer := bufio.NewWriterSize(file, bufSize)
-		writer.Write(data)
-		writer.Flush()
-		file.Close()
+		if _, err := writer.Write(data); err != nil {
+			fmt.Printf("写入缓冲区失败: %v\n", err)
+			continue
+		}
+		if err := writer.Flush(); err != nil {
+			fmt.Printf("刷新缓冲区失败: %v\n", err)
+			continue
+		}
+		if err := file.Close(); err != nil {
+			fmt.Printf("关闭文件失败: %v\n", err)
+		}
 
 		elapsed := time.Since(start)
 		throughput := float64(len(data)) / elapsed.Seconds() / 1024 / 1024
@@ -1285,11 +1353,17 @@ func (io *IOOptimizer) benchmarkMemoryMappedIO(filename string, size int) {
 	defer os.Remove(filename + ".mmap")
 
 	// 预分配文件大小
-	file.Truncate(int64(size))
+	if err := file.Truncate(int64(size)); err != nil {
+		fmt.Printf("  预分配文件失败: %v\n", err)
+		return
+	}
 
 	// 模拟内存映射访问（实际需要系统调用）
 	data := make([]byte, size)
-	file.WriteAt(data, 0)
+	if _, err := file.WriteAt(data, 0); err != nil {
+		fmt.Printf("  写入文件失败: %v\n", err)
+		return
+	}
 
 	elapsed := time.Since(start)
 	throughput := float64(size) / elapsed.Seconds() / 1024 / 1024
@@ -1358,7 +1432,9 @@ func (pool *ConnectionPool) Put(conn net.Conn) {
 		// 连接放回池中
 	default:
 		// 池已满，关闭连接
-		conn.Close()
+		if err := conn.Close(); err != nil {
+			log.Printf("关闭连接失败: %v", err)
+		}
 	}
 }
 

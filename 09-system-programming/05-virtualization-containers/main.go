@@ -26,10 +26,13 @@ import (
 	"crypto/rand"
 	"fmt"
 	"io"
-	mathrand "math/rand"
+	"log"
+	"math/big"
+	"net"
 	"os"
 	"os/exec"
 	"path/filepath"
+	"regexp"
 	"strconv"
 	"strings"
 	"sync"
@@ -37,6 +40,86 @@ import (
 	"syscall"
 	"time"
 )
+
+// 安全随机数生成函数
+func secureRandomInt(max int) int {
+	n, err := rand.Int(rand.Reader, big.NewInt(int64(max)))
+	if err != nil {
+		// G115安全修复：确保转换不会溢出
+		fallback := time.Now().UnixNano() % int64(max)
+		if fallback > int64(^uint(0)>>1) {
+			fallback = fallback % int64(^uint(0)>>1)
+		}
+		return int(fallback)
+	}
+	// G115安全修复：检查int64到int的安全转换
+	result := n.Int64()
+	if result > int64(^uint(0)>>1) {
+		result = result % int64(max)
+	}
+	return int(result)
+}
+
+func secureRandomInt63() int64 {
+	n, err := rand.Int(rand.Reader, big.NewInt(1<<62))
+	if err != nil {
+		// 安全fallback：使用时间戳
+		return time.Now().UnixNano()
+	}
+	return n.Int64()
+}
+
+// G204安全修复：输入验证函数防止命令注入
+func validateNetworkName(name string) error {
+	// 网络名称只允许字母数字字符、连字符和下划线，长度限制1-63字符
+	if len(name) == 0 || len(name) > 63 {
+		return fmt.Errorf("网络名称长度必须在1-63字符之间")
+	}
+	matched, _ := regexp.MatchString("^[a-zA-Z0-9_-]+$", name)
+	if !matched {
+		return fmt.Errorf("网络名称只能包含字母、数字、连字符和下划线")
+	}
+	return nil
+}
+
+func validateIPAddress(ip string) error {
+	// 验证IP地址格式
+	if net.ParseIP(ip) == nil {
+		return fmt.Errorf("无效的IP地址格式: %s", ip)
+	}
+	return nil
+}
+
+func validateExecutablePath(path string) error {
+	// 验证可执行文件路径，只允许白名单中的命令
+	allowedCommands := map[string]bool{
+		"sh":     true,
+		"bash":   true,
+		"python": true,
+		"python3": true,
+		"node":   true,
+		"java":   true,
+		"go":     true,
+		"php":    true,
+		"ruby":   true,
+		"perl":   true,
+	}
+
+	// 提取命令名称
+	cmdName := filepath.Base(path)
+	if !allowedCommands[cmdName] {
+		return fmt.Errorf("不允许的命令: %s", cmdName)
+	}
+
+	// 检查路径是否包含危险字符
+	if strings.Contains(path, "..") || strings.Contains(path, ";") ||
+	   strings.Contains(path, "&") || strings.Contains(path, "|") ||
+	   strings.Contains(path, "$") || strings.Contains(path, "`") {
+		return fmt.Errorf("命令路径包含危险字符")
+	}
+
+	return nil
+}
 
 // Windows compatible clone constants (placeholders)
 const (
@@ -397,7 +480,9 @@ func (cr *ContainerRuntime) StopContainer(containerID string, timeout time.Durat
 		process, err := os.FindProcess(container.Process.Pid)
 		if err == nil {
 			// 先发送SIGTERM
-			process.Signal(syscall.SIGTERM)
+			if err := process.Signal(syscall.SIGTERM); err != nil {
+				log.Printf("Warning: failed to send SIGTERM to process: %v", err)
+			}
 
 			// 等待超时或进程结束
 			done := make(chan bool, 1)
@@ -407,7 +492,9 @@ func (cr *ContainerRuntime) StopContainer(containerID string, timeout time.Durat
 					done <- true
 				case <-time.After(timeout):
 					// 超时后发送SIGKILL
-					process.Signal(syscall.SIGKILL)
+					if err := process.Signal(syscall.SIGKILL); err != nil {
+						log.Printf("Warning: failed to send SIGKILL to process: %v", err)
+					}
 					done <- true
 				}
 			}()
@@ -447,7 +534,9 @@ func (cr *ContainerRuntime) RemoveContainer(containerID string, force bool) erro
 
 	// 强制停止运行中的容器
 	if container.State.Running && force {
-		cr.StopContainer(containerID, 5*time.Second)
+		if err := cr.StopContainer(containerID, 5*time.Second); err != nil {
+			log.Printf("Warning: failed to stop container: %v", err)
+		}
 	}
 
 	// 清理资源
@@ -538,9 +627,17 @@ func (cr *ContainerRuntime) startContainerProcess(container *Container) (*Contai
 	// 构建命令
 	var cmd *exec.Cmd
 	if len(container.Config.Entrypoint) > 0 {
+		// G204安全修复：验证可执行文件路径
+		if err := validateExecutablePath(container.Config.Entrypoint[0]); err != nil {
+			return nil, fmt.Errorf("无效的容器入口点: %v", err)
+		}
 		args := append(container.Config.Entrypoint, container.Config.Cmd...)
 		cmd = exec.Command(args[0], args[1:]...)
 	} else if len(container.Config.Cmd) > 0 {
+		// G204安全修复：验证可执行文件路径
+		if err := validateExecutablePath(container.Config.Cmd[0]); err != nil {
+			return nil, fmt.Errorf("无效的容器命令: %v", err)
+		}
 		cmd = exec.Command(container.Config.Cmd[0], container.Config.Cmd[1:]...)
 	} else {
 		return nil, fmt.Errorf("no command specified")
@@ -635,22 +732,30 @@ func (cr *ContainerRuntime) waitForProcess(container *Container) {
 func (cr *ContainerRuntime) cleanupContainer(container *Container) {
 	// 清理命名空间
 	for _, ns := range container.Namespaces {
-		cr.namespaces.DestroyNamespace(ns)
+		if err := cr.namespaces.DestroyNamespace(ns); err != nil {
+			log.Printf("Warning: failed to destroy namespace: %v", err)
+		}
 	}
 
 	// 清理Cgroups
 	for _, cgroup := range container.Cgroups {
-		cr.cgroups.DestroyCgroup(cgroup)
+		if err := cr.cgroups.DestroyCgroup(cgroup); err != nil {
+			log.Printf("Warning: failed to destroy cgroup: %v", err)
+		}
 	}
 
 	// 清理挂载点
 	for _, mount := range container.Mounts {
-		windowsUnmount(mount.Target, 0)
+		if err := windowsUnmount(mount.Target, 0); err != nil {
+			log.Printf("Warning: failed to unmount %s: %v", mount.Target, err)
+		}
 	}
 
 	// 清理文件系统
 	containerRoot := filepath.Join(cr.config.RootDirectory, "containers", container.ID)
-	os.RemoveAll(containerRoot)
+	if err := os.RemoveAll(containerRoot); err != nil {
+		log.Printf("Warning: failed to remove container root directory: %v", err)
+	}
 }
 
 // monitorLoop 监控循环
@@ -770,7 +875,11 @@ func (nm *NamespaceManager) EnterNamespace(ns *Namespace) error {
 	if err != nil {
 		return err
 	}
-	defer syscall.Close(fd)
+	defer func() {
+		if err := syscall.Close(fd); err != nil {
+			log.Printf("Warning: failed to close file descriptor: %v", err)
+		}
+	}()
 
 	return setns(uintptr(fd), 0)
 }
@@ -1453,6 +1562,16 @@ func (bd *BridgeDriver) CreateNetwork(config *NetworkConfig) (*ContainerNetwork,
 }
 
 func (bd *BridgeDriver) createBridge(bridge *NetworkBridge) error {
+	// G204安全修复：验证网络名称
+	if err := validateNetworkName(bridge.Name); err != nil {
+		return fmt.Errorf("无效的网桥名称: %v", err)
+	}
+
+	// G204安全修复：验证IP地址
+	if err := validateIPAddress(bridge.IPAddress); err != nil {
+		return fmt.Errorf("无效的网桥IP地址: %v", err)
+	}
+
 	// 创建网桥接口
 	cmd := exec.Command("ip", "link", "add", bridge.Name, "type", "bridge")
 	if err := cmd.Run(); err != nil {
@@ -2842,34 +2961,37 @@ func (dmd *DeviceMapperDriver) Cleanup() error {
 
 // 辅助函数
 func generateContainerID() string {
-	return fmt.Sprintf("container_%d_%d", time.Now().UnixNano(), mathrand.Int63())
+	return fmt.Sprintf("container_%d_%d", time.Now().UnixNano(), secureRandomInt63())
 }
 
 func generateContainerName() string {
 	adjectives := []string{"happy", "clever", "brave", "gentle", "bright"}
 	nouns := []string{"tiger", "eagle", "dolphin", "phoenix", "dragon"}
 
-	adj := adjectives[mathrand.Intn(len(adjectives))]
-	noun := nouns[mathrand.Intn(len(nouns))]
+	adj := adjectives[secureRandomInt(len(adjectives))]
+	noun := nouns[secureRandomInt(len(nouns))]
 
 	return fmt.Sprintf("%s_%s", adj, noun)
 }
 
 func generateNetworkID() string {
-	return fmt.Sprintf("network_%d_%d", time.Now().UnixNano(), mathrand.Int63())
+	return fmt.Sprintf("network_%d_%d", time.Now().UnixNano(), secureRandomInt63())
 }
 
 func generatePodID() string {
-	return fmt.Sprintf("pod_%d_%d", time.Now().UnixNano(), mathrand.Int63())
+	return fmt.Sprintf("pod_%d_%d", time.Now().UnixNano(), secureRandomInt63())
 }
 
 func generateDeploymentID() string {
-	return fmt.Sprintf("deployment_%d_%d", time.Now().UnixNano(), mathrand.Int63())
+	return fmt.Sprintf("deployment_%d_%d", time.Now().UnixNano(), secureRandomInt63())
 }
 
 func generateShortID() string {
 	bytes := make([]byte, 16)
-	rand.Read(bytes)
+	if _, err := rand.Read(bytes); err != nil {
+		// Fallback to time-based ID if random generation fails
+		return fmt.Sprintf("%x", time.Now().UnixNano())[:12]
+	}
 	return fmt.Sprintf("%x", bytes)[:12]
 }
 
@@ -2993,14 +3115,20 @@ func demonstrateVirtualizationContainers() {
 
 	// 设置内存限制
 	if memoryCgroup, exists := container.Cgroups["memory"]; exists {
-		runtime.cgroups.SetMemoryLimit(memoryCgroup, 128*1024*1024) // 128MB
-		fmt.Printf("设置内存限制: 128MB\n")
+		if err := runtime.cgroups.SetMemoryLimit(memoryCgroup, 128*1024*1024); err != nil { // 128MB
+			log.Printf("Warning: failed to set memory limit: %v", err)
+		} else {
+			fmt.Printf("设置内存限制: 128MB\n")
+		}
 	}
 
 	// 设置CPU限制
 	if cpuCgroup, exists := container.Cgroups["cpu"]; exists {
-		runtime.cgroups.SetCPUQuota(cpuCgroup, 50000, 100000) // 50%
-		fmt.Printf("设置CPU限制: 50%%\n")
+		if err := runtime.cgroups.SetCPUQuota(cpuCgroup, 50000, 100000); err != nil { // 50%
+			log.Printf("Warning: failed to set CPU quota: %v", err)
+		} else {
+			fmt.Printf("设置CPU限制: 50%%\n")
+		}
 	}
 
 	// 6. 安全管理演示
@@ -3018,8 +3146,12 @@ func demonstrateVirtualizationContainers() {
 		},
 	}
 
-	runtime.seccomp.LoadProfile("demo-profile", seccompProfile)
-	runtime.seccomp.ApplyProfile(container.ID, "demo-profile")
+	if err := runtime.seccomp.LoadProfile("demo-profile", seccompProfile); err != nil {
+		log.Printf("Warning: failed to load seccomp profile: %v", err)
+	}
+	if err := runtime.seccomp.ApplyProfile(container.ID, "demo-profile"); err != nil {
+		log.Printf("Warning: failed to apply seccomp profile: %v", err)
+	}
 
 	// AppArmor配置
 	apparmorProfile := &AppArmorProfile{
@@ -3030,8 +3162,12 @@ func demonstrateVirtualizationContainers() {
 		},
 	}
 
-	runtime.apparmor.LoadProfile("demo-apparmor", apparmorProfile)
-	runtime.apparmor.ApplyProfile(container.ID, "demo-apparmor")
+	if err := runtime.apparmor.LoadProfile("demo-apparmor", apparmorProfile); err != nil {
+		log.Printf("Warning: failed to load apparmor profile: %v", err)
+	}
+	if err := runtime.apparmor.ApplyProfile(container.ID, "demo-apparmor"); err != nil {
+		log.Printf("Warning: failed to apply apparmor profile: %v", err)
+	}
 
 	// 7. 容器编排演示
 	fmt.Println("\n7. 容器编排和调度")
@@ -3158,10 +3294,14 @@ func demonstrateVirtualizationContainers() {
 	fmt.Println("\n11. 资源清理")
 
 	// 停止容器
-	runtime.StopContainer(container.ID, 10*time.Second)
+	if err := runtime.StopContainer(container.ID, 10*time.Second); err != nil {
+		log.Printf("Warning: failed to stop container: %v", err)
+	}
 
 	// 删除容器
-	runtime.RemoveContainer(container.ID, false)
+	if err := runtime.RemoveContainer(container.ID, false); err != nil {
+		log.Printf("Warning: failed to remove container: %v", err)
+	}
 
 	fmt.Println("\n=== 虚拟化与容器演示完成 ===")
 }

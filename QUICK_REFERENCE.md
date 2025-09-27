@@ -81,12 +81,14 @@ docker-compose down                        # 停止所有服务
 
 ### 📚 模块概览
 ```
+00-assessment-system → 评估系统 (入门前)
 01-basics          → 基础语法 (1-2周)
 02-advanced        → 进阶特性 (2-3周)
 03-concurrency     → 并发编程 (3-4周)
 04-web             → Web开发 (3-4周)
 05-microservices   → 微服务 (4-5周)
 06-projects        → 实战项目 (4-6周)
+06.5-performance-fundamentals → 性能基础 (2-3周)
 07-runtime-internals → 运行时内核 (3-6个月)
 08-performance-mastery → 性能优化 (3-6个月)
 09-system-programming → 系统编程 (6-9个月)
@@ -95,21 +97,26 @@ docker-compose down                        # 停止所有服务
 12-ecosystem-contribution → 生态贡献 (9-15个月)
 13-language-design → 语言设计 (15-24个月)
 14-tech-leadership → 技术领导力 (15-24个月)
+15-opensource-contribution → 开源贡献 (持续)
 ```
 
 ### 🎯 学习检查点
 ```bash
+# 评估阶段验收
+cd 00-assessment-system && go test -v ./...  # 能力评估测试
+
 # 基础阶段验收
-cd 01-basics && make test      # 基础语法测试
-cd 02-advanced && make test    # 进阶特性测试
+cd 01-basics && go test -v ./...      # 基础语法测试
+cd 02-advanced && go test -v ./...    # 进阶特性测试
 
 # 应用阶段验收
-cd 03-concurrency && make test # 并发编程测试
-cd 04-web && make test         # Web开发测试
+cd 03-concurrency && go test -v ./... # 并发编程测试
+cd 04-web && go test -v ./...         # Web开发测试
+cd 06.5-performance-fundamentals && go test -v ./... # 性能基础测试
 
 # 专家阶段验收
-cd 07-runtime-internals && make test  # 运行时测试
-cd 08-performance-mastery && make bench # 性能基准测试
+cd 07-runtime-internals && go test -v ./...  # 运行时测试
+cd 08-performance-mastery && go test -bench=. ./... # 性能基准测试
 ```
 
 ## 🔍 调试和故障排除
@@ -228,13 +235,13 @@ go test -bench=. -benchmem ./...
 
 ### GitHub Actions触发
 ```bash
-# 推送代码触发CI
+# 推送代码触发质量保障流水线
 git push origin main
 
-# 创建PR触发检查
+# 创建PR触发完整检查 (P0-P3级别)
 git checkout -b feature/new-feature
 git push origin feature/new-feature
-# 创建Pull Request
+# 创建Pull Request - 触发quality-assurance.yml工作流
 ```
 
 ### 本地CI模拟
@@ -273,20 +280,24 @@ make pre-commit
 ## 📖 重要文档链接
 
 ### 项目文档
+- [项目总览](README.md) - 项目主页和快速开始
 - [学习指南](LEARNING_GUIDE.md) - 详细学习路径
 - [贡献指南](CONTRIBUTING.md) - 开发和贡献指南
-- [主README](README.md) - 项目总览
+- [文档中心](docs/README.md) - 完整文档导航
+- [质量体系](docs/QUALITY_SYSTEM.md) - 企业级质量保障
 
 ### 配置文件
 - [Makefile](Makefile) - 构建自动化
 - [Docker Compose](docker-compose.yml) - 环境配置
-- [GitHub Actions](.github/workflows/ci-cd.yml) - CI/CD配置
+- [GitHub Actions](.github/workflows/quality-assurance.yml) - CI/CD配置
 - [Linting配置](.golangci.yml) - 代码质量标准
 
 ### 外部资源
 - [Go官方文档](https://golang.org/doc/)
 - [Effective Go](https://golang.org/doc/effective_go)
 - [Go语言圣经](https://books.studygolang.com/gopl-zh/)
+- [Go Playground](https://play.golang.org/)
+- [pkg.go.dev](https://pkg.go.dev/) - Go包文档
 
 ## 🆘 紧急联系
 

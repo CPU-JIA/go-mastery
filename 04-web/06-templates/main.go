@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"html"
 	"html/template"
 	"io"
 	"log"
@@ -178,15 +179,17 @@ func (tm *TemplateManager) registerTemplateFunctions() {
 			return strings.Join(items, sep)
 		},
 
-		// HTML辅助函数
-		"safeHTML": func(s string) template.HTML {
-			return template.HTML(s)
+		// HTML安全函数 - XSS防护
+		"sanitizeHTML": func(s string) string {
+			// 使用html.EscapeString确保XSS安全
+			return html.EscapeString(s)
 		},
-		"safeAttr": func(s string) template.HTMLAttr {
-			return template.HTMLAttr(s)
-		},
-		"safeURL": func(s string) template.URL {
-			return template.URL(s)
+		"validateURL": func(s string) string {
+			// 只允许安全的URL协议
+			if strings.HasPrefix(s, "http://") || strings.HasPrefix(s, "https://") || strings.HasPrefix(s, "/") {
+				return html.EscapeString(s)
+			}
+			return "#" // 不安全的URL重定向到安全地址
 		},
 
 		// CSS/JavaScript辅助
@@ -925,7 +928,14 @@ func main() {
 	fmt.Println()
 	fmt.Println("服务器运行在 http://localhost:8080")
 
-	log.Fatal(http.ListenAndServe(":8080", router))
+	server := &http.Server{
+		Addr:         ":8080",
+		Handler:      router,
+		ReadTimeout:  15 * time.Second,
+		WriteTimeout: 15 * time.Second,
+		IdleTimeout:  60 * time.Second,
+	}
+	log.Fatal(server.ListenAndServe())
 }
 
 /*

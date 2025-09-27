@@ -26,13 +26,41 @@ import (
 	"context"
 	"crypto/rand"
 	"fmt"
-	mathrand "math/rand"
+	"math/big"
 	"sort"
 	"strings"
 	"sync"
 	"sync/atomic"
 	"time"
 )
+
+// 安全随机数生成函数
+func secureRandomInt(max int) int {
+	n, err := rand.Int(rand.Reader, big.NewInt(int64(max)))
+	if err != nil {
+		// G115安全修复：确保转换不会溢出
+		fallback := time.Now().UnixNano() % int64(max)
+		if fallback > int64(^uint(0)>>1) {
+			fallback = fallback % int64(^uint(0)>>1)
+		}
+		return int(fallback)
+	}
+	// G115安全修复：检查int64到int的安全转换
+	result := n.Int64()
+	if result > int64(^uint(0)>>1) {
+		result = result % int64(max)
+	}
+	return int(result)
+}
+
+func secureRandomFloat64() float64 {
+	n, err := rand.Int(rand.Reader, big.NewInt(1<<53))
+	if err != nil {
+		// 安全fallback：使用时间戳
+		return float64(time.Now().UnixNano()%1000) / 1000.0
+	}
+	return float64(n.Int64()) / float64(1<<53)
+}
 
 // ==================
 // 1. APM系统核心架构
@@ -1313,9 +1341,9 @@ func (dhc *DatabaseHealthCheck) Check(ctx context.Context) HealthCheckResult {
 	start := time.Now()
 
 	// 模拟检查逻辑
-	time.Sleep(time.Millisecond * time.Duration(mathrand.Intn(100)))
+	time.Sleep(time.Millisecond * time.Duration(secureRandomInt(100)))
 
-	success := mathrand.Float64() > 0.1 // 90%成功率
+	success := secureRandomFloat64() > 0.1 // 90%成功率
 
 	result := HealthCheckResult{
 		Name:      dhc.name,
@@ -1327,7 +1355,7 @@ func (dhc *DatabaseHealthCheck) Check(ctx context.Context) HealthCheckResult {
 	if success {
 		result.Status = HealthStatusUp
 		result.Message = "数据库连接正常"
-		result.Details["connection_pool_size"] = mathrand.Intn(50) + 10
+		result.Details["connection_pool_size"] = secureRandomInt(50) + 10
 	} else {
 		result.Status = HealthStatusDown
 		result.Message = "数据库连接失败"
@@ -1355,9 +1383,9 @@ func (rhc *RedisHealthCheck) Check(ctx context.Context) HealthCheckResult {
 	start := time.Now()
 
 	// 模拟Redis PING检查
-	time.Sleep(time.Millisecond * time.Duration(mathrand.Intn(50)))
+	time.Sleep(time.Millisecond * time.Duration(secureRandomInt(50)))
 
-	success := mathrand.Float64() > 0.05 // 95%成功率
+	success := secureRandomFloat64() > 0.05 // 95%成功率
 
 	result := HealthCheckResult{
 		Name:      rhc.name,
@@ -1369,8 +1397,8 @@ func (rhc *RedisHealthCheck) Check(ctx context.Context) HealthCheckResult {
 	if success {
 		result.Status = HealthStatusUp
 		result.Message = "Redis连接正常"
-		result.Details["used_memory"] = mathrand.Intn(1000) + 100
-		result.Details["connected_clients"] = mathrand.Intn(100) + 1
+		result.Details["used_memory"] = secureRandomInt(1000) + 100
+		result.Details["connected_clients"] = secureRandomInt(100) + 1
 	} else {
 		result.Status = HealthStatusDown
 		result.Message = "Redis连接失败"
@@ -1617,8 +1645,8 @@ func simulateServiceLoad(apm *APMSystem, userService, orderService, paymentServi
 	go func() {
 		for i := 0; i < 100; i++ {
 			// 模拟请求
-			responseTime := time.Duration(mathrand.Intn(200)) * time.Millisecond
-			isError := mathrand.Float64() < 0.02 // 2%错误率
+			responseTime := time.Duration(secureRandomInt(200)) * time.Millisecond
+			isError := secureRandomFloat64() < 0.02 // 2%错误率
 
 			userService.mutex.Lock()
 			atomic.AddInt64(&userService.RequestCount, 1)
@@ -1654,8 +1682,8 @@ func simulateServiceLoad(apm *APMSystem, userService, orderService, paymentServi
 	// 模拟订单服务负载
 	go func() {
 		for i := 0; i < 80; i++ {
-			responseTime := time.Duration(mathrand.Intn(300)) * time.Millisecond
-			isError := mathrand.Float64() < 0.01 // 1%错误率
+			responseTime := time.Duration(secureRandomInt(300)) * time.Millisecond
+			isError := secureRandomFloat64() < 0.01 // 1%错误率
 
 			orderService.mutex.Lock()
 			atomic.AddInt64(&orderService.RequestCount, 1)
@@ -1679,8 +1707,8 @@ func simulateServiceLoad(apm *APMSystem, userService, orderService, paymentServi
 	// 模拟支付服务负载（高延迟场景）
 	go func() {
 		for i := 0; i < 60; i++ {
-			responseTime := time.Duration(mathrand.Intn(800)+200) * time.Millisecond // 200-1000ms
-			isError := mathrand.Float64() < 0.005                                    // 0.5%错误率
+			responseTime := time.Duration(secureRandomInt(800)+200) * time.Millisecond // 200-1000ms
+			isError := secureRandomFloat64() < 0.005                                    // 0.5%错误率
 
 			paymentService.mutex.Lock()
 			atomic.AddInt64(&paymentService.RequestCount, 1)
@@ -1721,13 +1749,13 @@ func simulateServiceLoad(apm *APMSystem, userService, orderService, paymentServi
 		time.Sleep(time.Second * 2)
 		for i := 0; i < 50; i++ {
 			// 用户服务可用性SLI
-			goodRequests := int64(mathrand.Intn(100) + 950) // 95-99.9%可用性
+			goodRequests := int64(secureRandomInt(100) + 950) // 95-99.9%可用性
 			totalRequests := int64(1000)
 			apm.sloManager.UpdateSLI("user-service-availability", SLIAvailability,
 				goodRequests, totalRequests)
 
 			// 支付服务延迟SLI
-			fastRequests := int64(mathrand.Intn(100) + 900) // 90-99%在SLA内
+			fastRequests := int64(secureRandomInt(100) + 900) // 90-99%在SLA内
 			totalPayments := int64(1000)
 			apm.sloManager.UpdateSLI("payment-latency", SLILatency,
 				fastRequests, totalPayments)

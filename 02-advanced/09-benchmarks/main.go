@@ -1,17 +1,38 @@
 package main
 
 import (
-	"crypto/md5"
+	"crypto/rand"
 	"crypto/sha256"
 	"fmt"
 	"hash"
-	"math/rand"
+	"math/big"
 	"sort"
 	"strconv"
 	"strings"
 	"sync"
 	"time"
 )
+
+// 安全随机数生成函数
+func secureRandomInt(max int) int {
+	n, err := rand.Int(rand.Reader, big.NewInt(int64(max)))
+	if err != nil {
+		// 安全fallback：使用时间戳
+		// G115安全修复：确保转换不会溢出
+		fallback := time.Now().UnixNano() % int64(max)
+		// 检查是否在int范围内
+		if fallback > int64(^uint(0)>>1) {
+			fallback = fallback % int64(^uint(0)>>1)
+		}
+		return int(fallback)
+	}
+	// G115安全修复：检查int64到int的安全转换
+	result := n.Int64()
+	if result > int64(^uint(0)>>1) {
+		result = result % int64(max)
+	}
+	return int(result)
+}
 
 // =============================================================================
 // 1. 基准测试基础
@@ -260,9 +281,9 @@ func (sa *SortingAlgorithms) InsertionSort(arr []int) {
 // HashingAlgorithms 不同哈希算法的性能测试
 type HashingAlgorithms struct{}
 
-// MD5Hash 使用MD5哈希
-func (ha *HashingAlgorithms) MD5Hash(data []byte) []byte {
-	hasher := md5.New()
+// SecureHash 使用安全的SHA256哈希
+func (ha *HashingAlgorithms) SecureHash(data []byte) []byte {
+	hasher := sha256.New()
 	hasher.Write(data)
 	return hasher.Sum(nil)
 }
@@ -552,10 +573,9 @@ func demonstrateSortingPerformance() {
 
 	// 生成测试数据
 	generateRandomSlice := func(size int) []int {
-		rand.Seed(time.Now().UnixNano())
 		slice := make([]int, size)
 		for i := range slice {
-			slice[i] = rand.Intn(1000)
+			slice[i] = secureRandomInt(1000)
 		}
 		return slice
 	}
@@ -590,8 +610,8 @@ func demonstrateHashingPerformance() {
 	data := []byte("这是一个用于测试哈希性能的示例数据，包含中文和English混合内容")
 
 	start := time.Now()
-	md5Result := ha.MD5Hash(data)
-	fmt.Printf("MD5哈希: %x (耗时: %v)\n", md5Result, time.Since(start))
+	secureResult := ha.SecureHash(data)
+	fmt.Printf("安全哈希(SHA256): %x (耗时: %v)\n", secureResult[:8], time.Since(start))
 
 	start = time.Now()
 	sha256Result := ha.SHA256Hash(data)

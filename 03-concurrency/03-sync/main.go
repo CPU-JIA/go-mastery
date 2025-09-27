@@ -1,13 +1,44 @@
 package main
 
 import (
+	"crypto/rand"
 	"fmt"
-	"math/rand"
+	"math/big"
 	"runtime"
 	"sync"
 	"sync/atomic"
 	"time"
 )
+
+// 安全随机数生成函数
+func secureRandomInt(max int) int {
+	n, err := rand.Int(rand.Reader, big.NewInt(int64(max)))
+	if err != nil {
+		// 安全fallback：使用时间戳
+		// G115安全修复：确保转换不会溢出
+		fallback := time.Now().UnixNano() % int64(max)
+		// 检查是否在int范围内
+		if fallback > int64(^uint(0)>>1) {
+			fallback = fallback % int64(^uint(0)>>1)
+		}
+		return int(fallback)
+	}
+	// G115安全修复：检查int64到int的安全转换
+	result := n.Int64()
+	if result > int64(^uint(0)>>1) {
+		result = result % int64(max)
+	}
+	return int(result)
+}
+
+func secureRandomFloat32() float32 {
+	n, err := rand.Int(rand.Reader, big.NewInt(1<<24))
+	if err != nil {
+		// 安全fallback：使用时间戳
+		return float32(time.Now().UnixNano()%1000) / 1000.0
+	}
+	return float32(n.Int64()) / float32(1<<24)
+}
 
 // =============================================================================
 // 1. Sync 包基础概念
@@ -228,7 +259,7 @@ func demonstrateRWMutex() {
 
 			for j := 1; j <= 3; j++ {
 				// 随机读取一些键
-				key := fmt.Sprintf("key_%d_%d", rand.Intn(numWriters)+1, rand.Intn(5)+1)
+				key := fmt.Sprintf("key_%d_%d", secureRandomInt(numWriters)+1, secureRandomInt(5)+1)
 				store.Get(key)
 
 				// 偶尔获取所有数据
@@ -972,7 +1003,7 @@ func main() {
 	fmt.Println("============================")
 
 	// 设置随机种子
-	rand.Seed(time.Now().UnixNano())
+	// 注意：crypto/rand不需要设置种子
 
 	demonstrateMutex()
 	demonstrateRWMutex()

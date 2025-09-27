@@ -41,31 +41,31 @@ type CodeQualityEvaluator struct {
 // CodeQualityConfig 代码质量评估配置
 type CodeQualityConfig struct {
 	// 工具配置
-	EnabledTools    map[string]bool    `json:"enabled_tools"`    // 启用的分析工具
-	ToolPaths       map[string]string  `json:"tool_paths"`       // 工具路径配置
-	Thresholds      QualityThresholds  `json:"thresholds"`       // 质量阈值
-	WeightSettings  QualityWeights     `json:"weight_settings"`  // 权重设置
+	EnabledTools   map[string]bool   `json:"enabled_tools"`   // 启用的分析工具
+	ToolPaths      map[string]string `json:"tool_paths"`      // 工具路径配置
+	Thresholds     QualityThresholds `json:"thresholds"`      // 质量阈值
+	WeightSettings QualityWeights    `json:"weight_settings"` // 权重设置
 
 	// 评估范围
-	IncludePatterns []string           `json:"include_patterns"` // 包含的文件模式
-	ExcludePatterns []string           `json:"exclude_patterns"` // 排除的文件模式
-	MaxFileSize     int64              `json:"max_file_size"`    // 最大文件大小
-	Timeout         time.Duration      `json:"timeout"`          // 分析超时时间
+	IncludePatterns []string      `json:"include_patterns"` // 包含的文件模式
+	ExcludePatterns []string      `json:"exclude_patterns"` // 排除的文件模式
+	MaxFileSize     int64         `json:"max_file_size"`    // 最大文件大小
+	Timeout         time.Duration `json:"timeout"`          // 分析超时时间
 
 	// 报告配置
-	DetailLevel     string             `json:"detail_level"`     // 详细程度: summary, detailed, verbose
-	OutputFormat    string             `json:"output_format"`    // 输出格式: json, text, html
-	SaveResults     bool               `json:"save_results"`     // 是否保存结果
-	ResultsPath     string             `json:"results_path"`     // 结果保存路径
+	DetailLevel  string `json:"detail_level"`  // 详细程度: summary, detailed, verbose
+	OutputFormat string `json:"output_format"` // 输出格式: json, text, html
+	SaveResults  bool   `json:"save_results"`  // 是否保存结果
+	ResultsPath  string `json:"results_path"`  // 结果保存路径
 }
 
 // QualityThresholds 质量阈值设定
 type QualityThresholds struct {
 	// 复杂度阈值
-	CyclomaticComplexity  int     `json:"cyclomatic_complexity"`  // 圈复杂度阈值
-	CognitiveComplexity   int     `json:"cognitive_complexity"`   // 认知复杂度阈值
-	FunctionLength        int     `json:"function_length"`        // 函数长度阈值
-	ParameterCount        int     `json:"parameter_count"`        // 参数数量阈值
+	CyclomaticComplexity int `json:"cyclomatic_complexity"` // 圈复杂度阈值
+	CognitiveComplexity  int `json:"cognitive_complexity"`  // 认知复杂度阈值
+	FunctionLength       int `json:"function_length"`       // 函数长度阈值
+	ParameterCount       int `json:"parameter_count"`       // 参数数量阈值
 
 	// 覆盖率阈值
 	TestCoverage          float64 `json:"test_coverage"`          // 测试覆盖率阈值
@@ -73,23 +73,23 @@ type QualityThresholds struct {
 	DocumentationCoverage float64 `json:"documentation_coverage"` // 文档覆盖率阈值
 
 	// 质量指标阈值
-	CodeDuplication       float64 `json:"code_duplication"`       // 代码重复率阈值
-	TechnicalDebt         float64 `json:"technical_debt"`         // 技术债务阈值
-	Maintainability       float64 `json:"maintainability"`        // 可维护性阈值
+	CodeDuplication float64 `json:"code_duplication"` // 代码重复率阈值
+	TechnicalDebt   float64 `json:"technical_debt"`   // 技术债务阈值
+	Maintainability float64 `json:"maintainability"`  // 可维护性阈值
 
 	// 性能阈值
-	AllocationRate        int     `json:"allocation_rate"`        // 内存分配率阈值
-	GoroutineLeaks        int     `json:"goroutine_leaks"`        // Goroutine泄漏阈值
+	AllocationRate int `json:"allocation_rate"` // 内存分配率阈值
+	GoroutineLeaks int `json:"goroutine_leaks"` // Goroutine泄漏阈值
 }
 
 // QualityWeights 质量评估权重
 type QualityWeights struct {
-	CodeStructure         float64 `json:"code_structure"`         // 代码结构权重
-	StyleCompliance       float64 `json:"style_compliance"`       // 风格合规权重
-	SecurityAnalysis      float64 `json:"security_analysis"`      // 安全分析权重
-	PerformanceAnalysis   float64 `json:"performance_analysis"`   // 性能分析权重
-	TestQuality          float64 `json:"test_quality"`           // 测试质量权重
-	DocumentationQuality  float64 `json:"documentation_quality"`  // 文档质量权重
+	CodeStructure        float64 `json:"code_structure"`        // 代码结构权重
+	StyleCompliance      float64 `json:"style_compliance"`      // 风格合规权重
+	SecurityAnalysis     float64 `json:"security_analysis"`     // 安全分析权重
+	PerformanceAnalysis  float64 `json:"performance_analysis"`  // 性能分析权重
+	TestQuality          float64 `json:"test_quality"`          // 测试质量权重
+	DocumentationQuality float64 `json:"documentation_quality"` // 文档质量权重
 }
 
 // AnalysisTool 分析工具接口
@@ -102,174 +102,174 @@ type AnalysisTool interface {
 
 // ToolResult 工具分析结果
 type ToolResult struct {
-	ToolName    string                     `json:"tool_name"`    // 工具名称
-	Version     string                     `json:"version"`      // 工具版本
-	ExecutionTime time.Duration            `json:"execution_time"` // 执行时间
-	Success     bool                       `json:"success"`      // 是否成功
-	Issues      []CodeIssue                `json:"issues"`       // 发现的问题
-	Metrics     map[string]interface{}     `json:"metrics"`      // 度量数据
-	Summary     ToolSummary                `json:"summary"`      // 结果摘要
+	ToolName      string                 `json:"tool_name"`      // 工具名称
+	Version       string                 `json:"version"`        // 工具版本
+	ExecutionTime time.Duration          `json:"execution_time"` // 执行时间
+	Success       bool                   `json:"success"`        // 是否成功
+	Issues        []CodeIssue            `json:"issues"`         // 发现的问题
+	Metrics       map[string]interface{} `json:"metrics"`        // 度量数据
+	Summary       ToolSummary            `json:"summary"`        // 结果摘要
 }
 
 // CodeIssue 代码问题
 type CodeIssue struct {
-	ID          string                     `json:"id"`           // 问题唯一标识
-	Type        string                     `json:"type"`         // 问题类型
-	Severity    string                     `json:"severity"`     // 严重程度: error, warning, info
-	Category    string                     `json:"category"`     // 问题分类
-	Rule        string                     `json:"rule"`         // 触发规则
+	ID       string `json:"id"`       // 问题唯一标识
+	Type     string `json:"type"`     // 问题类型
+	Severity string `json:"severity"` // 严重程度: error, warning, info
+	Category string `json:"category"` // 问题分类
+	Rule     string `json:"rule"`     // 触发规则
 
 	// 位置信息
-	File        string                     `json:"file"`         // 文件路径
-	Line        int                        `json:"line"`         // 行号
-	Column      int                        `json:"column"`       // 列号
-	Function    string                     `json:"function"`     // 所在函数
+	File     string `json:"file"`     // 文件路径
+	Line     int    `json:"line"`     // 行号
+	Column   int    `json:"column"`   // 列号
+	Function string `json:"function"` // 所在函数
 
 	// 问题描述
-	Message     string                     `json:"message"`      // 问题描述
-	Description string                     `json:"description"`  // 详细说明
-	Example     string                     `json:"example"`      // 示例代码
-	Suggestion  string                     `json:"suggestion"`   // 修复建议
+	Message     string `json:"message"`     // 问题描述
+	Description string `json:"description"` // 详细说明
+	Example     string `json:"example"`     // 示例代码
+	Suggestion  string `json:"suggestion"`  // 修复建议
 
 	// 影响评估
-	Impact      string                     `json:"impact"`       // 影响范围: local, module, system
-	Complexity  int                        `json:"complexity"`   // 修复复杂度
-	Priority    int                        `json:"priority"`     // 优先级
+	Impact     string `json:"impact"`     // 影响范围: local, module, system
+	Complexity int    `json:"complexity"` // 修复复杂度
+	Priority   int    `json:"priority"`   // 优先级
 }
 
 // ToolSummary 工具结果摘要
 type ToolSummary struct {
-	TotalIssues   int                      `json:"total_issues"`   // 总问题数
-	ErrorCount    int                      `json:"error_count"`    // 错误数
-	WarningCount  int                      `json:"warning_count"`  // 警告数
-	InfoCount     int                      `json:"info_count"`     // 信息数
-	Score         float64                  `json:"score"`          // 工具评分
-	Passed        bool                     `json:"passed"`         // 是否通过
+	TotalIssues  int     `json:"total_issues"`  // 总问题数
+	ErrorCount   int     `json:"error_count"`   // 错误数
+	WarningCount int     `json:"warning_count"` // 警告数
+	InfoCount    int     `json:"info_count"`    // 信息数
+	Score        float64 `json:"score"`         // 工具评分
+	Passed       bool    `json:"passed"`        // 是否通过
 }
 
 // CodeQualityResult 代码质量评估结果
 type CodeQualityResult struct {
-	ProjectPath   string                   `json:"project_path"`   // 项目路径
-	Timestamp     time.Time                `json:"timestamp"`      // 评估时间
-	Duration      time.Duration            `json:"duration"`       // 评估耗时
+	ProjectPath string        `json:"project_path"` // 项目路径
+	Timestamp   time.Time     `json:"timestamp"`    // 评估时间
+	Duration    time.Duration `json:"duration"`     // 评估耗时
 
 	// 整体评分
-	OverallScore  float64                  `json:"overall_score"`  // 总体评分
-	Grade         string                   `json:"grade"`          // 评级
-	Passed        bool                     `json:"passed"`         // 是否通过
+	OverallScore float64 `json:"overall_score"` // 总体评分
+	Grade        string  `json:"grade"`         // 评级
+	Passed       bool    `json:"passed"`        // 是否通过
 
 	// 维度评分
 	DimensionScores map[string]float64     `json:"dimension_scores"` // 各维度得分
 	ToolResults     map[string]*ToolResult `json:"tool_results"`     // 工具结果
 
 	// 统计信息
-	Statistics    QualityStatistics        `json:"statistics"`     // 质量统计
-	Trends        QualityTrends            `json:"trends"`         // 质量趋势
+	Statistics QualityStatistics `json:"statistics"` // 质量统计
+	Trends     QualityTrends     `json:"trends"`     // 质量趋势
 
 	// 问题分析
-	Issues        []CodeIssue              `json:"issues"`         // 所有问题
-	Hotspots      []QualityHotspot         `json:"hotspots"`       // 质量热点
-	Improvements  []ImprovementSuggestion  `json:"improvements"`   // 改进建议
+	Issues       []CodeIssue             `json:"issues"`       // 所有问题
+	Hotspots     []QualityHotspot        `json:"hotspots"`     // 质量热点
+	Improvements []ImprovementSuggestion `json:"improvements"` // 改进建议
 
 	// 技术债务
-	TechnicalDebt TechnicalDebtAnalysis    `json:"technical_debt"` // 技术债务分析
+	TechnicalDebt TechnicalDebtAnalysis `json:"technical_debt"` // 技术债务分析
 }
 
 // QualityStatistics 质量统计
 type QualityStatistics struct {
 	// 代码统计
-	TotalFiles      int                    `json:"total_files"`      // 总文件数
-	TotalLines      int                    `json:"total_lines"`      // 总行数
-	CodeLines       int                    `json:"code_lines"`       // 代码行数
-	CommentLines    int                    `json:"comment_lines"`    // 注释行数
-	BlankLines      int                    `json:"blank_lines"`      // 空行数
+	TotalFiles   int `json:"total_files"`   // 总文件数
+	TotalLines   int `json:"total_lines"`   // 总行数
+	CodeLines    int `json:"code_lines"`    // 代码行数
+	CommentLines int `json:"comment_lines"` // 注释行数
+	BlankLines   int `json:"blank_lines"`   // 空行数
 
 	// 复杂度统计
-	AvgComplexity   float64                `json:"avg_complexity"`   // 平均复杂度
-	MaxComplexity   int                    `json:"max_complexity"`   // 最大复杂度
-	Functions       int                    `json:"functions"`        // 函数数量
-	Packages        int                    `json:"packages"`         // 包数量
+	AvgComplexity float64 `json:"avg_complexity"` // 平均复杂度
+	MaxComplexity int     `json:"max_complexity"` // 最大复杂度
+	Functions     int     `json:"functions"`      // 函数数量
+	Packages      int     `json:"packages"`       // 包数量
 
 	// 问题统计
-	TotalIssues     int                    `json:"total_issues"`     // 总问题数
-	CriticalIssues  int                    `json:"critical_issues"`  // 严重问题数
-	SecurityIssues  int                    `json:"security_issues"`  // 安全问题数
-	PerformanceIssues int                  `json:"performance_issues"` // 性能问题数
+	TotalIssues       int `json:"total_issues"`       // 总问题数
+	CriticalIssues    int `json:"critical_issues"`    // 严重问题数
+	SecurityIssues    int `json:"security_issues"`    // 安全问题数
+	PerformanceIssues int `json:"performance_issues"` // 性能问题数
 
 	// 测试统计
-	TestFiles       int                    `json:"test_files"`       // 测试文件数
-	TestCoverage    float64                `json:"test_coverage"`    // 测试覆盖率
-	TestRatio       float64                `json:"test_ratio"`       // 测试代码比例
+	TestFiles    int     `json:"test_files"`    // 测试文件数
+	TestCoverage float64 `json:"test_coverage"` // 测试覆盖率
+	TestRatio    float64 `json:"test_ratio"`    // 测试代码比例
 }
 
 // QualityTrends 质量趋势
 type QualityTrends struct {
-	ScoreHistory    []HistoryPoint         `json:"score_history"`    // 评分历史
-	IssueHistory    []HistoryPoint         `json:"issue_history"`    // 问题历史
-	CoverageHistory []HistoryPoint         `json:"coverage_history"` // 覆盖率历史
-	ComplexityHistory []HistoryPoint       `json:"complexity_history"` // 复杂度历史
+	ScoreHistory      []HistoryPoint `json:"score_history"`      // 评分历史
+	IssueHistory      []HistoryPoint `json:"issue_history"`      // 问题历史
+	CoverageHistory   []HistoryPoint `json:"coverage_history"`   // 覆盖率历史
+	ComplexityHistory []HistoryPoint `json:"complexity_history"` // 复杂度历史
 }
 
 // HistoryPoint 历史数据点
 type HistoryPoint struct {
-	Timestamp time.Time                  `json:"timestamp"` // 时间点
-	Value     float64                    `json:"value"`     // 数值
-	Metadata  map[string]interface{}     `json:"metadata"`  // 元数据
+	Timestamp time.Time              `json:"timestamp"` // 时间点
+	Value     float64                `json:"value"`     // 数值
+	Metadata  map[string]interface{} `json:"metadata"`  // 元数据
 }
 
 // QualityHotspot 质量热点
 type QualityHotspot struct {
-	File          string                   `json:"file"`          // 文件路径
-	Function      string                   `json:"function"`      // 函数名
-	IssueCount    int                      `json:"issue_count"`   // 问题数量
-	Severity      float64                  `json:"severity"`      // 严重程度
-	Complexity    int                      `json:"complexity"`    // 复杂度
-	Priority      int                      `json:"priority"`      // 优先级
-	Description   string                   `json:"description"`   // 描述
-	Suggestions   []string                 `json:"suggestions"`   // 建议
+	File        string   `json:"file"`        // 文件路径
+	Function    string   `json:"function"`    // 函数名
+	IssueCount  int      `json:"issue_count"` // 问题数量
+	Severity    float64  `json:"severity"`    // 严重程度
+	Complexity  int      `json:"complexity"`  // 复杂度
+	Priority    int      `json:"priority"`    // 优先级
+	Description string   `json:"description"` // 描述
+	Suggestions []string `json:"suggestions"` // 建议
 }
 
 // ImprovementSuggestion 改进建议
 type ImprovementSuggestion struct {
-	Category      string                   `json:"category"`      // 改进分类
-	Title         string                   `json:"title"`         // 建议标题
-	Description   string                   `json:"description"`   // 详细描述
-	Impact        string                   `json:"impact"`        // 预期影响
-	Effort        string                   `json:"effort"`        // 所需工作量
-	Priority      int                      `json:"priority"`      // 优先级
-	Examples      []string                 `json:"examples"`      // 示例
-	Resources     []string                 `json:"resources"`     // 参考资源
+	Category    string   `json:"category"`    // 改进分类
+	Title       string   `json:"title"`       // 建议标题
+	Description string   `json:"description"` // 详细描述
+	Impact      string   `json:"impact"`      // 预期影响
+	Effort      string   `json:"effort"`      // 所需工作量
+	Priority    int      `json:"priority"`    // 优先级
+	Examples    []string `json:"examples"`    // 示例
+	Resources   []string `json:"resources"`   // 参考资源
 }
 
 // TechnicalDebtAnalysis 技术债务分析
 type TechnicalDebtAnalysis struct {
-	TotalDebt     float64                  `json:"total_debt"`     // 总债务(小时)
-	DebtRatio     float64                  `json:"debt_ratio"`     // 债务比率
-	Interest      float64                  `json:"interest"`       // 债务利息
-	Rating        string                   `json:"rating"`         // 债务评级
+	TotalDebt float64 `json:"total_debt"` // 总债务(小时)
+	DebtRatio float64 `json:"debt_ratio"` // 债务比率
+	Interest  float64 `json:"interest"`   // 债务利息
+	Rating    string  `json:"rating"`     // 债务评级
 
 	// 债务分类
-	Categories    map[string]float64       `json:"categories"`     // 按分类统计
-	Files         []FileDebt               `json:"files"`          // 文件债务
-	Trends        []DebtTrend              `json:"trends"`         // 债务趋势
+	Categories map[string]float64 `json:"categories"` // 按分类统计
+	Files      []FileDebt         `json:"files"`      // 文件债务
+	Trends     []DebtTrend        `json:"trends"`     // 债务趋势
 }
 
 // FileDebt 文件债务
 type FileDebt struct {
-	File          string                   `json:"file"`          // 文件路径
-	Debt          float64                  `json:"debt"`          // 债务时间
-	Issues        int                      `json:"issues"`        // 问题数量
-	Complexity    float64                  `json:"complexity"`    // 复杂度债务
-	Coverage      float64                  `json:"coverage"`      // 覆盖率债务
-	Documentation float64                  `json:"documentation"` // 文档债务
+	File          string  `json:"file"`          // 文件路径
+	Debt          float64 `json:"debt"`          // 债务时间
+	Issues        int     `json:"issues"`        // 问题数量
+	Complexity    float64 `json:"complexity"`    // 复杂度债务
+	Coverage      float64 `json:"coverage"`      // 覆盖率债务
+	Documentation float64 `json:"documentation"` // 文档债务
 }
 
 // DebtTrend 债务趋势
 type DebtTrend struct {
-	Date          time.Time                `json:"date"`          // 日期
-	TotalDebt     float64                  `json:"total_debt"`    // 总债务
-	NewDebt       float64                  `json:"new_debt"`      // 新增债务
-	ResolvedDebt  float64                  `json:"resolved_debt"` // 解决债务
+	Date         time.Time `json:"date"`          // 日期
+	TotalDebt    float64   `json:"total_debt"`    // 总债务
+	NewDebt      float64   `json:"new_debt"`      // 新增债务
+	ResolvedDebt float64   `json:"resolved_debt"` // 解决债务
 }
 
 // 实现具体的分析工具
@@ -279,7 +279,7 @@ type GolintTool struct {
 	path string
 }
 
-func (g *GolintTool) Name() string { return "golint" }
+func (g *GolintTool) Name() string    { return "golint" }
 func (g *GolintTool) Version() string { return "latest" }
 
 func (g *GolintTool) Execute(projectPath string) (*ToolResult, error) {
@@ -359,7 +359,7 @@ type GovetTool struct {
 	path string
 }
 
-func (gv *GovetTool) Name() string { return "go vet" }
+func (gv *GovetTool) Name() string    { return "go vet" }
 func (gv *GovetTool) Version() string { return "latest" }
 
 func (gv *GovetTool) Execute(projectPath string) (*ToolResult, error) {
@@ -447,7 +447,7 @@ type GocycloTool struct {
 	threshold int
 }
 
-func (gc *GocycloTool) Name() string { return "gocyclo" }
+func (gc *GocycloTool) Name() string    { return "gocyclo" }
 func (gc *GocycloTool) Version() string { return "latest" }
 
 func (gc *GocycloTool) Execute(projectPath string) (*ToolResult, error) {
@@ -517,18 +517,18 @@ func (gc *GocycloTool) ParseResult(output string) (*ToolResult, error) {
 		}
 
 		issue := CodeIssue{
-			ID:       fmt.Sprintf("gocyclo_%d", i),
-			Type:     "complexity",
-			Severity: severity,
-			Category: "maintainability",
-			Rule:     "cyclomatic_complexity",
-			Function: functionName,
-			Message:  fmt.Sprintf("Function %s has cyclomatic complexity %d", functionName, complexity),
+			ID:          fmt.Sprintf("gocyclo_%d", i),
+			Type:        "complexity",
+			Severity:    severity,
+			Category:    "maintainability",
+			Rule:        "cyclomatic_complexity",
+			Function:    functionName,
+			Message:     fmt.Sprintf("Function %s has cyclomatic complexity %d", functionName, complexity),
 			Description: fmt.Sprintf("High complexity functions are harder to understand and maintain"),
-			Suggestion: "Consider breaking down this function into smaller, more focused functions",
-			Impact:   "module",
-			Complexity: 2,
-			Priority: priority,
+			Suggestion:  "Consider breaking down this function into smaller, more focused functions",
+			Impact:      "module",
+			Complexity:  2,
+			Priority:    priority,
 		}
 
 		// 尝试解析位置信息
@@ -551,11 +551,11 @@ func (gc *GocycloTool) ParseResult(output string) (*ToolResult, error) {
 	}
 
 	metrics := map[string]interface{}{
-		"total_complexity":   totalComplexity,
-		"function_count":     functionCount,
-		"avg_complexity":     avgComplexity,
-		"max_complexity":     maxComplexity,
-		"threshold":          gc.threshold,
+		"total_complexity": totalComplexity,
+		"function_count":   functionCount,
+		"avg_complexity":   avgComplexity,
+		"max_complexity":   maxComplexity,
+		"threshold":        gc.threshold,
 	}
 
 	summary := ToolSummary{
@@ -579,7 +579,7 @@ func NewCodeQualityEvaluator(config *CodeQualityConfig) *CodeQualityEvaluator {
 		config:        config,
 		fileSet:       token.NewFileSet(),
 		analysisTools: make(map[string]AnalysisTool),
-		results:       &CodeQualityResult{
+		results: &CodeQualityResult{
 			Timestamp:       time.Now(),
 			DimensionScores: make(map[string]float64),
 			ToolResults:     make(map[string]*ToolResult),
@@ -942,8 +942,8 @@ func (cqe *CodeQualityEvaluator) calculateSecurityScore() float64 {
 
 	// gosec工具的安全问题惩罚（如果启用）
 	if result, exists := cqe.results.ToolResults["gosec"]; exists {
-		score -= float64(result.Summary.ErrorCount) * 15   // 严重安全问题
-		score -= float64(result.Summary.WarningCount) * 8  // 一般安全问题
+		score -= float64(result.Summary.ErrorCount) * 15  // 严重安全问题
+		score -= float64(result.Summary.WarningCount) * 8 // 一般安全问题
 	}
 
 	// 手动安全检查
@@ -1460,12 +1460,12 @@ func GetDefaultConfig() *CodeQualityConfig {
 			Maintainability:       70.0,
 		},
 		WeightSettings: QualityWeights{
-			CodeStructure:         0.25,
-			StyleCompliance:       0.20,
-			SecurityAnalysis:      0.15,
-			PerformanceAnalysis:   0.15,
+			CodeStructure:        0.25,
+			StyleCompliance:      0.20,
+			SecurityAnalysis:     0.15,
+			PerformanceAnalysis:  0.15,
 			TestQuality:          0.15,
-			DocumentationQuality:  0.10,
+			DocumentationQuality: 0.10,
 		},
 		IncludePatterns: []string{"*.go"},
 		ExcludePatterns: []string{"vendor/*", "*.pb.go", "*_generated.go"},

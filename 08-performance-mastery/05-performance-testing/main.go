@@ -25,11 +25,12 @@ package main
 import (
 	"bytes"
 	"context"
+	"crypto/rand"
 	"encoding/json"
 	"fmt"
 	"io"
 	"math"
-	"math/rand"
+	"math/big"
 	"net/http"
 	"os"
 	"runtime"
@@ -39,6 +40,34 @@ import (
 	"sync/atomic"
 	"time"
 )
+
+// 安全随机数生成函数
+func secureRandomInt(max int) int {
+	n, err := rand.Int(rand.Reader, big.NewInt(int64(max)))
+	if err != nil {
+		// G115安全修复：确保转换不会溢出
+		fallback := time.Now().UnixNano() % int64(max)
+		if fallback > int64(^uint(0)>>1) {
+			fallback = fallback % int64(^uint(0)>>1)
+		}
+		return int(fallback)
+	}
+	// G115安全修复：检查int64到int的安全转换
+	result := n.Int64()
+	if result > int64(^uint(0)>>1) {
+		result = result % int64(max)
+	}
+	return int(result)
+}
+
+func secureRandomFloat64() float64 {
+	n, err := rand.Int(rand.Reader, big.NewInt(1<<53))
+	if err != nil {
+		// 安全fallback：使用时间戳
+		return float64(time.Now().UnixNano()%1000) / 1000.0
+	}
+	return float64(n.Int64()) / float64(1<<53)
+}
 
 // ==================
 // 1. 性能测试框架核心
@@ -2106,13 +2135,13 @@ func (am *AlertManager) evaluateQuery(query string) float64 {
 	// 实际实现会连接到指标收集器或时序数据库
 	switch query {
 	case "response_time_p95":
-		return float64(200 + rand.Intn(300)) // 模拟响应时间
+		return float64(200 + secureRandomInt(300)) // 模拟响应时间
 	case "error_rate":
-		return rand.Float64() * 10 // 模拟错误率
+		return secureRandomFloat64() * 10 // 模拟错误率
 	case "throughput":
-		return float64(800 + rand.Intn(400)) // 模拟吞吐量
+		return float64(800 + secureRandomInt(400)) // 模拟吞吐量
 	default:
-		return rand.Float64() * 100
+		return secureRandomFloat64() * 100
 	}
 }
 
@@ -2401,7 +2430,7 @@ func (ci *CICDIntegrator) checkQualityGates(context map[string]interface{}) erro
 
 		for _, condition := range gate.Conditions {
 			// 模拟指标检查
-			value := rand.Float64() * 100
+			value := secureRandomFloat64() * 100
 			passed := ci.evaluateCondition(condition, value)
 
 			if !passed && condition.Required {
@@ -2486,8 +2515,8 @@ func demonstratePerformanceTestingFramework() {
 		Type: BenchmarkTest,
 		Target: TestTarget{
 			Function: func() error {
-				time.Sleep(time.Millisecond * time.Duration(rand.Intn(100)+50))
-				if rand.Float64() < 0.02 { // 2%错误率
+				time.Sleep(time.Millisecond * time.Duration(secureRandomInt(100)+50))
+				if secureRandomFloat64() < 0.02 { // 2%错误率
 					return fmt.Errorf("模拟错误")
 				}
 				return nil
@@ -2524,7 +2553,7 @@ func demonstratePerformanceTestingFramework() {
 		Type: LoadTest,
 		Target: TestTarget{
 			Function: func() error {
-				time.Sleep(time.Millisecond * time.Duration(rand.Intn(200)+100))
+				time.Sleep(time.Millisecond * time.Duration(secureRandomInt(200)+100))
 				return nil
 			},
 		},
@@ -2543,8 +2572,8 @@ func demonstratePerformanceTestingFramework() {
 		Type: StressTest,
 		Target: TestTarget{
 			Function: func() error {
-				time.Sleep(time.Millisecond * time.Duration(rand.Intn(300)+50))
-				if rand.Float64() < 0.05 { // 5%错误率
+				time.Sleep(time.Millisecond * time.Duration(secureRandomInt(300)+50))
+				if secureRandomFloat64() < 0.05 { // 5%错误率
 					return fmt.Errorf("压力测试错误")
 				}
 				return nil
@@ -2817,7 +2846,7 @@ func (cac *ConsoleAlertChannel) Name() string {
 }
 
 func generateExecutionID() string {
-	return fmt.Sprintf("exec_%d_%d", time.Now().Unix(), rand.Intn(10000))
+	return fmt.Sprintf("exec_%d_%d", time.Now().Unix(), secureRandomInt(10000))
 }
 
 func generateReportID() string {
@@ -2825,13 +2854,10 @@ func generateReportID() string {
 }
 
 func generateAlertID() string {
-	return fmt.Sprintf("alert_%d_%d", time.Now().Unix(), rand.Intn(10000))
+	return fmt.Sprintf("alert_%d_%d", time.Now().Unix(), secureRandomInt(10000))
 }
 
 func main() {
-	// 设置随机种子
-	rand.Seed(time.Now().UnixNano())
-
 	demonstratePerformanceTestingFramework()
 
 	fmt.Println("\n=== Go自动化性能测试框架演示完成 ===")

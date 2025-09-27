@@ -24,11 +24,11 @@
 package main
 
 import (
+	"crypto/rand"
 	"fmt"
 	"log"
-	"math/rand"
+	"math/big"
 	"net/http"
-	_ "net/http/pprof"
 	"os"
 	"runtime"
 	"runtime/debug"
@@ -39,6 +39,25 @@ import (
 	"sync/atomic"
 	"time"
 )
+
+// 安全随机数生成函数
+func secureRandomInt(max int) int {
+	n, err := rand.Int(rand.Reader, big.NewInt(int64(max)))
+	if err != nil {
+		// G115安全修复：确保转换不会溢出
+		fallback := time.Now().UnixNano() % int64(max)
+		if fallback > int64(^uint(0)>>1) {
+			fallback = fallback % int64(^uint(0)>>1)
+		}
+		return int(fallback)
+	}
+	// G115安全修复：检查int64到int的安全转换
+	result := n.Int64()
+	if result > int64(^uint(0)>>1) {
+		result = result % int64(max)
+	}
+	return int(result)
+}
 
 // ==================
 // 1. 性能分析理论基础
@@ -904,7 +923,7 @@ func (co *ConcurrencyOptimizer) BenchmarkChannelVsSharedMemory() {
 	const dataSize = 100000
 	data := make([]int, dataSize)
 	for i := range data {
-		data[i] = rand.Intn(1000)
+		data[i] = secureRandomInt(1000)
 	}
 
 	// 使用Channel传递数据
@@ -1244,7 +1263,14 @@ func init() {
 	go func() {
 		log.Println("pprof server started at :6060")
 		log.Println("访问 http://localhost:6060/debug/pprof/ 查看实时性能数据")
-		log.Println(http.ListenAndServe("localhost:6060", nil))
+		server := &http.Server{
+			Addr:         "localhost:6060",
+			Handler:      nil,
+			ReadTimeout:  15 * time.Second,
+			WriteTimeout: 15 * time.Second,
+			IdleTimeout:  60 * time.Second,
+		}
+		log.Println(server.ListenAndServe())
 	}()
 }
 
