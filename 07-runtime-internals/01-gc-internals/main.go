@@ -32,6 +32,8 @@ import (
 	"sync/atomic"
 	"time"
 	"unsafe"
+
+	"go-mastery/common/security"
 )
 
 // ==================
@@ -158,7 +160,7 @@ func (m *GCMonitor) collectStats() {
 
 	// 获取最后GC时间
 	if ms.NumGC > 0 {
-		stats.LastGCTime = time.Unix(0, int64(ms.LastGC))
+		stats.LastGCTime = time.Unix(0, security.MustSafeUint64ToInt64(ms.LastGC))
 	}
 
 	// 恢复GC百分比设置

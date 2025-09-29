@@ -37,6 +37,8 @@ import (
 	"sync/atomic"
 	"time"
 	"unsafe"
+
+	"go-mastery/common/security"
 )
 
 // 安全随机数生成函数
@@ -183,7 +185,7 @@ func (ao *AlgorithmOptimizer) benchmarkSort(name string, size int, originalData 
 		Name:        fmt.Sprintf("%s_%d", name, size),
 		Operations:  int64(iterations),
 		NsPerOp:     elapsed.Nanoseconds() / int64(iterations),
-		MemoryUsage: int64(m2.TotalAlloc - m1.TotalAlloc),
+		MemoryUsage: security.MustSafeUint64ToInt64(m2.TotalAlloc - m1.TotalAlloc),
 		Complexity:  getComplexity(name),
 	}
 

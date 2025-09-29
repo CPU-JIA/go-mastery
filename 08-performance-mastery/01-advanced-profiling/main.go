@@ -34,6 +34,8 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"go-mastery/common/security"
 )
 
 // 安全随机数生成函数
@@ -832,8 +834,8 @@ func (bs *BenchmarkSuite) runSingleBenchmark(benchmark BenchmarkFunc) BenchmarkR
 		Iterations: iterations,
 		Duration:   duration,
 		NsPerOp:    duration.Nanoseconds() / int64(iterations),
-		MemAllocs:  int64(memAfter.Mallocs - memBefore.Mallocs),
-		MemBytes:   int64(memAfter.TotalAlloc - memBefore.TotalAlloc),
+		MemAllocs:  security.MustSafeUint64ToInt64(memAfter.Mallocs - memBefore.Mallocs),
+		MemBytes:   security.MustSafeUint64ToInt64(memAfter.TotalAlloc - memBefore.TotalAlloc),
 	}
 
 	if ctx.bytes > 0 {
@@ -1123,7 +1125,7 @@ func (ld *LeakDetector) AnalyzeLeaks() LeakReport {
 
 	// 分析内存增长趋势
 	timeSpan := snapshots[len(snapshots)-1].Timestamp.Sub(snapshots[0].Timestamp)
-	memoryGrowth := int64(snapshots[len(snapshots)-1].HeapInuse) - int64(snapshots[0].HeapInuse)
+	memoryGrowth := security.MustSafeUint64ToInt64(snapshots[len(snapshots)-1].HeapInuse) - security.MustSafeUint64ToInt64(snapshots[0].HeapInuse)
 
 	if timeSpan.Hours() > 0 {
 		report.LeakRate = float64(memoryGrowth) / timeSpan.Hours() / 1024 / 1024 // MB/hour

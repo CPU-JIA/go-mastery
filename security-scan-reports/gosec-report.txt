@@ -1,0 +1,3974 @@
+Results:
+
+Golang errors in file: []:
+
+  > [line 0 : column 0] - # command-line-arguments
+09-system-programming/02-advanced-networking/main.go:271:17: undefined: syscall.Handle
+
+
+Golang errors in file: [-]:
+
+  > [line 0 : column 0] - This application uses version go1.23 of the source-processing packages but runs version go1.24 of 'go list'. It may fail to process source files that rely on newer language features. If so, rebuild the application using a newer version of Go.
+
+  > [line 0 : column 0] - This application uses version go1.23 of the source-processing packages but runs version go1.24 of 'go list'. It may fail to process source files that rely on newer language features. If so, rebuild the application using a newer version of Go.
+
+  > [line 0 : column 0] - This application uses version go1.23 of the source-processing packages but runs version go1.24 of 'go list'. It may fail to process source files that rely on newer language features. If so, rebuild the application using a newer version of Go.
+
+  > [line 0 : column 0] - This application uses version go1.23 of the source-processing packages but runs version go1.24 of 'go list'. It may fail to process source files that rely on newer language features. If so, rebuild the application using a newer version of Go.
+
+  > [line 0 : column 0] - This application uses version go1.23 of the source-processing packages but runs version go1.24 of 'go list'. It may fail to process source files that rely on newer language features. If so, rebuild the application using a newer version of Go.
+
+  > [line 0 : column 0] - This application uses version go1.23 of the source-processing packages but runs version go1.24 of 'go list'. It may fail to process source files that rely on newer language features. If so, rebuild the application using a newer version of Go.
+
+  > [line 0 : column 0] - This application uses version go1.23 of the source-processing packages but runs version go1.24 of 'go list'. It may fail to process source files that rely on newer language features. If so, rebuild the application using a newer version of Go.
+
+  > [line 0 : column 0] - This application uses version go1.23 of the source-processing packages but runs version go1.24 of 'go list'. It may fail to process source files that rely on newer language features. If so, rebuild the application using a newer version of Go.
+
+  > [line 0 : column 0] - This application uses version go1.23 of the source-processing packages but runs version go1.24 of 'go list'. It may fail to process source files that rely on newer language features. If so, rebuild the application using a newer version of Go.
+
+  > [line 0 : column 0] - This application uses version go1.23 of the source-processing packages but runs version go1.24 of 'go list'. It may fail to process source files that rely on newer language features. If so, rebuild the application using a newer version of Go.
+
+  > [line 0 : column 0] - This application uses version go1.23 of the source-processing packages but runs version go1.24 of 'go list'. It may fail to process source files that rely on newer language features. If so, rebuild the application using a newer version of Go.
+
+  > [line 0 : column 0] - This application uses version go1.23 of the source-processing packages but runs version go1.24 of 'go list'. It may fail to process source files that rely on newer language features. If so, rebuild the application using a newer version of Go.
+
+  > [line 0 : column 0] - This application uses version go1.23 of the source-processing packages but runs version go1.24 of 'go list'. It may fail to process source files that rely on newer language features. If so, rebuild the application using a newer version of Go.
+
+  > [line 0 : column 0] - This application uses version go1.23 of the source-processing packages but runs version go1.24 of 'go list'. It may fail to process source files that rely on newer language features. If so, rebuild the application using a newer version of Go.
+
+  > [line 0 : column 0] - This application uses version go1.23 of the source-processing packages but runs version go1.24 of 'go list'. It may fail to process source files that rely on newer language features. If so, rebuild the application using a newer version of Go.
+
+  > [line 0 : column 0] - This application uses version go1.23 of the source-processing packages but runs version go1.24 of 'go list'. It may fail to process source files that rely on newer language features. If so, rebuild the application using a newer version of Go.
+
+  > [line 0 : column 0] - This application uses version go1.23 of the source-processing packages but runs version go1.24 of 'go list'. It may fail to process source files that rely on newer language features. If so, rebuild the application using a newer version of Go.
+
+  > [line 0 : column 0] - This application uses version go1.23 of the source-processing packages but runs version go1.24 of 'go list'. It may fail to process source files that rely on newer language features. If so, rebuild the application using a newer version of Go.
+
+  > [line 0 : column 0] - This application uses version go1.23 of the source-processing packages but runs version go1.24 of 'go list'. It may fail to process source files that rely on newer language features. If so, rebuild the application using a newer version of Go.
+
+  > [line 0 : column 0] - This application uses version go1.23 of the source-processing packages but runs version go1.24 of 'go list'. It may fail to process source files that rely on newer language features. If so, rebuild the application using a newer version of Go.
+
+  > [line 0 : column 0] - This application uses version go1.23 of the source-processing packages but runs version go1.24 of 'go list'. It may fail to process source files that rely on newer language features. If so, rebuild the application using a newer version of Go.
+
+  > [line 0 : column 0] - This application uses version go1.23 of the source-processing packages but runs version go1.24 of 'go list'. It may fail to process source files that rely on newer language features. If so, rebuild the application using a newer version of Go.
+
+  > [line 0 : column 0] - This application uses version go1.23 of the source-processing packages but runs version go1.24 of 'go list'. It may fail to process source files that rely on newer language features. If so, rebuild the application using a newer version of Go.
+
+  > [line 0 : column 0] - This application uses version go1.23 of the source-processing packages but runs version go1.24 of 'go list'. It may fail to process source files that rely on newer language features. If so, rebuild the application using a newer version of Go.
+
+  > [line 0 : column 0] - This application uses version go1.23 of the source-processing packages but runs version go1.24 of 'go list'. It may fail to process source files that rely on newer language features. If so, rebuild the application using a newer version of Go.
+
+
+Golang errors in file: [/home/runner/work/go-mastery/go-mastery/00-assessment-system/tools/assessment_tools.go]:
+
+  > [line 16 : column 2] - could not import assessment-system/models (invalid package name: "")
+
+
+Golang errors in file: [/home/runner/work/go-mastery/go-mastery/02-advanced/12-go124-features/main.go]:
+
+  > [line 46 : column 6] - generic type alias requires GODEBUG=gotypesalias=1 or unset
+
+  > [line 46 : column 44] - undefined: K
+
+  > [line 46 : column 46] - undefined: V
+
+  > [line 47 : column 6] - generic type alias requires GODEBUG=gotypesalias=1 or unset
+
+  > [line 47 : column 30] - undefined: T
+
+  > [line 48 : column 6] - generic type alias requires GODEBUG=gotypesalias=1 or unset
+
+  > [line 48 : column 35] - undefined: T
+
+  > [line 51 : column 6] - generic type alias requires GODEBUG=gotypesalias=1 or unset
+
+  > [line 52 : column 8] - undefined: K
+
+  > [line 53 : column 8] - undefined: V
+
+  > [line 56 : column 6] - generic type alias requires GODEBUG=gotypesalias=1 or unset
+
+  > [line 57 : column 8] - undefined: T
+
+  > [line 58 : column 8] - undefined: E
+
+  > [line 61 : column 6] - generic type alias requires GODEBUG=gotypesalias=1 or unset
+
+  > [line 62 : column 8] - undefined: T
+
+  > [line 67 : column 6] - generic type alias requires GODEBUG=gotypesalias=1 or unset
+
+  > [line 67 : column 37] - undefined: T
+
+  > [line 67 : column 40] - undefined: U
+
+  > [line 68 : column 6] - generic type alias requires GODEBUG=gotypesalias=1 or unset
+
+  > [line 68 : column 37] - undefined: T
+
+  > [line 69 : column 6] - generic type alias requires GODEBUG=gotypesalias=1 or unset
+
+  > [line 69 : column 38] - undefined: T
+
+  > [line 69 : column 41] - undefined: T
+
+  > [line 78 : column 6] - generic type alias requires GODEBUG=gotypesalias=1 or unset
+
+  > [line 79 : column 18] - undefined: T
+
+  > [line 79 : column 21] - undefined: T
+
+  > [line 79 : column 24] - undefined: T
+
+
+Golang errors in file: [/home/runner/work/go-mastery/go-mastery/05-microservices/02-api-gateway/main.go]:
+
+  > [line 19 : column 2] - could not import go.opentelemetry.io/otel (invalid package name: "")
+
+  > [line 20 : column 2] - could not import go.opentelemetry.io/otel/attribute (invalid package name: "")
+
+  > [line 21 : column 2] - could not import go.opentelemetry.io/otel/exporters/jaeger (invalid package name: "")
+
+  > [line 22 : column 2] - could not import go.opentelemetry.io/otel/propagation (invalid package name: "")
+
+  > [line 23 : column 2] - could not import go.opentelemetry.io/otel/sdk/resource (invalid package name: "")
+
+  > [line 24 : column 11] - could not import go.opentelemetry.io/otel/sdk/trace (invalid package name: "")
+
+  > [line 25 : column 10] - could not import go.opentelemetry.io/otel/semconv/v1.4.0 (invalid package name: "")
+
+  > [line 26 : column 2] - could not import go.opentelemetry.io/otel/trace (invalid package name: "")
+
+  > [line 27 : column 2] - could not import golang.org/x/oauth2 (invalid package name: "")
+
+  > [line 29 : column 2] - could not import k8s.io/client-go/dynamic (invalid package name: "")
+
+  > [line 30 : column 2] - could not import k8s.io/client-go/rest (invalid package name: "")
+
+
+Golang errors in file: [/home/runner/work/go-mastery/go-mastery/05-microservices/12-grpc-communication/main.go]:
+
+  > [line 19 : column 2] - could not import github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/retry (invalid package name: "")
+
+  > [line 20 : column 12] - could not import github.com/grpc-ecosystem/grpc-gateway/v2/runtime (invalid package name: "")
+
+  > [line 21 : column 2] - could not import go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc (invalid package name: "")
+
+  > [line 22 : column 2] - could not import go.opentelemetry.io/otel (invalid package name: "")
+
+  > [line 23 : column 2] - could not import go.opentelemetry.io/otel/exporters/jaeger (invalid package name: "")
+
+  > [line 24 : column 2] - could not import go.opentelemetry.io/otel/propagation (invalid package name: "")
+
+  > [line 25 : column 2] - could not import go.opentelemetry.io/otel/sdk/resource (invalid package name: "")
+
+  > [line 26 : column 11] - could not import go.opentelemetry.io/otel/sdk/trace (invalid package name: "")
+
+  > [line 27 : column 10] - could not import go.opentelemetry.io/otel/semconv/v1.4.0 (invalid package name: "")
+
+  > [line 29 : column 2] - could not import google.golang.org/grpc (invalid package name: "")
+
+  > [line 30 : column 2] - could not import google.golang.org/grpc/codes (invalid package name: "")
+
+  > [line 31 : column 2] - could not import google.golang.org/grpc/credentials (invalid package name: "")
+
+  > [line 32 : column 2] - could not import google.golang.org/grpc/credentials/insecure (invalid package name: "")
+
+  > [line 33 : column 2] - could not import google.golang.org/grpc/health (invalid package name: "")
+
+  > [line 34 : column 11] - could not import google.golang.org/grpc/health/grpc_health_v1 (invalid package name: "")
+
+  > [line 35 : column 2] - could not import google.golang.org/grpc/keepalive (invalid package name: "")
+
+  > [line 36 : column 2] - could not import google.golang.org/grpc/metadata (invalid package name: "")
+
+  > [line 37 : column 2] - could not import google.golang.org/grpc/reflection (invalid package name: "")
+
+  > [line 38 : column 2] - could not import google.golang.org/grpc/status (invalid package name: "")
+
+  > [line 39 : column 2] - could not import google.golang.org/protobuf/types/known/emptypb (invalid package name: "")
+
+  > [line 40 : column 2] - could not import google.golang.org/protobuf/types/known/timestamppb (invalid package name: "")
+
+
+Golang errors in file: [/home/runner/work/go-mastery/go-mastery/06-projects/01-blog-system/cmd/server/main.go]:
+
+  > [line 4 : column 2] - could not import blog-system/internal/config (invalid package name: "")
+
+  > [line 5 : column 2] - could not import blog-system/internal/handler (invalid package name: "")
+
+  > [line 6 : column 2] - could not import blog-system/internal/middleware (invalid package name: "")
+
+  > [line 7 : column 2] - could not import blog-system/internal/repository (invalid package name: "")
+
+  > [line 8 : column 2] - could not import blog-system/internal/service (invalid package name: "")
+
+  > [line 9 : column 2] - could not import blog-system/internal/validation (invalid package name: "")
+
+  > [line 19 : column 2] - could not import github.com/gin-gonic/gin (invalid package name: "")
+
+  > [line 20 : column 2] - could not import github.com/joho/godotenv (invalid package name: "")
+
+
+Golang errors in file: [/home/runner/work/go-mastery/go-mastery/06-projects/01-blog-system/internal/config/config.go]:
+
+  > [line 8 : column 2] - could not import github.com/spf13/viper (invalid package name: "")
+
+
+Golang errors in file: [/home/runner/work/go-mastery/go-mastery/06-projects/01-blog-system/internal/handler/handler.go]:
+
+  > [line 4 : column 2] - could not import blog-system/internal/model (invalid package name: "")
+
+  > [line 5 : column 2] - could not import blog-system/internal/repository (invalid package name: "")
+
+  > [line 6 : column 2] - could not import blog-system/internal/service (invalid package name: "")
+
+  > [line 10 : column 2] - could not import github.com/gin-gonic/gin (invalid package name: "")
+
+
+Golang errors in file: [/home/runner/work/go-mastery/go-mastery/06-projects/01-blog-system/internal/middleware/middleware.go]:
+
+  > [line 4 : column 2] - could not import blog-system/internal/service (invalid package name: "")
+
+  > [line 11 : column 2] - could not import github.com/gin-gonic/gin (invalid package name: "")
+
+
+Golang errors in file: [/home/runner/work/go-mastery/go-mastery/06-projects/01-blog-system/internal/repository/article.go]:
+
+  > [line 4 : column 2] - could not import blog-system/internal/model (invalid package name: "")
+
+
+Golang errors in file: [/home/runner/work/go-mastery/go-mastery/06-projects/01-blog-system/internal/repository/database.go]:
+
+  > [line 8 : column 2] - could not import blog-system/internal/config (invalid package name: "")
+
+
+Golang errors in file: [/home/runner/work/go-mastery/go-mastery/06-projects/01-blog-system/internal/service/article.go]:
+
+  > [line 4 : column 2] - could not import blog-system/internal/model (invalid package name: "")
+
+  > [line 5 : column 2] - could not import blog-system/internal/repository (invalid package name: "")
+
+
+Golang errors in file: [/home/runner/work/go-mastery/go-mastery/06-projects/01-blog-system/internal/service/auth.go]:
+
+  > [line 4 : column 2] - could not import blog-system/internal/config (invalid package name: "")
+
+  > [line 7 : column 2] - could not import blog-system/internal/validation (invalid package name: "")
+
+
+Golang errors in file: [/home/runner/work/go-mastery/go-mastery/06-projects/01-blog-system/internal/validation/validator.go]:
+
+  > [line 10 : column 2] - could not import github.com/gin-gonic/gin/binding (invalid package name: "")
+
+  > [line 11 : column 2] - could not import github.com/go-playground/validator/v10 (invalid package name: "")
+
+  > [line 16 : column 12] - undefined: validator
+
+  > [line 21 : column 14] - undefined: validator
+
+  > [line 63 : column 54] - undefined: validator
+
+  > [line 116 : column 52] - undefined: validator
+
+  > [line 154 : column 50] - undefined: validator
+
+  > [line 186 : column 47] - undefined: validator
+
+  > [line 214 : column 51] - undefined: validator
+
+  > [line 242 : column 48] - undefined: validator
+
+  > [line 280 : column 52] - undefined: validator
+
+  > [line 322 : column 49] - undefined: validator
+
+
+Golang errors in file: [/home/runner/work/go-mastery/go-mastery/06-projects/02-ecommerce-backend/cmd/server/main.go]:
+
+  > [line 5 : column 2] - could not import ecommerce-backend/internal/config (invalid package name: "")
+
+  > [line 6 : column 2] - could not import ecommerce-backend/internal/handler (invalid package name: "")
+
+  > [line 7 : column 2] - could not import ecommerce-backend/internal/middleware (invalid package name: "")
+
+  > [line 8 : column 2] - could not import ecommerce-backend/internal/model (invalid package name: "")
+
+  > [line 9 : column 2] - could not import ecommerce-backend/internal/repository (invalid package name: "")
+
+  > [line 10 : column 2] - could not import ecommerce-backend/internal/service (invalid package name: "")
+
+  > [line 19 : column 2] - could not import github.com/gin-gonic/gin (invalid package name: "")
+
+
+Golang errors in file: [/home/runner/work/go-mastery/go-mastery/06-projects/02-ecommerce-backend/internal/config/config.go]:
+
+  > [line 7 : column 2] - could not import github.com/spf13/viper (invalid package name: "")
+
+
+Golang errors in file: [/home/runner/work/go-mastery/go-mastery/06-projects/02-ecommerce-backend/internal/handler/handler.go]:
+
+  > [line 4 : column 2] - could not import ecommerce-backend/internal/middleware (invalid package name: "")
+
+  > [line 5 : column 2] - could not import ecommerce-backend/internal/service (invalid package name: "")
+
+  > [line 9 : column 2] - could not import github.com/gin-gonic/gin (invalid package name: "")
+
+
+Golang errors in file: [/home/runner/work/go-mastery/go-mastery/06-projects/02-ecommerce-backend/internal/middleware/middleware.go]:
+
+  > [line 4 : column 2] - could not import ecommerce-backend/internal/service (invalid package name: "")
+
+  > [line 10 : column 2] - could not import github.com/gin-gonic/gin (invalid package name: "")
+
+
+Golang errors in file: [/home/runner/work/go-mastery/go-mastery/06-projects/02-ecommerce-backend/internal/model/models.go]:
+
+  > [line 6 : column 2] - could not import github.com/shopspring/decimal (invalid package name: "")
+
+
+Golang errors in file: [/home/runner/work/go-mastery/go-mastery/06-projects/02-ecommerce-backend/internal/repository/interfaces.go]:
+
+  > [line 4 : column 2] - could not import ecommerce-backend/internal/model (invalid package name: "")
+
+  > [line 6 : column 2] - could not import github.com/shopspring/decimal (invalid package name: "")
+
+
+Golang errors in file: [/home/runner/work/go-mastery/go-mastery/06-projects/02-ecommerce-backend/internal/service/product_service.go]:
+
+  > [line 4 : column 2] - could not import ecommerce-backend/internal/config (invalid package name: "")
+
+  > [line 5 : column 2] - could not import ecommerce-backend/internal/model (invalid package name: "")
+
+  > [line 6 : column 2] - could not import ecommerce-backend/internal/repository (invalid package name: "")
+
+  > [line 13 : column 2] - could not import github.com/shopspring/decimal (invalid package name: "")
+
+
+Golang errors in file: [/home/runner/work/go-mastery/go-mastery/06-projects/06-file-storage/cmd/server/main.go]:
+
+  > [line 9 : column 2] - could not import file-storage-service/internal/config (invalid package name: "")
+
+  > [line 10 : column 2] - could not import file-storage-service/internal/handlers (invalid package name: "")
+
+  > [line 11 : column 2] - could not import file-storage-service/internal/services (invalid package name: "")
+
+  > [line 12 : column 2] - could not import file-storage-service/internal/storage (invalid package name: "")
+
+
+Golang errors in file: [/home/runner/work/go-mastery/go-mastery/06-projects/06-file-storage/internal/handlers/file_handler.go]:
+
+  > [line 12 : column 2] - could not import file-storage-service/internal/models (invalid package name: "")
+
+  > [line 13 : column 2] - could not import file-storage-service/internal/services (invalid package name: "")
+
+
+Golang errors in file: [/home/runner/work/go-mastery/go-mastery/06-projects/06-file-storage/internal/repository/access_log_repository.go]:
+
+  > [line 5 : column 2] - could not import file-storage-service/internal/model (invalid package name: "")
+
+
+Golang errors in file: [/home/runner/work/go-mastery/go-mastery/06-projects/06-file-storage/internal/repository/minio_storage_repository.go]:
+
+  > [line 10 : column 2] - could not import github.com/minio/minio-go/v7 (invalid package name: "")
+
+  > [line 11 : column 2] - could not import github.com/minio/minio-go/v7/pkg/credentials (invalid package name: "")
+
+  > [line 96 : column 15] - undefined: minio
+
+  > [line 108 : column 17] - undefined: minio
+
+  > [line 108 : column 45] - undefined: minio
+
+  > [line 142 : column 55] - undefined: minio
+
+  > [line 165 : column 13] - undefined: minio
+
+  > [line 193 : column 75] - undefined: minio
+
+  > [line 212 : column 67] - undefined: minio
+
+  > [line 214 : column 6] - undefined: minio
+
+  > [line 234 : column 68] - undefined: minio
+
+  > [line 253 : column 70] - undefined: minio
+
+  > [line 313 : column 73] - undefined: minio
+
+
+Golang errors in file: [/home/runner/work/go-mastery/go-mastery/06-projects/06-file-storage/internal/saga/execution_engine.go]:
+
+  > [line 6 : column 2] - could not import file-storage-service/internal/model (invalid package name: "")
+
+
+Golang errors in file: [/home/runner/work/go-mastery/go-mastery/06-projects/06-file-storage/internal/saga/file_upload_saga.go]:
+
+  > [line 6 : column 2] - could not import file-storage-service/internal/repository (invalid package name: "")
+
+
+Golang errors in file: [/home/runner/work/go-mastery/go-mastery/06-projects/06-file-storage/internal/services/file_service.go]:
+
+  > [line 14 : column 2] - could not import file-storage-service/internal/config (invalid package name: "")
+
+  > [line 15 : column 2] - could not import file-storage-service/internal/models (invalid package name: "")
+
+  > [line 16 : column 2] - could not import file-storage-service/internal/storage (invalid package name: "")
+
+  > [line 17 : column 2] - could not import file-storage-service/internal/utils (invalid package name: "")
+
+
+Golang errors in file: [/home/runner/work/go-mastery/go-mastery/06-projects/06-file-storage/internal/storage/database.go]:
+
+  > [line 12 : column 2] - could not import file-storage-service/internal/config (invalid package name: "")
+
+  > [line 13 : column 2] - could not import file-storage-service/internal/models (invalid package name: "")
+
+
+Golang errors in file: [/home/runner/work/go-mastery/go-mastery/06-projects/06-file-storage/internal/storage/minio.go]:
+
+  > [line 9 : column 2] - could not import github.com/minio/minio-go/v7 (invalid package name: "")
+
+  > [line 10 : column 2] - could not import github.com/minio/minio-go/v7/pkg/credentials (invalid package name: "")
+
+  > [line 17 : column 14] - undefined: minio
+
+  > [line 24 : column 17] - undefined: minio
+
+  > [line 24 : column 57] - undefined: minio
+
+  > [line 45 : column 52] - undefined: minio
+
+  > [line 56 : column 73] - undefined: minio
+
+  > [line 65 : column 63] - undefined: minio
+
+  > [line 74 : column 58] - undefined: minio
+
+  > [line 83 : column 59] - undefined: minio
+
+  > [line 85 : column 6] - undefined: minio
+
+  > [line 95 : column 62] - undefined: minio
+
+  > [line 114 : column 25] - undefined: minio
+
+  > [line 120 : column 17] - undefined: minio
+
+  > [line 125 : column 10] - undefined: minio
+
+  > [line 140 : column 62] - undefined: minio
+
+  > [line 162 : column 13] - undefined: minio
+
+  > [line 167 : column 13] - undefined: minio
+
+  > [line 205 : column 10] - undefined: minio
+
+
+Golang errors in file: [/home/runner/work/go-mastery/go-mastery/09-system-programming/02-advanced-networking/main.go]:
+
+  > [line 271 : column 17] - undefined: syscall.Handle
+
+
+
+[/home/runner/work/go-mastery/go-mastery/08-performance-mastery/03-optimization-techniques/main.go:186] - G115 (CWE-190): integer overflow conversion uint64 -> int64 (Confidence: MEDIUM, Severity: HIGH)
+    185: 		NsPerOp:     elapsed.Nanoseconds() / int64(iterations),
+  > 186: 		MemoryUsage: int64(m2.TotalAlloc - m1.TotalAlloc),
+    187: 		Complexity:  getComplexity(name),
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/08-performance-mastery/01-advanced-profiling/main.go:1126] - G115 (CWE-190): integer overflow conversion uint64 -> int64 (Confidence: MEDIUM, Severity: HIGH)
+    1125: 	timeSpan := snapshots[len(snapshots)-1].Timestamp.Sub(snapshots[0].Timestamp)
+  > 1126: 	memoryGrowth := int64(snapshots[len(snapshots)-1].HeapInuse) - int64(snapshots[0].HeapInuse)
+    1127: 
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/08-performance-mastery/01-advanced-profiling/main.go:1126] - G115 (CWE-190): integer overflow conversion uint64 -> int64 (Confidence: MEDIUM, Severity: HIGH)
+    1125: 	timeSpan := snapshots[len(snapshots)-1].Timestamp.Sub(snapshots[0].Timestamp)
+  > 1126: 	memoryGrowth := int64(snapshots[len(snapshots)-1].HeapInuse) - int64(snapshots[0].HeapInuse)
+    1127: 
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/08-performance-mastery/01-advanced-profiling/main.go:836] - G115 (CWE-190): integer overflow conversion uint64 -> int64 (Confidence: MEDIUM, Severity: HIGH)
+    835: 		MemAllocs:  int64(memAfter.Mallocs - memBefore.Mallocs),
+  > 836: 		MemBytes:   int64(memAfter.TotalAlloc - memBefore.TotalAlloc),
+    837: 	}
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/08-performance-mastery/01-advanced-profiling/main.go:835] - G115 (CWE-190): integer overflow conversion uint64 -> int64 (Confidence: MEDIUM, Severity: HIGH)
+    834: 		NsPerOp:    duration.Nanoseconds() / int64(iterations),
+  > 835: 		MemAllocs:  int64(memAfter.Mallocs - memBefore.Mallocs),
+    836: 		MemBytes:   int64(memAfter.TotalAlloc - memBefore.TotalAlloc),
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/07-runtime-internals/01-gc-internals/main.go:161] - G115 (CWE-190): integer overflow conversion uint64 -> int64 (Confidence: MEDIUM, Severity: HIGH)
+    160: 	if ms.NumGC > 0 {
+  > 161: 		stats.LastGCTime = time.Unix(0, int64(ms.LastGC))
+    162: 	}
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/07-runtime-internals/01-gc-internals/main.go:142] - G115 (CWE-190): integer overflow conversion uint64 -> int64 (Confidence: MEDIUM, Severity: HIGH)
+    141: 		for i := range recentPauses {
+  > 142: 			pause := time.Duration(pauseHistory[i])
+    143: 			total += pause
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/07-runtime-internals/01-gc-internals/main.go:123] - G115 (CWE-190): integer overflow conversion uint64 -> int64 (Confidence: MEDIUM, Severity: HIGH)
+    122: 		NumForcedGC:  ms.NumForcedGC,
+  > 123: 		GCPauseTotal: time.Duration(ms.PauseTotalNs),
+    124: 		HeapSize:     ms.HeapSys,
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06.5-performance-fundamentals/main.go:773] - G115 (CWE-190): integer overflow conversion uint64 -> int64 (Confidence: MEDIUM, Severity: HIGH)
+    772: 	// 检测泄漏
+  > 773: 	leaked := int64(m2.HeapAlloc) - int64(m1.HeapAlloc)
+    774: 	if leaked > 0 {
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06.5-performance-fundamentals/main.go:773] - G115 (CWE-190): integer overflow conversion uint64 -> int64 (Confidence: MEDIUM, Severity: HIGH)
+    772: 	// 检测泄漏
+  > 773: 	leaked := int64(m2.HeapAlloc) - int64(m1.HeapAlloc)
+    774: 	if leaked > 0 {
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06.5-performance-fundamentals/main.go:770] - G115 (CWE-190): integer overflow conversion uint64 -> int64 (Confidence: MEDIUM, Severity: HIGH)
+    769: 	runtime.ReadMemStats(&m2)
+  > 770: 	fmt.Printf("结束内存: %s\n", formatBytes(int64(m2.HeapAlloc)))
+    771: 
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06.5-performance-fundamentals/main.go:761] - G115 (CWE-190): integer overflow conversion uint64 -> int64 (Confidence: MEDIUM, Severity: HIGH)
+    760: 	runtime.ReadMemStats(&m1)
+  > 761: 	fmt.Printf("开始内存: %s\n", formatBytes(int64(m1.HeapAlloc)))
+    762: 
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06.5-performance-fundamentals/main.go:730] - G115 (CWE-190): integer overflow conversion uint64 -> int64 (Confidence: MEDIUM, Severity: HIGH)
+    729: 		fmt.Printf("  堆大小: %s, GC次数: %d\n",
+  > 730: 			formatBytes(int64(m.HeapAlloc)), m.NumGC)
+    731: 	}
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06.5-performance-fundamentals/main.go:707] - G115 (CWE-190): integer overflow conversion uint64 -> int64 (Confidence: MEDIUM, Severity: HIGH)
+    706: 		m.NumGC,
+  > 707: 		time.Duration(m.PauseTotalNs))
+    708: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06.5-performance-fundamentals/main.go:705] - G115 (CWE-190): integer overflow conversion uint64 -> int64 (Confidence: MEDIUM, Severity: HIGH)
+    704: 		formatBytes(int64(m.HeapSys)),
+  > 705: 		formatBytes(int64(m.HeapAlloc)),
+    706: 		m.NumGC,
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06.5-performance-fundamentals/main.go:704] - G115 (CWE-190): integer overflow conversion uint64 -> int64 (Confidence: MEDIUM, Severity: HIGH)
+    703: 	fmt.Printf("[内存] 堆大小: %s, 使用: %s, GC次数: %d, 暂停: %v\n",
+  > 704: 		formatBytes(int64(m.HeapSys)),
+    705: 		formatBytes(int64(m.HeapAlloc)),
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06.5-performance-fundamentals/main.go:486] - G115 (CWE-190): integer overflow conversion uint64 -> int64 (Confidence: MEDIUM, Severity: HIGH)
+    485: 		AllocedBytes: int64(m2.TotalAlloc - m1.TotalAlloc),
+  > 486: 		AllocsPerOp:  int64(m2.Mallocs-m1.Mallocs) / iterations,
+    487: 	}
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06.5-performance-fundamentals/main.go:485] - G115 (CWE-190): integer overflow conversion uint64 -> int64 (Confidence: MEDIUM, Severity: HIGH)
+    484: 		NsPerOp:      duration.Nanoseconds() / iterations,
+  > 485: 		AllocedBytes: int64(m2.TotalAlloc - m1.TotalAlloc),
+    486: 		AllocsPerOp:  int64(m2.Mallocs-m1.Mallocs) / iterations,
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06.5-performance-fundamentals/main.go:304] - G115 (CWE-190): integer overflow conversion uint64 -> int64 (Confidence: MEDIUM, Severity: HIGH)
+    303: 			pp.metrics.GCCount = m.NumGC
+  > 304: 			pp.metrics.GCPauseTotal = time.Duration(m.PauseTotalNs)
+    305: 
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06.5-performance-fundamentals/main.go:301] - G115 (CWE-190): integer overflow conversion uint64 -> int64 (Confidence: MEDIUM, Severity: HIGH)
+    300: 
+  > 301: 			pp.metrics.MemoryAllocated = int64(m.Alloc)
+    302: 			pp.metrics.GoroutineCount = runtime.NumGoroutine()
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/09-system-programming/03-kernel-interaction/main.go:2204] - G115 (CWE-190): integer overflow conversion int64 -> uint64 (Confidence: MEDIUM, Severity: HIGH)
+    2203: 	return &KernelEvent{
+  > 2204: 		ID:        uint64(secureRandomInt63()),
+    2205: 		Timestamp: time.Now(),
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/09-system-programming/03-kernel-interaction/main.go:80] - G115 (CWE-190): integer overflow conversion int64 -> uint32 (Confidence: MEDIUM, Severity: HIGH)
+    79: 	}
+  > 80: 	return uint32(result)
+    81: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/09-system-programming/03-kernel-interaction/main.go:73] - G115 (CWE-190): integer overflow conversion int64 -> uint32 (Confidence: MEDIUM, Severity: HIGH)
+    72: 		}
+  > 73: 		return uint32(fallback)
+    74: 	}
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/07-runtime-internals/03-memory-allocator/main.go:620] - G115 (CWE-190): integer overflow conversion int -> uint8 (Confidence: MEDIUM, Severity: HIGH)
+    619: 	span.ElemSize = uintptr(classInfo.Size)
+  > 620: 	span.SizeClass = uint8(classInfo.Size)
+    621: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/07-runtime-internals/03-memory-allocator/main.go:601] - G115 (CWE-190): integer overflow conversion int -> uint8 (Confidence: MEDIUM, Severity: HIGH)
+    600: 		NPPages:       classInfo.Pages,
+  > 601: 		SizeClass:     uint8(sizeClass),
+    602: 		ElemSize:      uintptr(classInfo.Size),
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/07-runtime-internals/03-memory-allocator/main.go:402] - G115 (CWE-190): integer overflow conversion int -> uint8 (Confidence: MEDIUM, Severity: HIGH)
+    401: 		heap.Centrals[i] = &MockCentral{
+  > 402: 			SizeClass:    uint8(i),
+    403: 			NonEmptyList: make([]*MockSpan, 0),
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/09-system-programming/04-device-drivers/main.go:1603] - G115 (CWE-190): integer overflow conversion int -> uint64 (Confidence: MEDIUM, Severity: HIGH)
+    1602: 			VirtualAddr:  uintptr(0x10000000 + i*size), // 模拟地址
+  > 1603: 			PhysicalAddr: uint64(0x10000000 + i*size),
+    1604: 			Size:         size,
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/08-performance-mastery/03-optimization-techniques/main.go:904] - G115 (CWE-190): integer overflow conversion int -> uint64 (Confidence: MEDIUM, Severity: HIGH)
+    903: 		shards: shards,
+  > 904: 		mask:   uint64(shardCount - 1),
+    905: 	}
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/07-runtime-internals/03-memory-allocator/main.go:628] - G115 (CWE-190): integer overflow conversion int -> uint16 (Confidence: MEDIUM, Severity: HIGH)
+    627: 	// 找到下一个空闲对象
+  > 628: 	for span.FreeIndex < uint16(len(span.AllocBits)) {
+    629: 		if !span.AllocBits[span.FreeIndex] {
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/07-runtime-internals/03-memory-allocator/main.go:464] - G115 (CWE-190): integer overflow conversion int -> uint16 (Confidence: MEDIUM, Severity: HIGH)
+    463: 	span := cache.Alloc[sizeClass-1]
+  > 464: 	if span == nil || span.FreeIndex >= uint16(len(span.AllocBits)) {
+    465: 		// 从central获取新的span
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/08-performance-mastery/03-optimization-techniques/main.go:894] - G115 (CWE-190): integer overflow conversion int -> uint (Confidence: MEDIUM, Severity: HIGH)
+    893: 	if bits.OnesCount(uint(shardCount)) != 1 {
+  > 894: 		shardCount = 1 << bits.Len(uint(shardCount-1))
+    895: 	}
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/08-performance-mastery/03-optimization-techniques/main.go:893] - G115 (CWE-190): integer overflow conversion int -> uint (Confidence: MEDIUM, Severity: HIGH)
+    892: 	// 确保是2的幂
+  > 893: 	if bits.OnesCount(uint(shardCount)) != 1 {
+    894: 		shardCount = 1 << bits.Len(uint(shardCount-1))
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/08-performance-mastery/04-distributed-profiling/main.go:1621] - G115 (CWE-190): integer overflow conversion int -> int32 (Confidence: MEDIUM, Severity: HIGH)
+    1620: 
+  > 1621: 	index := atomic.AddInt32(&rr.current, 1) % int32(len(healthy))
+    1622: 	return healthy[index]
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/08-performance-mastery/03-optimization-techniques/main.go:1115] - G115 (CWE-190): integer overflow conversion int -> int32 (Confidence: MEDIUM, Severity: HIGH)
+    1114: 		goodStructs[i].c = true
+  > 1115: 		goodStructs[i].d = int32(i)
+    1116: 		goodStructs[i].e = true
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/08-performance-mastery/03-optimization-techniques/main.go:1099] - G115 (CWE-190): integer overflow conversion int -> int32 (Confidence: MEDIUM, Severity: HIGH)
+    1098: 		badStructs[i].c = true
+  > 1099: 		badStructs[i].d = int32(i)
+    1100: 		badStructs[i].e = true
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/06-file-storage/main_original.go:1696] - G404 (CWE-338): Use of weak random number generator (math/rand or math/rand/v2 instead of crypto/rand) (Confidence: MEDIUM, Severity: HIGH)
+    1695: 	for i := range b {
+  > 1696: 		b[i] = charset[mathrand.Intn(len(charset))]
+    1697: 	}
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/06-file-storage/main_original.go:1688] - G404 (CWE-338): Use of weak random number generator (math/rand or math/rand/v2 instead of crypto/rand) (Confidence: MEDIUM, Severity: HIGH)
+    1687: func generateFileID() string {
+  > 1688: 	hash := sha256.Sum256([]byte(fmt.Sprintf("%d-%d", time.Now().UnixNano(), mathrand.Int())))
+    1689: 	return hex.EncodeToString(hash[:])[:16]
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/06-file-storage/main_original.go:666] - G407 (CWE-1204): Use of hardcoded IV/nonce for encryption by passing hardcoded slice/array (Confidence: HIGH, Severity: HIGH)
+    665: 
+  > 666: 	stream := cipher.NewCFBDecrypter(block, iv)
+    667: 	reader := &cipher.StreamReader{S: stream, R: file}
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/06-file-storage/main_original.go:640] - G407 (CWE-1204): Use of hardcoded IV/nonce for encryption by passing hardcoded slice/array (Confidence: HIGH, Severity: HIGH)
+    639: 
+  > 640: 	stream := cipher.NewCFBEncrypter(block, iv)
+    641: 	writer := &cipher.StreamWriter{S: stream, W: dst}
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/03-configuration/main.go:422] - G407 (CWE-1204): Use of hardcoded IV/nonce for encryption by passing hardcoded slice/array (Confidence: HIGH, Severity: HIGH)
+    421: 	nonce, cipherData := data[:nonceSize], data[nonceSize:]
+  > 422: 	plaintext, err := gcm.Open(nil, nonce, cipherData, nil)
+    423: 	if err != nil {
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/12-grpc-communication/main.go:1088] - G402 (CWE-295): TLS MinVersion too low. (Confidence: HIGH, Severity: HIGH)
+    1087: 		} else {
+  > 1088: 			creds = credentials.NewTLS(&tls.Config{})
+    1089: 		}
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/12-grpc-communication/main.go:1086] - G402 (CWE-295): TLS MinVersion too low. (Confidence: HIGH, Severity: HIGH)
+    1085: 			}
+  > 1086: 			creds = credentials.NewTLS(&tls.Config{Certificates: []tls.Certificate{cert}})
+    1087: 		} else {
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/pkg/utils/utils.go:153] - G401 (CWE-328): Use of weak cryptographic primitive (Confidence: HIGH, Severity: MEDIUM)
+    152: func HashMD5(s string) string {
+  > 153: 	hasher := md5.New()
+    154: 	hasher.Write([]byte(s))
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/06-file-storage/main_original.go:1736] - G114 (CWE-676): Use of net/http serve function that has no support for setting timeouts (Confidence: HIGH, Severity: MEDIUM)
+    1735: 
+  > 1736: 	if err := http.ListenAndServe(":"+port, fileServer); err != nil {
+    1737: 		log.Fatal("服务器启动失败:", err)
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/06-file-storage/cmd/server/main.go:68] - G114 (CWE-676): Use of net/http serve function that has no support for setting timeouts (Confidence: HIGH, Severity: MEDIUM)
+    67: 
+  > 68: 	if err := http.ListenAndServe(":"+port, router); err != nil {
+    69: 		log.Fatal("Server failed to start:", err)
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/03-chat-system/main.go:978] - G114 (CWE-676): Use of net/http serve function that has no support for setting timeouts (Confidence: HIGH, Severity: MEDIUM)
+    977: 
+  > 978: 	if err := http.ListenAndServe(":"+port, nil); err != nil {
+    979: 		log.Fatal("服务器启动失败:", err)
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/02-ecommerce-backend/main_original.go:1661] - G114 (CWE-676): Use of net/http serve function that has no support for setting timeouts (Confidence: HIGH, Severity: MEDIUM)
+    1660: 
+  > 1661: 	if err := http.ListenAndServe(":8080", apiServer); err != nil {
+    1662: 		log.Fatal("服务器启动失败:", err)
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/01-blog-system/main.go:1252] - G114 (CWE-676): Use of net/http serve function that has no support for setting timeouts (Confidence: HIGH, Severity: MEDIUM)
+    1251: 
+  > 1252: 	if err := http.ListenAndServe(":8080", server); err != nil {
+    1253: 		log.Fatal("服务器启动失败:", err)
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/12-grpc-communication/main.go:1007] - G114 (CWE-676): Use of net/http serve function that has no support for setting timeouts (Confidence: HIGH, Severity: MEDIUM)
+    1006: 	log.Printf("📊 指标服务器启动在 %s%s", addr, s.config.Metrics.Path)
+  > 1007: 	if err := http.ListenAndServe(addr, nil); err != nil {
+    1008: 		log.Printf("指标服务器错误: %v", err)
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/02-api-gateway/main.go:1912] - G114 (CWE-676): Use of net/http serve function that has no support for setting timeouts (Confidence: HIGH, Severity: MEDIUM)
+    1911: 
+  > 1912: 	log.Fatal(http.ListenAndServe(":8080", router))
+    1913: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/02-api-gateway/main.go:1822] - G114 (CWE-676): Use of net/http serve function that has no support for setting timeouts (Confidence: HIGH, Severity: MEDIUM)
+    1821: 	log.Printf("模拟服务 %s 启动在端口 %d", name, port)
+  > 1822: 	http.ListenAndServe(fmt.Sprintf(":%d", port), router)
+    1823: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/09-system-programming/05-virtualization-containers/main.go:1664] - G204 (CWE-78): Subprocess launched with variable (Confidence: HIGH, Severity: MEDIUM)
+    1663: 	// 删除veth接口
+  > 1664: 	cmd := exec.Command("ip", "link", "delete", vethHost)
+    1665: 	if err := cmd.Run(); err != nil {
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/09-system-programming/05-virtualization-containers/main.go:1622] - G204 (CWE-78): Subprocess launched with variable (Confidence: HIGH, Severity: MEDIUM)
+    1621: 	// 启用host端接口
+  > 1622: 	cmd = exec.Command("ip", "link", "set", vethHost, "up")
+    1623: 	if err := cmd.Run(); err != nil {
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/09-system-programming/05-virtualization-containers/main.go:1616] - G204 (CWE-78): Subprocess launched with variable (Confidence: HIGH, Severity: MEDIUM)
+    1615: 	// 将host端连接到网桥
+  > 1616: 	cmd = exec.Command("ip", "link", "set", vethHost, "master", bridge.Name)
+    1617: 	if err := cmd.Run(); err != nil {
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/09-system-programming/05-virtualization-containers/main.go:1610] - G204 (CWE-78): Subprocess launched with variable (Confidence: HIGH, Severity: MEDIUM)
+    1609: 	// 创建veth pair
+  > 1610: 	cmd := exec.Command("ip", "link", "add", vethHost, "type", "veth", "peer", "name", vethContainer)
+    1611: 	if err := cmd.Run(); err != nil {
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/09-system-programming/05-virtualization-containers/main.go:1683] - G204 (CWE-78): Subprocess launched with a potential tainted input or cmd arguments (Confidence: HIGH, Severity: MEDIUM)
+    1682: 	// 删除网桥
+  > 1683: 	cmd := exec.Command("ip", "link", "delete", bridge.Name)
+    1684: 	if err := cmd.Run(); err != nil {
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/09-system-programming/05-virtualization-containers/main.go:1588] - G204 (CWE-78): Subprocess launched with a potential tainted input or cmd arguments (Confidence: HIGH, Severity: MEDIUM)
+    1587: 	// 启用网桥接口
+  > 1588: 	cmd = exec.Command("ip", "link", "set", bridge.Name, "up")
+    1589: 	if err := cmd.Run(); err != nil {
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/09-system-programming/05-virtualization-containers/main.go:1582] - G204 (CWE-78): Subprocess launched with a potential tainted input or cmd arguments (Confidence: HIGH, Severity: MEDIUM)
+    1581: 	// 设置网桥IP地址
+  > 1582: 	cmd = exec.Command("ip", "addr", "add", bridge.IPAddress+"/24", "dev", bridge.Name)
+    1583: 	if err := cmd.Run(); err != nil {
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/09-system-programming/05-virtualization-containers/main.go:1576] - G204 (CWE-78): Subprocess launched with a potential tainted input or cmd arguments (Confidence: HIGH, Severity: MEDIUM)
+    1575: 	// 创建网桥接口
+  > 1576: 	cmd := exec.Command("ip", "link", "add", bridge.Name, "type", "bridge")
+    1577: 	if err := cmd.Run(); err != nil {
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/09-system-programming/05-virtualization-containers/main.go:641] - G204 (CWE-78): Subprocess launched with a potential tainted input or cmd arguments (Confidence: HIGH, Severity: MEDIUM)
+    640: 		}
+  > 641: 		cmd = exec.Command(container.Config.Cmd[0], container.Config.Cmd[1:]...)
+    642: 	} else {
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/09-system-programming/05-virtualization-containers/main.go:635] - G204 (CWE-78): Subprocess launched with a potential tainted input or cmd arguments (Confidence: HIGH, Severity: MEDIUM)
+    634: 		args := append(container.Config.Entrypoint, container.Config.Cmd...)
+  > 635: 		cmd = exec.Command(args[0], args[1:]...)
+    636: 	} else if len(container.Config.Cmd) > 0 {
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/00-assessment-system/evaluators/code_quality.go:456] - G204 (CWE-78): Subprocess launched with a potential tainted input or cmd arguments (Confidence: HIGH, Severity: MEDIUM)
+    455: 
+  > 456: 	cmd := exec.Command("gocyclo", "-over", strconv.Itoa(gc.threshold), ".")
+    457: 	cmd.Dir = projectPath
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/09-system-programming/05-virtualization-containers/main.go:1011] - G304 (CWE-22): Potential file inclusion via variable (Confidence: HIGH, Severity: MEDIUM)
+    1010: 	cpuStatFile := filepath.Join(cgroup.Path, "cpu.stat")
+  > 1011: 	if data, err := os.ReadFile(cpuStatFile); err == nil {
+    1012: 		cpuStats := cm.parseCPUStats(string(data))
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/09-system-programming/05-virtualization-containers/main.go:1004] - G304 (CWE-22): Potential file inclusion via variable (Confidence: HIGH, Severity: MEDIUM)
+    1003: 	memStatFile := filepath.Join(cgroup.Path, "memory.stat")
+  > 1004: 	if data, err := os.ReadFile(memStatFile); err == nil {
+    1005: 		memStats := cm.parseMemoryStats(string(data))
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/08-performance-mastery/03-optimization-techniques/main.go:1347] - G304 (CWE-22): Potential file inclusion via variable (Confidence: HIGH, Severity: MEDIUM)
+    1346: 
+  > 1347: 	file, err := os.Create(filename + ".mmap")
+    1348: 	if err != nil {
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/08-performance-mastery/03-optimization-techniques/main.go:1315] - G304 (CWE-22): Potential file inclusion via variable (Confidence: HIGH, Severity: MEDIUM)
+    1314: 
+  > 1315: 		file, err := os.Create(filename + fmt.Sprintf(".buf_%d", bufSize))
+    1316: 		if err != nil {
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/08-performance-mastery/03-optimization-techniques/main.go:1285] - G304 (CWE-22): Potential file inclusion via variable (Confidence: HIGH, Severity: MEDIUM)
+    1284: 		// 单次读取
+  > 1285: 		file, err := os.Open(filename)
+    1286: 		if err != nil {
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/08-performance-mastery/03-optimization-techniques/main.go:1266] - G304 (CWE-22): Potential file inclusion via variable (Confidence: HIGH, Severity: MEDIUM)
+    1265: 		// 批量读取
+  > 1266: 		file, err := os.Open(filename)
+    1267: 		if err != nil {
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/08-performance-mastery/03-optimization-techniques/main.go:1248] - G304 (CWE-22): Potential file inclusion via variable (Confidence: HIGH, Severity: MEDIUM)
+    1247: 	// 首先创建测试文件
+  > 1248: 	file, err := os.Create(filename)
+    1249: 	if err != nil {
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/08-performance-mastery/03-optimization-techniques/main.go:1219] - G304 (CWE-22): Potential file inclusion via variable (Confidence: HIGH, Severity: MEDIUM)
+    1218: 		// 单次写入
+  > 1219: 		file, err := os.Create(filename + ".single")
+    1220: 		if err != nil {
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/08-performance-mastery/03-optimization-techniques/main.go:1196] - G304 (CWE-22): Potential file inclusion via variable (Confidence: HIGH, Severity: MEDIUM)
+    1195: 		// 批量写入
+  > 1196: 		file, err := os.Create(filename + ".batch")
+    1197: 		if err != nil {
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/06-file-storage/main_original.go:1214] - G304 (CWE-22): Potential file inclusion via variable (Confidence: HIGH, Severity: MEDIUM)
+    1213: 	// 发送压缩文件
+  > 1214: 	zipFile, err := os.Open(tempPath)
+    1215: 	if err != nil {
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/06-file-storage/main_original.go:826] - G304 (CWE-22): Potential file inclusion via variable (Confidence: HIGH, Severity: MEDIUM)
+    825: func (fp *FileProcessor) CompressFiles(fileIDs []string, outputPath string) error {
+  > 826: 	zipFile, err := os.Create(outputPath)
+    827: 	if err != nil {
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/06-file-storage/main_original.go:779] - G304 (CWE-22): Potential file inclusion via variable (Confidence: HIGH, Severity: MEDIUM)
+    778: 
+  > 779: 	thumbFile, err := os.Create(thumbPath)
+    780: 	if err != nil {
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/06-file-storage/main_original.go:648] - G304 (CWE-22): Potential file inclusion via variable (Confidence: HIGH, Severity: MEDIUM)
+    647: func (fp *FileProcessor) decryptFile(filePath string) (io.ReadCloser, error) {
+  > 648: 	file, err := os.Open(filePath)
+    649: 	if err != nil {
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/06-file-storage/main_original.go:609] - G304 (CWE-22): Potential file inclusion via variable (Confidence: HIGH, Severity: MEDIUM)
+    608: func (fp *FileProcessor) saveFile(src io.Reader, filePath string, encrypt bool) error {
+  > 609: 	dst, err := os.Create(filePath)
+    610: 	if err != nil {
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/06-file-storage/internal/storage/local.go:244] - G304 (CWE-22): Potential file inclusion via variable (Confidence: HIGH, Severity: MEDIUM)
+    243: 	tempFile := filepath.Join(ls.basePath, ".health_check_"+fmt.Sprintf("%d", time.Now().UnixNano()))
+  > 244: 	file, err := os.Create(tempFile)
+    245: 	if err != nil {
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/06-file-storage/internal/storage/local.go:47] - G304 (CWE-22): Potential file inclusion via variable (Confidence: HIGH, Severity: MEDIUM)
+    46: 	// 创建文件
+  > 47: 	file, err := os.Create(fullPath)
+    48: 	if err != nil {
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/05-monitoring-system/main.go:812] - G304 (CWE-22): Potential file inclusion via variable (Confidence: HIGH, Severity: MEDIUM)
+    811: 	logFile := fmt.Sprintf("logs_%s.log", time.Now().Format("2006-01-02"))
+  > 812: 	file, err := os.OpenFile(filepath.Join(s.dataDir, logFile), os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
+    813: 	if err != nil {
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/02-ecommerce-backend/main_original.go:271] - G304 (CWE-22): Potential file inclusion via variable (Confidence: HIGH, Severity: MEDIUM)
+    270: 	for filename, data := range files {
+  > 271: 		if fileData, err := os.ReadFile(filepath.Join(s.dataDir, filename)); err == nil {
+    272: 			json.Unmarshal(fileData, data)
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/03-configuration/main.go:956] - G304 (CWE-22): Potential file inclusion via variable (Confidence: HIGH, Severity: MEDIUM)
+    955: 
+  > 956: 	data, err := os.ReadFile(filename)
+    957: 	if err != nil {
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/04-web/07-file-upload/main.go:742] - G304 (CWE-22): Potential file inclusion via variable (Confidence: HIGH, Severity: MEDIUM)
+    741: 			// 检测MIME类型
+  > 742: 			if file, err := os.Open(path); err == nil {
+    743: 				buffer := make([]byte, 512)
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/04-web/07-file-upload/main.go:665] - G304 (CWE-22): Potential file inclusion via variable (Confidence: HIGH, Severity: MEDIUM)
+    664: 		chunkPath := filepath.Join(chunksDir, fmt.Sprintf("chunk_%d", i))
+  > 665: 		chunkFile, err := os.Open(chunkPath)
+    666: 		if err != nil {
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/04-web/07-file-upload/main.go:655] - G304 (CWE-22): Potential file inclusion via variable (Confidence: HIGH, Severity: MEDIUM)
+    654: 	// 创建最终文件
+  > 655: 	finalFile, err := os.Create(finalPath)
+    656: 	if err != nil {
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/04-web/07-file-upload/main.go:611] - G304 (CWE-22): Potential file inclusion via variable (Confidence: HIGH, Severity: MEDIUM)
+    610: 	chunkPath := filepath.Join(fh.config.UploadDir, "chunks", chunkID, fmt.Sprintf("chunk_%d", chunkIndex))
+  > 611: 	chunkFile, err := os.Create(chunkPath)
+    612: 	if err != nil {
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/04-web/07-file-upload/main.go:513] - G304 (CWE-22): Potential file inclusion via variable (Confidence: HIGH, Severity: MEDIUM)
+    512: 		// 保存缩略图
+  > 513: 		thumbFile, err := os.Create(filepath.Join(fh.config.UploadDir, thumbPath))
+    514: 		if err != nil {
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/04-web/07-file-upload/main.go:159] - G304 (CWE-22): Potential file inclusion via variable (Confidence: HIGH, Severity: MEDIUM)
+    158: 
+  > 159: 	file, err := os.Create(fullPath)
+    160: 	if err != nil {
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/04-web/06-templates/main.go:773] - G304 (CWE-22): Potential file inclusion via variable (Confidence: HIGH, Severity: MEDIUM)
+    772: 
+  > 773: 	dst, err := os.Create(filepath)
+    774: 	if err != nil {
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/02-advanced/07-packages/utils/file.go:62] - G304 (CWE-22): Potential file inclusion via variable (Confidence: HIGH, Severity: MEDIUM)
+    61: 
+  > 62: 	destFile, err := os.Create(dst)
+    63: 	if err != nil {
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/02-advanced/07-packages/utils/file.go:56] - G304 (CWE-22): Potential file inclusion via variable (Confidence: HIGH, Severity: MEDIUM)
+    55: func CopyFile(src, dst string) error {
+  > 56: 	sourceFile, err := os.Open(src)
+    57: 	if err != nil {
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/02-advanced/07-packages/utils/file.go:37] - G304 (CWE-22): Potential file inclusion via variable (Confidence: HIGH, Severity: MEDIUM)
+    36: func WriteFileLines(filename string, lines []string) error {
+  > 37: 	file, err := os.Create(filename)
+    38: 	if err != nil {
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/02-advanced/07-packages/utils/file.go:20] - G304 (CWE-22): Potential file inclusion via variable (Confidence: HIGH, Severity: MEDIUM)
+    19: func ReadFileLines(filename string) ([]string, error) {
+  > 20: 	file, err := os.Open(filename)
+    21: 	if err != nil {
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/00-assessment-system/tools/assessment_tools.go:235] - G304 (CWE-22): Potential file inclusion via variable (Confidence: HIGH, Severity: MEDIUM)
+    234: 		// 读取文件内容
+  > 235: 		content, err := os.ReadFile(path)
+    236: 		if err != nil {
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/00-assessment-system/evaluators/project_eval.go:1186] - G304 (CWE-22): Potential file inclusion via variable (Confidence: HIGH, Severity: MEDIUM)
+    1185: 		if strings.HasSuffix(path, "_test.go") {
+  > 1186: 			content, err := os.ReadFile(path)
+    1187: 			if err == nil {
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/00-assessment-system/evaluators/project_eval.go:1163] - G304 (CWE-22): Potential file inclusion via variable (Confidence: HIGH, Severity: MEDIUM)
+    1162: 		if strings.HasSuffix(path, "_test.go") {
+  > 1163: 			content, err := os.ReadFile(path)
+    1164: 			if err == nil {
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/00-assessment-system/evaluators/project_eval.go:1139] - G304 (CWE-22): Potential file inclusion via variable (Confidence: HIGH, Severity: MEDIUM)
+    1138: 		if strings.HasSuffix(path, "_test.go") {
+  > 1139: 			content, err := os.ReadFile(path)
+    1140: 			if err == nil {
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/00-assessment-system/evaluators/project_eval.go:1046] - G304 (CWE-22): Potential file inclusion via variable (Confidence: HIGH, Severity: MEDIUM)
+    1045: 
+  > 1046: 	content, err := os.ReadFile(readmePath)
+    1047: 	if err != nil {
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/00-assessment-system/evaluators/project_eval.go:916] - G304 (CWE-22): Potential file inclusion via variable (Confidence: HIGH, Severity: MEDIUM)
+    915: 	goModPath := filepath.Join(projectPath, "go.mod")
+  > 916: 	content, err := os.ReadFile(goModPath)
+    917: 	if err != nil {
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/00-assessment-system/evaluators/code_quality.go:796] - G304 (CWE-22): Potential file inclusion via variable (Confidence: HIGH, Severity: MEDIUM)
+    795: func (cqe *CodeQualityEvaluator) analyzeGoFile(filePath string) (total, code, comment, blank int, err error) {
+  > 796: 	file, err := os.Open(filePath)
+    797: 	if err != nil {
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/12-grpc-communication/main.go:991-994] - G112 (CWE-400): Potential Slowloris Attack because ReadHeaderTimeout is not configured in the http.Server (Confidence: LOW, Severity: MEDIUM)
+    990: 	// 启动HTTP服务器
+  > 991: 	httpServer := &http.Server{
+  > 992: 		Addr:    fmt.Sprintf(":%d", s.config.Server.Port+1),
+  > 993: 		Handler: mux,
+  > 994: 	}
+    995: 
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/01-service-discovery/main.go:643-646] - G112 (CWE-400): Potential Slowloris Attack because ReadHeaderTimeout is not configured in the http.Server (Confidence: LOW, Severity: MEDIUM)
+    642: 
+  > 643: 	gw.server = &http.Server{
+  > 644: 		Addr:    fmt.Sprintf(":%d", port),
+  > 645: 		Handler: router,
+  > 646: 	}
+    647: 
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/01-service-discovery/main.go:522-525] - G112 (CWE-400): Potential Slowloris Attack because ReadHeaderTimeout is not configured in the http.Server (Confidence: LOW, Severity: MEDIUM)
+    521: 	// 创建服务器
+  > 522: 	s.server = &http.Server{
+  > 523: 		Addr:    fmt.Sprintf(":%d", s.config.Port),
+  > 524: 		Handler: router,
+  > 525: 	}
+    526: 
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/05-monitoring-system/main.go:812] - G302 (CWE-276): Expect file permissions to be 0600 or less (Confidence: HIGH, Severity: MEDIUM)
+    811: 	logFile := fmt.Sprintf("logs_%s.log", time.Now().Format("2006-01-02"))
+  > 812: 	file, err := os.OpenFile(filepath.Join(s.dataDir, logFile), os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
+    813: 	if err != nil {
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/05-monitoring-system/main.go:795] - G302 (CWE-276): Expect file permissions to be 0600 or less (Confidence: HIGH, Severity: MEDIUM)
+    794: 	// 追加到告警日志文件
+  > 795: 	file, err := os.OpenFile(filepath.Join(s.dataDir, "alerts.log"), os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
+    796: 	if err != nil {
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/09-system-programming/05-virtualization-containers/main.go:2911] - G301 (CWE-276): Expect directory permissions to be 0750 or less (Confidence: HIGH, Severity: MEDIUM)
+    2910: 
+  > 2911: 	if err := os.MkdirAll(dmd.deviceRoot, 0755); err != nil {
+    2912: 		return err
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/09-system-programming/05-virtualization-containers/main.go:2839] - G301 (CWE-276): Expect directory permissions to be 0750 or less (Confidence: HIGH, Severity: MEDIUM)
+    2838: 	for _, dir := range dirs {
+  > 2839: 		if err := os.MkdirAll(dir, 0755); err != nil {
+    2840: 			return nil, err
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/09-system-programming/05-virtualization-containers/main.go:2824] - G301 (CWE-276): Expect directory permissions to be 0750 or less (Confidence: HIGH, Severity: MEDIUM)
+    2823: 	for _, dir := range dirs {
+  > 2824: 		if err := os.MkdirAll(dir, 0755); err != nil {
+    2825: 			return err
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/09-system-programming/05-virtualization-containers/main.go:1266] - G301 (CWE-276): Expect directory permissions to be 0750 or less (Confidence: HIGH, Severity: MEDIUM)
+    1265: 	for _, dir := range dirs {
+  > 1266: 		if err := os.MkdirAll(dir, 0755); err != nil {
+    1267: 			return nil, err
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/09-system-programming/05-virtualization-containers/main.go:1248] - G301 (CWE-276): Expect directory permissions to be 0750 or less (Confidence: HIGH, Severity: MEDIUM)
+    1247: 	for _, dir := range dirs {
+  > 1248: 		if err := os.MkdirAll(dir, 0755); err != nil {
+    1249: 			return err
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/09-system-programming/05-virtualization-containers/main.go:937] - G301 (CWE-276): Expect directory permissions to be 0750 or less (Confidence: HIGH, Severity: MEDIUM)
+    936: 	// 创建cgroup目录
+  > 937: 	if err := os.MkdirAll(cgroupPath, 0755); err != nil {
+    938: 		return nil, err
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/09-system-programming/05-virtualization-containers/main.go:609] - G301 (CWE-276): Expect directory permissions to be 0750 or less (Confidence: HIGH, Severity: MEDIUM)
+    608: 	mergedPath := filepath.Join(containerRoot, "merged")
+  > 609: 	if err := os.MkdirAll(mergedPath, 0755); err != nil {
+    610: 		return err
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/09-system-programming/05-virtualization-containers/main.go:603] - G301 (CWE-276): Expect directory permissions to be 0750 or less (Confidence: HIGH, Severity: MEDIUM)
+    602: 	rwLayer := filepath.Join(containerRoot, "rw")
+  > 603: 	if err := os.MkdirAll(rwLayer, 0755); err != nil {
+    604: 		return err
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/09-system-programming/05-virtualization-containers/main.go:591] - G301 (CWE-276): Expect directory permissions to be 0750 or less (Confidence: HIGH, Severity: MEDIUM)
+    590: 	containerRoot := filepath.Join(cr.config.RootDirectory, "containers", container.ID)
+  > 591: 	if err := os.MkdirAll(containerRoot, 0755); err != nil {
+    592: 		return err
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/07-runtime-internals/04-performance-profiling/main.go:1180] - G301 (CWE-276): Expect directory permissions to be 0750 or less (Confidence: HIGH, Severity: MEDIUM)
+    1179: 	// 确保profiles目录存在
+  > 1180: 	if err := os.MkdirAll("./profiles", 0755); err != nil {
+    1181: 		log.Printf("Warning: failed to create profiles directory: %v", err)
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/07-runtime-internals/04-performance-profiling/main.go:144] - G301 (CWE-276): Expect directory permissions to be 0750 or less (Confidence: HIGH, Severity: MEDIUM)
+    143: 	// 创建profile目录
+  > 144: 	if err := os.MkdirAll(pm.profileDir, 0755); err != nil {
+    145: 		return fmt.Errorf("failed to create profile directory: %v", err)
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/06-file-storage/main_original.go:1206] - G301 (CWE-276): Expect directory permissions to be 0750 or less (Confidence: HIGH, Severity: MEDIUM)
+    1205: 	tempPath := filepath.Join(fs.storage.baseDir, "temp", req.Name)
+  > 1206: 	os.MkdirAll(filepath.Dir(tempPath), 0755)
+    1207: 
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/06-file-storage/main_original.go:165] - G301 (CWE-276): Expect directory permissions to be 0750 or less (Confidence: HIGH, Severity: MEDIUM)
+    164: 	os.MkdirAll(storage.uploadsDir, 0755)
+  > 165: 	os.MkdirAll(storage.thumbsDir, 0755)
+    166: 
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/06-file-storage/main_original.go:164] - G301 (CWE-276): Expect directory permissions to be 0750 or less (Confidence: HIGH, Severity: MEDIUM)
+    163: 	// 创建目录
+  > 164: 	os.MkdirAll(storage.uploadsDir, 0755)
+    165: 	os.MkdirAll(storage.thumbsDir, 0755)
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/06-file-storage/internal/storage/local.go:42] - G301 (CWE-276): Expect directory permissions to be 0750 or less (Confidence: HIGH, Severity: MEDIUM)
+    41: 	// 确保目录存在
+  > 42: 	if err := os.MkdirAll(filepath.Dir(fullPath), 0755); err != nil {
+    43: 		return fmt.Errorf("failed to create directory: %w", err)
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/06-file-storage/internal/storage/local.go:28] - G301 (CWE-276): Expect directory permissions to be 0750 or less (Confidence: HIGH, Severity: MEDIUM)
+    27: 	// 创建目录
+  > 28: 	if err := os.MkdirAll(basePath, 0755); err != nil {
+    29: 		return nil, fmt.Errorf("failed to create storage directory: %w", err)
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/05-monitoring-system/main.go:764] - G301 (CWE-276): Expect directory permissions to be 0750 or less (Confidence: HIGH, Severity: MEDIUM)
+    763: 
+  > 764: 	os.MkdirAll(dataDir, 0755)
+    765: 	return storage
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/04-task-scheduler/main.go:864] - G301 (CWE-276): Expect directory permissions to be 0750 or less (Confidence: HIGH, Severity: MEDIUM)
+    863: 
+  > 864: 	os.MkdirAll(dataDir, 0755)
+    865: 	return storage
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/03-chat-system/main.go:155] - G301 (CWE-276): Expect directory permissions to be 0750 or less (Confidence: HIGH, Severity: MEDIUM)
+    154: 
+  > 155: 	os.MkdirAll(dataDir, 0755)
+    156: 	storage.loadData()
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/02-ecommerce-backend/main_original.go:248] - G301 (CWE-276): Expect directory permissions to be 0750 or less (Confidence: HIGH, Severity: MEDIUM)
+    247: 
+  > 248: 	os.MkdirAll(dataDir, 0755)
+    249: 	store.loadData()
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/01-blog-system/main.go:122] - G301 (CWE-276): Expect directory permissions to be 0750 or less (Confidence: HIGH, Severity: MEDIUM)
+    121: 	// 创建数据目录
+  > 122: 	os.MkdirAll(dataDir, 0755)
+    123: 
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/03-configuration/main.go:946] - G301 (CWE-276): Expect directory permissions to be 0750 or less (Confidence: HIGH, Severity: MEDIUM)
+    945: func NewFileConfigurationSource(basePath, encryptionKey string) *FileConfigurationSource {
+  > 946: 	os.MkdirAll(basePath, 0755)
+    947: 	return &FileConfigurationSource{
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/04-web/07-file-upload/main.go:155] - G301 (CWE-276): Expect directory permissions to be 0750 or less (Confidence: HIGH, Severity: MEDIUM)
+    154: 	// 确保目录存在
+  > 155: 	if err := os.MkdirAll(filepath.Dir(fullPath), 0755); err != nil {
+    156: 		return err
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/04-web/07-file-upload/main.go:121] - G301 (CWE-276): Expect directory permissions to be 0750 or less (Confidence: HIGH, Severity: MEDIUM)
+    120: 	for size := range config.ImageSizes {
+  > 121: 		if err := os.MkdirAll(filepath.Join(config.UploadDir, size), 0755); err != nil {
+    122: 			log.Printf("创建尺寸目录失败: %v", err)
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/04-web/07-file-upload/main.go:117] - G301 (CWE-276): Expect directory permissions to be 0750 or less (Confidence: HIGH, Severity: MEDIUM)
+    116: 	// 确保上传目录存在
+  > 117: 	if err := os.MkdirAll(config.UploadDir, 0755); err != nil {
+    118: 		log.Printf("创建上传目录失败: %v", err)
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/04-web/06-templates/main.go:767] - G301 (CWE-276): Expect directory permissions to be 0750 or less (Confidence: HIGH, Severity: MEDIUM)
+    766: 	uploadDir := "static/uploads"
+  > 767: 	os.MkdirAll(uploadDir, 0755)
+    768: 
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/04-web/06-templates/main.go:432] - G301 (CWE-276): Expect directory permissions to be 0750 or less (Confidence: HIGH, Severity: MEDIUM)
+    431: 	for _, dir := range dirs {
+  > 432: 		os.MkdirAll(dir, 0755)
+    433: 	}
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/04-web/01-http-basics/main.go:536] - G301 (CWE-276): Expect directory permissions to be 0750 or less (Confidence: HIGH, Severity: MEDIUM)
+    535: 	// 创建临时目录和文件用于演示
+  > 536: 	err := os.MkdirAll("./static", 0755)
+    537: 	if err != nil {
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/02-advanced/07-packages/utils/file.go:86] - G301 (CWE-276): Expect directory permissions to be 0750 or less (Confidence: HIGH, Severity: MEDIUM)
+    85: func CreateDirectory(dir string) error {
+  > 86: 	return os.MkdirAll(dir, 0755)
+    87: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/09-system-programming/05-virtualization-containers/main.go:1281] - G306 (CWE-276): Expect WriteFile permissions to be 0600 or less (Confidence: HIGH, Severity: MEDIUM)
+    1280: 	linkName := generateShortID()
+  > 1281: 	if err := os.WriteFile(linkFile, []byte(linkName), 0644); err != nil {
+    1282: 		return nil, err
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/09-system-programming/05-virtualization-containers/main.go:1071] - G306 (CWE-276): Expect WriteFile permissions to be 0600 or less (Confidence: HIGH, Severity: MEDIUM)
+    1070: 	rootProcsFile := filepath.Join(cm.mountPoint, subsystem, "cgroup.procs")
+  > 1071: 	return os.WriteFile(rootProcsFile, []byte(strconv.Itoa(pid)), 0644)
+    1072: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/09-system-programming/05-virtualization-containers/main.go:996] - G306 (CWE-276): Expect WriteFile permissions to be 0600 or less (Confidence: HIGH, Severity: MEDIUM)
+    995: 	quotaValue := fmt.Sprintf("%d %d", quota, period)
+  > 996: 	return os.WriteFile(quotaFile, []byte(quotaValue), 0644)
+    997: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/09-system-programming/05-virtualization-containers/main.go:987] - G306 (CWE-276): Expect WriteFile permissions to be 0600 or less (Confidence: HIGH, Severity: MEDIUM)
+    986: 	limitFile := filepath.Join(cgroup.Path, "memory.max")
+  > 987: 	return os.WriteFile(limitFile, []byte(strconv.FormatInt(limit, 10)), 0644)
+    988: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/09-system-programming/05-virtualization-containers/main.go:980] - G306 (CWE-276): Expect WriteFile permissions to be 0600 or less (Confidence: HIGH, Severity: MEDIUM)
+    979: 	procsFile := filepath.Join(cgroup.Path, "cgroup.procs")
+  > 980: 	return os.WriteFile(procsFile, []byte(strconv.Itoa(pid)), 0644)
+    981: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/08-performance-mastery/05-performance-testing/main.go:2689] - G306 (CWE-276): Expect WriteFile permissions to be 0600 or less (Confidence: HIGH, Severity: MEDIUM)
+    2688: 		reportPath := fmt.Sprintf("performance_report_%s.html", time.Now().Format("20060102_150405"))
+  > 2689: 		if err := os.WriteFile(reportPath, htmlReport, 0644); err != nil {
+    2690: 			fmt.Printf("保存报告失败: %v\n", err)
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/06-file-storage/main_original.go:203] - G306 (CWE-276): Expect WriteFile permissions to be 0600 or less (Confidence: HIGH, Severity: MEDIUM)
+    202: 	if data, err := json.MarshalIndent(logs, "", "  "); err == nil {
+  > 203: 		os.WriteFile(filepath.Join(s.baseDir, "access_logs.json"), data, 0644)
+    204: 	}
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/06-file-storage/main_original.go:194] - G306 (CWE-276): Expect WriteFile permissions to be 0600 or less (Confidence: HIGH, Severity: MEDIUM)
+    193: 	if data, err := json.MarshalIndent(s.files, "", "  "); err == nil {
+  > 194: 		os.WriteFile(filepath.Join(s.baseDir, "files.json"), data, 0644)
+    195: 	}
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/05-monitoring-system/main.go:787] - G306 (CWE-276): Expect WriteFile permissions to be 0600 or less (Confidence: HIGH, Severity: MEDIUM)
+    786: 
+  > 787: 	return os.WriteFile(filepath.Join(s.dataDir, "metrics.json"), data, 0644)
+    788: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/04-task-scheduler/main.go:919] - G306 (CWE-276): Expect WriteFile permissions to be 0600 or less (Confidence: HIGH, Severity: MEDIUM)
+    918: 
+  > 919: 	return os.WriteFile(filepath.Join(s.dataDir, "executions.json"), data, 0644)
+    920: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/04-task-scheduler/main.go:877] - G306 (CWE-276): Expect WriteFile permissions to be 0600 or less (Confidence: HIGH, Severity: MEDIUM)
+    876: 
+  > 877: 	return os.WriteFile(filepath.Join(s.dataDir, "tasks.json"), data, 0644)
+    878: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/03-chat-system/main.go:198] - G306 (CWE-276): Expect WriteFile permissions to be 0600 or less (Confidence: HIGH, Severity: MEDIUM)
+    197: 	if data, err := json.MarshalIndent(s.messages, "", "  "); err == nil {
+  > 198: 		os.WriteFile(filepath.Join(s.dataDir, "messages.json"), data, 0644)
+    199: 	}
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/03-chat-system/main.go:193] - G306 (CWE-276): Expect WriteFile permissions to be 0600 or less (Confidence: HIGH, Severity: MEDIUM)
+    192: 	if data, err := json.MarshalIndent(s.rooms, "", "  "); err == nil {
+  > 193: 		os.WriteFile(filepath.Join(s.dataDir, "rooms.json"), data, 0644)
+    194: 	}
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/03-chat-system/main.go:188] - G306 (CWE-276): Expect WriteFile permissions to be 0600 or less (Confidence: HIGH, Severity: MEDIUM)
+    187: 	if data, err := json.MarshalIndent(s.users, "", "  "); err == nil {
+  > 188: 		os.WriteFile(filepath.Join(s.dataDir, "users.json"), data, 0644)
+    189: 	}
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/02-ecommerce-backend/main_original.go:320] - G306 (CWE-276): Expect WriteFile permissions to be 0600 or less (Confidence: HIGH, Severity: MEDIUM)
+    319: 		if jsonData, err := json.MarshalIndent(data, "", "  "); err == nil {
+  > 320: 			os.WriteFile(filepath.Join(s.dataDir, filename), jsonData, 0644)
+    321: 		}
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/01-blog-system/main.go:192] - G306 (CWE-276): Expect WriteFile permissions to be 0600 or less (Confidence: HIGH, Severity: MEDIUM)
+    191: 	if data, err := json.MarshalIndent(s.comments, "", "  "); err == nil {
+  > 192: 		os.WriteFile(filepath.Join(s.dataDir, "comments.json"), data, 0644)
+    193: 	}
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/01-blog-system/main.go:187] - G306 (CWE-276): Expect WriteFile permissions to be 0600 or less (Confidence: HIGH, Severity: MEDIUM)
+    186: 	if data, err := json.MarshalIndent(s.articles, "", "  "); err == nil {
+  > 187: 		os.WriteFile(filepath.Join(s.dataDir, "articles.json"), data, 0644)
+    188: 	}
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/01-blog-system/main.go:182] - G306 (CWE-276): Expect WriteFile permissions to be 0600 or less (Confidence: HIGH, Severity: MEDIUM)
+    181: 	if data, err := json.MarshalIndent(s.users, "", "  "); err == nil {
+  > 182: 		os.WriteFile(filepath.Join(s.dataDir, "users.json"), data, 0644)
+    183: 	}
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/03-configuration/main.go:977] - G306 (CWE-276): Expect WriteFile permissions to be 0600 or less (Confidence: HIGH, Severity: MEDIUM)
+    976: 
+  > 977: 	return os.WriteFile(filename, data, 0644)
+    978: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/04-web/06-templates/main.go:681] - G306 (CWE-276): Expect WriteFile permissions to be 0600 or less (Confidence: HIGH, Severity: MEDIUM)
+    680: 		if _, err := os.Stat(path); os.IsNotExist(err) {
+  > 681: 			if err := os.WriteFile(path, []byte(content), 0644); err != nil {
+    682: 				log.Printf("创建静态文件 %s 失败: %v", path, err)
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/04-web/06-templates/main.go:590] - G306 (CWE-276): Expect WriteFile permissions to be 0600 or less (Confidence: HIGH, Severity: MEDIUM)
+    589: 		if _, err := os.Stat(path); os.IsNotExist(err) {
+  > 590: 			if err := os.WriteFile(path, []byte(content), 0644); err != nil {
+    591: 				log.Printf("创建模板文件 %s 失败: %v", path, err)
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/04-web/01-http-basics/main.go:564] - G306 (CWE-276): Expect WriteFile permissions to be 0600 or less (Confidence: HIGH, Severity: MEDIUM)
+    563: 	textContent := "这是一个文本文件示例。\n可以通过HTTP访问。"
+  > 564: 	err = os.WriteFile("./static/example.txt", []byte(textContent), 0644)
+    565: 	if err != nil {
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/04-web/01-http-basics/main.go:556] - G306 (CWE-276): Expect WriteFile permissions to be 0600 or less (Confidence: HIGH, Severity: MEDIUM)
+    555: 
+  > 556: 	err = os.WriteFile("./static/index.html", []byte(htmlContent), 0644)
+    557: 	if err != nil {
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/00-assessment-system/evaluators/project_eval.go:1744] - G306 (CWE-276): Expect WriteFile permissions to be 0600 or less (Confidence: HIGH, Severity: MEDIUM)
+    1743: 
+  > 1744: 	if err := os.WriteFile(pe.config.ResultsPath, data, 0644); err != nil {
+    1745: 		return fmt.Errorf("保存结果文件失败: %v", err)
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/00-assessment-system/evaluators/code_quality.go:1425] - G306 (CWE-276): Expect WriteFile permissions to be 0600 or less (Confidence: HIGH, Severity: MEDIUM)
+    1424: 
+  > 1425: 	if err := os.WriteFile(cqe.config.ResultsPath, data, 0644); err != nil {
+    1426: 		return fmt.Errorf("保存结果文件失败: %v", err)
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/pkg/utils/utils.go:7] - G501 (CWE-327): Blocklisted import crypto/md5: weak cryptographic primitive (Confidence: HIGH, Severity: MEDIUM)
+    6: import (
+  > 7: 	"crypto/md5"
+    8: 	"crypto/rand"
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/09-system-programming/03-kernel-interaction/main.go:1775] - G103 (CWE-242): Use of unsafe calls should be audited (Confidence: HIGH, Severity: LOW)
+    1774: 	slice := make([]byte, size)
+  > 1775: 	ptr := unsafe.Pointer(&slice[0])
+    1776: 	addr := uintptr(ptr)
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/09-system-programming/03-kernel-interaction/main.go:959] - G103 (CWE-242): Use of unsafe calls should be audited (Confidence: HIGH, Severity: LOW)
+    958: 		obj := PoolObject{
+  > 959: 			Address:   uintptr(unsafe.Pointer(&[1]byte{})),
+    960: 			Index:     i,
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/08-performance-mastery/03-optimization-techniques/main.go:831] - G103 (CWE-242): Use of unsafe calls should be audited (Confidence: HIGH, Severity: LOW)
+    830: 				data := atomic.LoadPointer(&next.data)
+  > 831: 				if atomic.CompareAndSwapPointer(&q.head, unsafe.Pointer(head), unsafe.Pointer(next)) {
+    832: 					return *(*interface{})(data)
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/08-performance-mastery/03-optimization-techniques/main.go:831] - G103 (CWE-242): Use of unsafe calls should be audited (Confidence: HIGH, Severity: LOW)
+    830: 				data := atomic.LoadPointer(&next.data)
+  > 831: 				if atomic.CompareAndSwapPointer(&q.head, unsafe.Pointer(head), unsafe.Pointer(next)) {
+    832: 					return *(*interface{})(data)
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/08-performance-mastery/03-optimization-techniques/main.go:825] - G103 (CWE-242): Use of unsafe calls should be audited (Confidence: HIGH, Severity: LOW)
+    824: 				}
+  > 825: 				atomic.CompareAndSwapPointer(&q.tail, unsafe.Pointer(tail), unsafe.Pointer(next))
+    826: 			} else {
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/08-performance-mastery/03-optimization-techniques/main.go:825] - G103 (CWE-242): Use of unsafe calls should be audited (Confidence: HIGH, Severity: LOW)
+    824: 				}
+  > 825: 				atomic.CompareAndSwapPointer(&q.tail, unsafe.Pointer(tail), unsafe.Pointer(next))
+    826: 			} else {
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/08-performance-mastery/03-optimization-techniques/main.go:811] - G103 (CWE-242): Use of unsafe calls should be audited (Confidence: HIGH, Severity: LOW)
+    810: 	}
+  > 811: 	atomic.CompareAndSwapPointer(&q.tail, unsafe.Pointer((*node)(atomic.LoadPointer(&q.tail))), unsafe.Pointer(n))
+    812: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/08-performance-mastery/03-optimization-techniques/main.go:811] - G103 (CWE-242): Use of unsafe calls should be audited (Confidence: HIGH, Severity: LOW)
+    810: 	}
+  > 811: 	atomic.CompareAndSwapPointer(&q.tail, unsafe.Pointer((*node)(atomic.LoadPointer(&q.tail))), unsafe.Pointer(n))
+    812: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/08-performance-mastery/03-optimization-techniques/main.go:807] - G103 (CWE-242): Use of unsafe calls should be audited (Confidence: HIGH, Severity: LOW)
+    806: 			} else {
+  > 807: 				atomic.CompareAndSwapPointer(&q.tail, unsafe.Pointer(tail), unsafe.Pointer(next))
+    808: 			}
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/08-performance-mastery/03-optimization-techniques/main.go:807] - G103 (CWE-242): Use of unsafe calls should be audited (Confidence: HIGH, Severity: LOW)
+    806: 			} else {
+  > 807: 				atomic.CompareAndSwapPointer(&q.tail, unsafe.Pointer(tail), unsafe.Pointer(next))
+    808: 			}
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/08-performance-mastery/03-optimization-techniques/main.go:803] - G103 (CWE-242): Use of unsafe calls should be audited (Confidence: HIGH, Severity: LOW)
+    802: 			if next == nil {
+  > 803: 				if atomic.CompareAndSwapPointer(&tail.next, unsafe.Pointer(next), unsafe.Pointer(n)) {
+    804: 					break
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/08-performance-mastery/03-optimization-techniques/main.go:803] - G103 (CWE-242): Use of unsafe calls should be audited (Confidence: HIGH, Severity: LOW)
+    802: 			if next == nil {
+  > 803: 				if atomic.CompareAndSwapPointer(&tail.next, unsafe.Pointer(next), unsafe.Pointer(n)) {
+    804: 					break
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/08-performance-mastery/03-optimization-techniques/main.go:795] - G103 (CWE-242): Use of unsafe calls should be audited (Confidence: HIGH, Severity: LOW)
+    794: func (q *LockFreeQueue) enqueue(data interface{}) {
+  > 795: 	n := &node{data: unsafe.Pointer(&data)}
+    796: 
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/08-performance-mastery/03-optimization-techniques/main.go:789] - G103 (CWE-242): Use of unsafe calls should be audited (Confidence: HIGH, Severity: LOW)
+    788: 		head: unsafe.Pointer(n),
+  > 789: 		tail: unsafe.Pointer(n),
+    790: 	}
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/08-performance-mastery/03-optimization-techniques/main.go:788] - G103 (CWE-242): Use of unsafe calls should be audited (Confidence: HIGH, Severity: LOW)
+    787: 	q := &LockFreeQueue{
+  > 788: 		head: unsafe.Pointer(n),
+    789: 		tail: unsafe.Pointer(n),
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/07-runtime-internals/05-channel-internals/main.go:200] - G103 (CWE-242): Use of unsafe calls should be audited (Confidence: HIGH, Severity: LOW)
+    199: 		cs.buffers[name] = buf // 保持引用避免GC
+  > 200: 		ch.buf = unsafe.Pointer(&buf[0])
+    201: 		atomic.AddInt64(&cs.stats.BufferedChannels, 1)
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/07-runtime-internals/03-memory-allocator/main.go:641] - G103 (CWE-242): Use of unsafe calls should be audited (Confidence: HIGH, Severity: LOW)
+    640: 						span.FreeIndex++
+  > 641: 						return unsafe.Pointer(&backingSlice[offset])
+    642: 					}
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/07-runtime-internals/03-memory-allocator/main.go:596] - G103 (CWE-242): Use of unsafe calls should be audited (Confidence: HIGH, Severity: LOW)
+    595: 	backingMem := make([]byte, memSize)
+  > 596: 	memPtr := unsafe.Pointer(&backingMem[0])
+    597: 
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/07-runtime-internals/03-memory-allocator/main.go:487] - G103 (CWE-242): Use of unsafe calls should be audited (Confidence: HIGH, Severity: LOW)
+    486: 	backingMem := make([]byte, size)
+  > 487: 	memPtr := unsafe.Pointer(&backingMem[0])
+    488: 
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/07-runtime-internals/03-memory-allocator/main.go:449] - G103 (CWE-242): Use of unsafe calls should be audited (Confidence: HIGH, Severity: LOW)
+    448: 	// 分配16字节的tiny块
+  > 449: 	ptr := unsafe.Pointer(&[16]byte{})
+    450: 	cache.TinyAllocs = append(cache.TinyAllocs, ptr)
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/07-runtime-internals/01-gc-internals/main.go:677] - G103 (CWE-242): Use of unsafe calls should be audited (Confidence: HIGH, Severity: LOW)
+    676: 		Resource: &ExternalResource{
+  > 677: 			Handle: uintptr(unsafe.Pointer(&id)), // 模拟外部句柄
+    678: 			Name:   resourceName,
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/10-compiler-toolchain/05-optimization/main.go:2672] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    2671: 	for _, hook := range pm.hooks {
+  > 2672: 		hook.AfterPass(pass, context, result.Changed)
+    2673: 	}
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/10-compiler-toolchain/05-optimization/main.go:2560] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    2559: 	for _, pass := range standardPasses {
+  > 2560: 		oe.passManager.RegisterPass(pass)
+    2561: 	}
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/10-compiler-toolchain/02-syntax-parsing/main.go:1980] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    1979: 	parser := NewParser("go-parser", "go", grammar, config)
+  > 1980: 	analyzer.RegisterParser(parser)
+    1981: 
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/10-compiler-toolchain/01-lexical-analysis/main.go:2260] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    2259: 	// 注册词法分析器
+  > 2260: 	analyzer.RegisterTokenizer(goTokenizer)
+    2261: 
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/10-compiler-toolchain/01-ast-manipulation/main.go:1178] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    1177: 	fmt.Println("\n优化后的代码:")
+  > 1178: 	format.Node(os.Stdout, fset, optimizedFile)
+    1179: 
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/10-compiler-toolchain/01-ast-manipulation/main.go:1166] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    1165: 	fmt.Println("优化前的代码:")
+  > 1166: 	format.Node(os.Stdout, fset, file)
+    1167: 
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/10-compiler-toolchain/01-ast-manipulation/main.go:591] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    590: 	fmt.Println("原始AST结构:")
+  > 591: 	ast.Print(fset, file)
+    592: 
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/09-system-programming/03-kernel-interaction/main.go:2097] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    2096: 		// 关闭设备
+  > 2097: 		driverInterface.CloseDevice(device)
+    2098: 	}
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/09-system-programming/03-kernel-interaction/main.go:1997] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    1996: 	memManager.CreateMemoryPool("medium_objects", 512, 50)
+  > 1997: 	memManager.CreateMemoryPool("large_objects", 4096, 10)
+    1998: 
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/09-system-programming/03-kernel-interaction/main.go:1996] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    1995: 	memManager.CreateMemoryPool("small_objects", 64, 100)
+  > 1996: 	memManager.CreateMemoryPool("medium_objects", 512, 50)
+    1997: 	memManager.CreateMemoryPool("large_objects", 4096, 10)
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/09-system-programming/03-kernel-interaction/main.go:1995] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    1994: 	// 创建内存池
+  > 1995: 	memManager.CreateMemoryPool("small_objects", 64, 100)
+    1996: 	memManager.CreateMemoryPool("medium_objects", 512, 50)
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/09-system-programming/03-kernel-interaction/main.go:1979] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    1978: 
+  > 1979: 	eventMonitor.Start()
+    1980: 	defer eventMonitor.Stop()
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/09-system-programming/03-kernel-interaction/main.go:1922] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    1921: 	scm := NewSystemCallManager(config)
+  > 1922: 	scm.Start()
+    1923: 	defer scm.Stop()
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/09-system-programming/03-kernel-interaction/main.go:1152] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    1151: 		if driver.Operations.Remove != nil {
+  > 1152: 			driver.Operations.Remove(device)
+    1153: 		}
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/09-system-programming/02-advanced-networking/main.go:1579] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    1578: 			response := "HTTP/1.1 200 OK\r\nContent-Length: 13\r\n\r\nHello, World!"
+  > 1579: 			conn.Conn.Write([]byte(response))
+    1580: 
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/09-system-programming/02-advanced-networking/main.go:1447] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    1446: 	server.AddListener("0.0.0.0", 8080, "custom-protocol")
+  > 1447: 	server.AddListener("0.0.0.0", 8081, "http")
+    1448: 
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/09-system-programming/02-advanced-networking/main.go:1446] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    1445: 	fmt.Println("\n3. 配置网络监听器")
+  > 1446: 	server.AddListener("0.0.0.0", 8080, "custom-protocol")
+    1447: 	server.AddListener("0.0.0.0", 8081, "http")
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/09-system-programming/02-advanced-networking/main.go:424] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    423: 	managedConn.Cancel()
+  > 424: 	managedConn.Conn.Close()
+    425: 
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/09-system-programming/02-advanced-networking/main.go:369] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    368: 	if ns.config.ReadTimeout > 0 {
+  > 369: 		managedConn.Conn.SetReadDeadline(time.Now().Add(ns.config.ReadTimeout))
+    370: 	}
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/09-system-programming/02-advanced-networking/main.go:354] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    353: 			tcpConn.SetKeepAlive(true)
+  > 354: 			tcpConn.SetKeepAlivePeriod(ns.config.KeepaliveInterval)
+    355: 		}
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/09-system-programming/02-advanced-networking/main.go:353] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    352: 		if ns.config.EnableKeepalive {
+  > 353: 			tcpConn.SetKeepAlive(true)
+    354: 			tcpConn.SetKeepAlivePeriod(ns.config.KeepaliveInterval)
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/09-system-programming/02-advanced-networking/main.go:350] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    349: 		if ns.config.TCPNoDelay {
+  > 350: 			tcpConn.SetNoDelay(true)
+    351: 		}
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/09-system-programming/02-advanced-networking/main.go:303] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    302: 		if ns.shouldRejectConnection() {
+  > 303: 			conn.Close()
+    304: 			atomic.AddInt64(&ns.statistics.RejectedConnections, 1)
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/09-system-programming/02-advanced-networking/main.go:287] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    286: 
+  > 287: 		file.Close()
+    288: 	}
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/09-system-programming/02-advanced-networking/main.go:274] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    273: 		if config.ReuseAddress {
+  > 274: 			syscall.SetsockoptInt(fd, syscall.SOL_SOCKET, syscall.SO_REUSEADDR, 1)
+    275: 		}
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/08-performance-mastery/05-performance-testing/main.go:2505] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    2504: 	framework := NewPerformanceTestFramework(config)
+  > 2505: 	framework.Start()
+    2506: 	defer framework.Stop()
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/08-performance-mastery/05-performance-testing/main.go:684] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    683: 		if test.Target.Function != nil {
+  > 684: 			test.Target.Function()
+    685: 		}
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/08-performance-mastery/04-distributed-profiling/main.go:1773] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    1772: 	h := fnv.New32a()
+  > 1773: 	h.Write([]byte(key))
+    1774: 	return h.Sum32()
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/08-performance-mastery/03-optimization-techniques/main.go:1339] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    1338: 
+  > 1339: 		os.Remove(filename + fmt.Sprintf(".buf_%d", bufSize))
+    1340: 	}
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/08-performance-mastery/02-production-monitoring/main.go:1468] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    1467: 	apm := NewAPMSystem(config)
+  > 1468: 	apm.Start()
+    1469: 	defer apm.Stop()
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/08-performance-mastery/02-production-monitoring/main.go:464] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    463: 	bytes := make([]byte, 16)
+  > 464: 	rand.Read(bytes)
+    465: 	return fmt.Sprintf("%x", bytes)
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/08-performance-mastery/01-advanced-profiling/main.go:1165] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    1164: 	profiler := NewAdvancedProfiler()
+  > 1165: 	profiler.Start()
+    1166: 	defer profiler.Stop()
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06.5-performance-fundamentals/main.go:268] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    267: 		trace.Stop()
+  > 268: 		pp.traceFile.Close()
+    269: 		fmt.Println("  Trace 已停止")
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06.5-performance-fundamentals/main.go:261] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    260: 		pprof.StopCPUProfile()
+  > 261: 		pp.cpuProfile.Close()
+    262: 		fmt.Println("  CPU profiling 已停止")
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/06-file-storage/main_original.go:1678-1680] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    1677: 	w.WriteHeader(statusCode)
+  > 1678: 	json.NewEncoder(w).Encode(map[string]string{
+  > 1679: 		"error": message,
+  > 1680: 	})
+    1681: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/06-file-storage/main_original.go:1672] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    1671: 	w.Header().Set("Content-Type", "application/json")
+  > 1672: 	json.NewEncoder(w).Encode(data)
+    1673: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/06-file-storage/main_original.go:1667] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    1666: 	w.Header().Set("Content-Type", "text/html")
+  > 1667: 	w.Write([]byte(html))
+    1668: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/06-file-storage/main_original.go:1230] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    1229: 
+  > 1230: 	io.Copy(w, zipFile)
+    1231: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/06-file-storage/main_original.go:1221] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    1220: 		zipFile.Close()
+  > 1221: 		os.Remove(tempPath) // 清理临时文件
+    1222: 	}()
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/06-file-storage/main_original.go:1220] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    1219: 	defer func() {
+  > 1220: 		zipFile.Close()
+    1221: 		os.Remove(tempPath) // 清理临时文件
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/06-file-storage/main_original.go:1206] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    1205: 	tempPath := filepath.Join(fs.storage.baseDir, "temp", req.Name)
+  > 1206: 	os.MkdirAll(filepath.Dir(tempPath), 0755)
+    1207: 
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/06-file-storage/main_original.go:1181] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    1180: 	w.Header().Set("Content-Length", fmt.Sprintf("%d", thumbInfo.Size))
+  > 1181: 	io.Copy(w, thumbFile)
+    1182: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/06-file-storage/main_original.go:1131] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    1130: 	// 发送文件内容
+  > 1131: 	io.Copy(w, fileReader)
+    1132: 
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/06-file-storage/main_original.go:963] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    962: 		fileInfo, err := fs.processor.ProcessUpload(header, file, ownerID, encrypt)
+  > 963: 		file.Close()
+    964: 
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/06-file-storage/main_original.go:858] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    857: 		io.Copy(zipFileWriter, fileReader)
+  > 858: 		fileReader.Close()
+    859: 	}
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/06-file-storage/main_original.go:857] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    856: 
+  > 857: 		io.Copy(zipFileWriter, fileReader)
+    858: 		fileReader.Close()
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/06-file-storage/main_original.go:662] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    661: 	if _, err := file.Read(iv); err != nil {
+  > 662: 		file.Close()
+    663: 		return nil, err
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/06-file-storage/main_original.go:655] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    654: 	if err != nil {
+  > 655: 		file.Close()
+    656: 		return nil, err
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/06-file-storage/main_original.go:556] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    555: 	// 重置文件指针
+  > 556: 	file.Seek(0, 0)
+    557: 
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/06-file-storage/main_original.go:547] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    546: 	// 计算文件校验和
+  > 547: 	file.Seek(0, 0)
+    548: 	hasher := sha256.New()
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/06-file-storage/main_original.go:275] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    274: 	for _, version := range file.Versions {
+  > 275: 		os.Remove(version.Path)
+    276: 	}
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/06-file-storage/main_original.go:269] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    268: 		for _, thumb := range file.ImageInfo.Thumbnails {
+  > 269: 			os.Remove(thumb.Path)
+    270: 		}
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/06-file-storage/main_original.go:203] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    202: 	if data, err := json.MarshalIndent(logs, "", "  "); err == nil {
+  > 203: 		os.WriteFile(filepath.Join(s.baseDir, "access_logs.json"), data, 0644)
+    204: 	}
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/06-file-storage/main_original.go:194] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    193: 	if data, err := json.MarshalIndent(s.files, "", "  "); err == nil {
+  > 194: 		os.WriteFile(filepath.Join(s.baseDir, "files.json"), data, 0644)
+    195: 	}
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/06-file-storage/main_original.go:184] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    183: 	if data, err := os.ReadFile(filepath.Join(s.baseDir, "access_logs.json")); err == nil {
+  > 184: 		json.Unmarshal(data, &s.accessLogs)
+    185: 	}
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/06-file-storage/main_original.go:179] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    178: 	if data, err := os.ReadFile(filepath.Join(s.baseDir, "files.json")); err == nil {
+  > 179: 		json.Unmarshal(data, &s.files)
+    180: 	}
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/06-file-storage/main_original.go:165] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    164: 	os.MkdirAll(storage.uploadsDir, 0755)
+  > 165: 	os.MkdirAll(storage.thumbsDir, 0755)
+    166: 
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/06-file-storage/main_original.go:164] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    163: 	// 创建目录
+  > 164: 	os.MkdirAll(storage.uploadsDir, 0755)
+    165: 	os.MkdirAll(storage.thumbsDir, 0755)
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/06-file-storage/internal/utils/utils.go:28] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    27: 	bytes := make([]byte, length)
+  > 28: 	rand.Read(bytes)
+    29: 
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/06-file-storage/internal/utils/utils.go:18] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    17: 	randomBytes := make([]byte, 8)
+  > 18: 	rand.Read(randomBytes)
+    19: 
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/06-file-storage/internal/storage/local.go:249] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    248: 	file.Close()
+  > 249: 	os.Remove(tempFile)
+    250: 
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/06-file-storage/internal/storage/local.go:248] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    247: 	}
+  > 248: 	file.Close()
+    249: 	os.Remove(tempFile)
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/06-file-storage/internal/saga/execution_engine.go:571] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    570: 
+  > 571: 	e.stateManager.RecordSagaEvent(ctx, event)
+    572: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/06-file-storage/internal/saga/execution_engine.go:377] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    376: 			execution.CompensationError = err.Error()
+  > 377: 			e.repository.UpdateSagaExecution(ctx, execution)
+    378: 			compensationFailed = true
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/06-file-storage/internal/saga/execution_engine.go:332-333] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    331: 		// 补偿失败
+  > 332: 		e.stateManager.RecordStepResult(ctx, stepExecution.ID, "",
+  > 333: 			fmt.Sprintf("compensation failed: %s", err.Error()))
+    334: 		return NewSagaErrorWithCause(ErrCodeStepCompensationFailed,
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/06-file-storage/internal/saga/execution_engine.go:287] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    286: 	e.stateManager.RecordStepResult(ctx, stepExecution.ID, "", lastErr.Error())
+  > 287: 	e.stateManager.TransitionStepStatus(ctx, stepExecution.ID, model.StepStatusRunning, model.StepStatusFailed)
+    288: 
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/06-file-storage/internal/saga/execution_engine.go:286] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    285: 	// 所有重试都失败了
+  > 286: 	e.stateManager.RecordStepResult(ctx, stepExecution.ID, "", lastErr.Error())
+    287: 	e.stateManager.TransitionStepStatus(ctx, stepExecution.ID, model.StepStatusRunning, model.StepStatusFailed)
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/06-file-storage/internal/saga/execution_engine.go:255] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    254: 				// 继续重试
+  > 255: 				e.stateManager.TransitionStepStatus(ctx, stepExecution.ID, model.StepStatusRetrying, model.StepStatusRunning)
+    256: 				continue
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/06-file-storage/internal/saga/execution_engine.go:244] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    243: 			// 转换到重试状态
+  > 244: 			e.stateManager.TransitionStepStatus(ctx, stepExecution.ID, model.StepStatusRunning, model.StepStatusRetrying)
+    245: 
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/06-file-storage/internal/saga/execution_engine.go:230] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    229: 				e.stateManager.RecordStepResult(ctx, stepExecution.ID, "", err.Error())
+  > 230: 				e.stateManager.TransitionStepStatus(ctx, stepExecution.ID, model.StepStatusRunning, model.StepStatusFailed)
+    231: 				return NewSagaErrorWithCause(ErrCodeStepExecutionFailed,
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/06-file-storage/internal/saga/execution_engine.go:229] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    228: 				// 不可重试，直接失败
+  > 229: 				e.stateManager.RecordStepResult(ctx, stepExecution.ID, "", err.Error())
+    230: 				e.stateManager.TransitionStepStatus(ctx, stepExecution.ID, model.StepStatusRunning, model.StepStatusFailed)
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/06-file-storage/internal/saga/execution_engine.go:180] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    179: 		e.stateManager.RecordStepResult(ctx, stepExecution.ID, "", err.Error())
+  > 180: 		e.stateManager.TransitionStepStatus(ctx, stepExecution.ID, model.StepStatusRunning, model.StepStatusFailed)
+    181: 		return err
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/06-file-storage/internal/saga/execution_engine.go:179] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    178: 		// 记录错误
+  > 179: 		e.stateManager.RecordStepResult(ctx, stepExecution.ID, "", err.Error())
+    180: 		e.stateManager.TransitionStepStatus(ctx, stepExecution.ID, model.StepStatusRunning, model.StepStatusFailed)
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/06-file-storage/internal/handlers/file_handler.go:441-444] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    440: 	w.WriteHeader(statusCode)
+  > 441: 	json.NewEncoder(w).Encode(&models.ErrorResponse{
+  > 442: 		Error: message,
+  > 443: 		Code:  statusCode,
+  > 444: 	})
+    445: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/06-file-storage/internal/handlers/file_handler.go:435] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    434: 	w.Header().Set("Content-Type", "application/json")
+  > 435: 	json.NewEncoder(w).Encode(data)
+    436: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/06-file-storage/internal/handlers/file_handler.go:419] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    418: 	w.Header().Set("Content-Type", "text/html")
+  > 419: 	w.Write([]byte(html))
+    420: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/05-monitoring-system/main.go:1549-1551] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    1548: 	w.WriteHeader(statusCode)
+  > 1549: 	json.NewEncoder(w).Encode(map[string]string{
+  > 1550: 		"error": message,
+  > 1551: 	})
+    1552: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/05-monitoring-system/main.go:1543] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    1542: 	w.Header().Set("Content-Type", "application/json")
+  > 1543: 	json.NewEncoder(w).Encode(data)
+    1544: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/05-monitoring-system/main.go:1538] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    1537: 	w.Header().Set("Content-Type", "text/html")
+  > 1538: 	w.Write([]byte(html))
+    1539: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/05-monitoring-system/main.go:764] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    763: 
+  > 764: 	os.MkdirAll(dataDir, 0755)
+    765: 	return storage
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/05-monitoring-system/main.go:674] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    673: 	} else {
+  > 674: 		resp.Body.Close()
+    675: 		if resp.StatusCode == 200 {
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/05-monitoring-system/main.go:502] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    501: func (am *AlertManager) notifySubscribers(alert Alert) {
+  > 502: 	am.storage.SaveAlert(alert)
+    503: 
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/04-task-scheduler/main.go:1561-1563] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    1560: 	w.WriteHeader(statusCode)
+  > 1561: 	json.NewEncoder(w).Encode(map[string]string{
+  > 1562: 		"error": message,
+  > 1563: 	})
+    1564: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/04-task-scheduler/main.go:1555] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    1554: 	w.Header().Set("Content-Type", "application/json")
+  > 1555: 	json.NewEncoder(w).Encode(data)
+    1556: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/04-task-scheduler/main.go:1550] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    1549: 	w.Header().Set("Content-Type", "text/html")
+  > 1550: 	w.Write([]byte(html))
+    1551: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/04-task-scheduler/main.go:864] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    863: 
+  > 864: 	os.MkdirAll(dataDir, 0755)
+    865: 	return storage
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/04-task-scheduler/main.go:806] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    805: 	delete(s.tasks, id)
+  > 806: 	s.storage.SaveTasks(s.tasks)
+    807: 
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/04-task-scheduler/main.go:786] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    785: 	task.Status = "cancelled"
+  > 786: 	s.storage.SaveTasks(s.tasks)
+    787: 
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/04-task-scheduler/main.go:737] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    736: 
+  > 737: 	s.storage.SaveTasks(s.tasks)
+    738: 
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/04-task-scheduler/main.go:527] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    526: 	s.storage.SaveTasks(s.tasks)
+  > 527: 	s.storage.SaveExecutions(s.executions)
+    528: 
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/04-task-scheduler/main.go:526] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    525: 	// 保存数据
+  > 526: 	s.storage.SaveTasks(s.tasks)
+    527: 	s.storage.SaveExecutions(s.executions)
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/03-chat-system/main.go:926] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    925: 		w.Header().Set("Content-Type", contentType)
+  > 926: 		w.Write(data)
+    927: 	} else {
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/03-chat-system/main.go:891] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    890: 	w.Header().Set("Content-Type", "application/json")
+  > 891: 	json.NewEncoder(w).Encode(users)
+    892: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/03-chat-system/main.go:885] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    884: 	w.Header().Set("Content-Type", "application/json")
+  > 885: 	json.NewEncoder(w).Encode(rooms)
+    886: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/03-chat-system/main.go:680] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    679: 		case <-ticker.C:
+  > 680: 			c.Conn.SetWriteDeadline(time.Now().Add(10 * time.Second))
+    681: 			if err := c.Conn.WriteMessage(websocket.PingMessage, nil); err != nil {
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/03-chat-system/main.go:672] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    671: 				escapedMessage := []byte(html.EscapeString(string(message)))
+  > 672: 				w.Write(escapedMessage)
+    673: 			}
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/03-chat-system/main.go:668] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    667: 			for i := 0; i < n; i++ {
+  > 668: 				w.Write([]byte{'\n'})
+    669: 				// XSS安全修复：转义用户消息防止XSS攻击
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/03-chat-system/main.go:663] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    662: 			escapedMessage := []byte(html.EscapeString(string(message)))
+  > 663: 			w.Write(escapedMessage)
+    664: 
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/03-chat-system/main.go:653] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    652: 			if !ok {
+  > 653: 				c.Conn.WriteMessage(websocket.CloseMessage, []byte{})
+    654: 				return
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/03-chat-system/main.go:651] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    650: 		case message, ok := <-c.Send:
+  > 651: 			c.Conn.SetWriteDeadline(time.Now().Add(10 * time.Second))
+    652: 			if !ok {
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/03-chat-system/main.go:645] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    644: 		ticker.Stop()
+  > 645: 		c.Conn.Close()
+    646: 	}()
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/03-chat-system/main.go:617] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    616: 	c.Conn.SetPongHandler(func(string) error {
+  > 617: 		c.Conn.SetReadDeadline(time.Now().Add(60 * time.Second))
+    618: 		c.LastPing = time.Now()
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/03-chat-system/main.go:615] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    614: 	c.Conn.SetReadLimit(512)
+  > 615: 	c.Conn.SetReadDeadline(time.Now().Add(60 * time.Second))
+    616: 	c.Conn.SetPongHandler(func(string) error {
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/03-chat-system/main.go:611] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    610: 		c.Hub.unregister <- c
+  > 611: 		c.Conn.Close()
+    612: 	}()
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/03-chat-system/main.go:564] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    563: 	// 添加用户到房间
+  > 564: 	h.storage.AddUserToRoom(client.User.ID, roomID)
+    565: 
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/03-chat-system/main.go:198] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    197: 	if data, err := json.MarshalIndent(s.messages, "", "  "); err == nil {
+  > 198: 		os.WriteFile(filepath.Join(s.dataDir, "messages.json"), data, 0644)
+    199: 	}
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/03-chat-system/main.go:193] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    192: 	if data, err := json.MarshalIndent(s.rooms, "", "  "); err == nil {
+  > 193: 		os.WriteFile(filepath.Join(s.dataDir, "rooms.json"), data, 0644)
+    194: 	}
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/03-chat-system/main.go:188] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    187: 	if data, err := json.MarshalIndent(s.users, "", "  "); err == nil {
+  > 188: 		os.WriteFile(filepath.Join(s.dataDir, "users.json"), data, 0644)
+    189: 	}
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/03-chat-system/main.go:178] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    177: 	if data, err := os.ReadFile(filepath.Join(s.dataDir, "messages.json")); err == nil {
+  > 178: 		json.Unmarshal(data, &s.messages)
+    179: 	}
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/03-chat-system/main.go:173] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    172: 	if data, err := os.ReadFile(filepath.Join(s.dataDir, "rooms.json")); err == nil {
+  > 173: 		json.Unmarshal(data, &s.rooms)
+    174: 	}
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/03-chat-system/main.go:168] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    167: 	if data, err := os.ReadFile(filepath.Join(s.dataDir, "users.json")); err == nil {
+  > 168: 		json.Unmarshal(data, &s.users)
+    169: 	}
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/03-chat-system/main.go:155] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    154: 
+  > 155: 	os.MkdirAll(dataDir, 0755)
+    156: 	storage.loadData()
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/02-ecommerce-backend/main_original.go:1640] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    1639: 
+  > 1640: 	s.saveData()
+    1641: 	log.Println("Created sample e-commerce data")
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/02-ecommerce-backend/main_original.go:1459] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    1458: 	b := make([]byte, 16)
+  > 1459: 	rand.Read(b)
+    1460: 	return fmt.Sprintf("TXN%x", b)
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/02-ecommerce-backend/main_original.go:1395-1398] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    1394: 	w.WriteHeader(statusCode)
+  > 1395: 	json.NewEncoder(w).Encode(map[string]string{
+  > 1396: 		"error":  message,
+  > 1397: 		"status": http.StatusText(statusCode),
+  > 1398: 	})
+    1399: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/02-ecommerce-backend/main_original.go:1389] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    1388: 	w.Header().Set("Content-Type", "application/json")
+  > 1389: 	json.NewEncoder(w).Encode(data)
+    1390: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/02-ecommerce-backend/main_original.go:1380] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    1379: 	w.Header().Set("Content-Type", "text/html")
+  > 1380: 	w.Write([]byte(html))
+    1381: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/02-ecommerce-backend/main_original.go:789] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    788: 
+  > 789: 	s.saveData()
+    790: 	return &payment, nil
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/02-ecommerce-backend/main_original.go:721] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    720: 
+  > 721: 			s.saveData()
+    722: 			return nil
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/02-ecommerce-backend/main_original.go:674] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    673: 
+  > 674: 	s.saveData()
+    675: 	return &order, nil
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/02-ecommerce-backend/main_original.go:591] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    590: 	s.cartItems = filtered
+  > 591: 	s.saveData()
+    592: 	return nil
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/02-ecommerce-backend/main_original.go:571] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    570: 			s.cartItems = append(s.cartItems[:i], s.cartItems[i+1:]...)
+  > 571: 			s.saveData()
+    572: 			return nil
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/02-ecommerce-backend/main_original.go:540] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    539: 	s.cartItems = append(s.cartItems, cartItem)
+  > 540: 	s.saveData()
+    541: 
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/02-ecommerce-backend/main_original.go:521] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    520: 			s.cartItems[i].UpdatedAt = time.Now()
+  > 521: 			s.saveData()
+    522: 			return nil
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/02-ecommerce-backend/main_original.go:461] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    460: 
+  > 461: 			s.saveData()
+    462: 			return nil
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/02-ecommerce-backend/main_original.go:400] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    399: 	s.products = append(s.products, product)
+  > 400: 	s.saveData()
+    401: 
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/02-ecommerce-backend/main_original.go:350] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    349: 	s.users = append(s.users, user)
+  > 350: 	s.saveData()
+    351: 
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/02-ecommerce-backend/main_original.go:320] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    319: 		if jsonData, err := json.MarshalIndent(data, "", "  "); err == nil {
+  > 320: 			os.WriteFile(filepath.Join(s.dataDir, filename), jsonData, 0644)
+    321: 		}
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/02-ecommerce-backend/main_original.go:272] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    271: 		if fileData, err := os.ReadFile(filepath.Join(s.dataDir, filename)); err == nil {
+  > 272: 			json.Unmarshal(fileData, data)
+    273: 		}
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/02-ecommerce-backend/main_original.go:248] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    247: 
+  > 248: 	os.MkdirAll(dataDir, 0755)
+    249: 	store.loadData()
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/01-blog-system/main.go:1306] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    1305: 	for _, article := range articles {
+  > 1306: 		storage.CreateArticle(article)
+    1307: 	}
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/01-blog-system/main.go:1222] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    1221: 	b := make([]byte, 16)
+  > 1222: 	rand.Read(b)
+    1223: 	return hex.EncodeToString(b)
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/01-blog-system/main.go:1216] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    1215: 	b := make([]byte, 4)
+  > 1216: 	rand.Read(b)
+    1217: 	return slug + "-" + hex.EncodeToString(b)
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/01-blog-system/main.go:1131] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    1130: 	w.Header().Set("Content-Type", "text/html")
+  > 1131: 	bs.templates.ExecuteTemplate(w, "layout", data)
+    1132: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/01-blog-system/main.go:1101] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    1100: 	w.Header().Set("Content-Type", "text/html")
+  > 1101: 	bs.templates.ExecuteTemplate(w, "layout", data)
+    1102: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/01-blog-system/main.go:1045] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    1044: 	w.Header().Set("Content-Type", "text/html")
+  > 1045: 	bs.templates.ExecuteTemplate(w, "layout", data)
+    1046: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/01-blog-system/main.go:995] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    994: 	w.Header().Set("Content-Type", "text/html")
+  > 995: 	bs.templates.ExecuteTemplate(w, "layout", data)
+    996: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/01-blog-system/main.go:915] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    914: 	// 解析表单
+  > 915: 	r.ParseForm()
+    916: 	username := r.FormValue("username")
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/01-blog-system/main.go:895] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    894: 	w.Header().Set("Content-Type", "text/html")
+  > 895: 	bs.templates.ExecuteTemplate(w, "layout", data)
+    896: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/01-blog-system/main.go:858] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    857: 	w.Header().Set("Content-Type", "text/html")
+  > 858: 	bs.templates.ExecuteTemplate(w, "layout", data)
+    859: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/01-blog-system/main.go:461] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    460: 			s.comments[i].UpdatedAt = time.Now()
+  > 461: 			s.saveData()
+    462: 			return nil
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/01-blog-system/main.go:435] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    434: 	s.comments = append(s.comments, comment)
+  > 435: 	s.saveData()
+    436: 
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/01-blog-system/main.go:412] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    411: 			s.articles[i].ViewCount++
+  > 412: 			s.saveData()
+    413: 			break
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/01-blog-system/main.go:348] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    347: 			s.articles = append(s.articles[:i], s.articles[i+1:]...)
+  > 348: 			s.saveData()
+    349: 			return nil
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/01-blog-system/main.go:337] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    336: 			s.articles[i] = updates
+  > 337: 			s.saveData()
+    338: 			return nil
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/01-blog-system/main.go:302] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    301: 	s.articles = append(s.articles, article)
+  > 302: 	s.saveData()
+    303: 
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/01-blog-system/main.go:241] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    240: 	s.users = append(s.users, user)
+  > 241: 	s.saveData()
+    242: 
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/01-blog-system/main.go:213] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    212: 	s.users = append(s.users, admin)
+  > 213: 	s.saveData()
+    214: 
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/01-blog-system/main.go:192] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    191: 	if data, err := json.MarshalIndent(s.comments, "", "  "); err == nil {
+  > 192: 		os.WriteFile(filepath.Join(s.dataDir, "comments.json"), data, 0644)
+    193: 	}
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/01-blog-system/main.go:187] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    186: 	if data, err := json.MarshalIndent(s.articles, "", "  "); err == nil {
+  > 187: 		os.WriteFile(filepath.Join(s.dataDir, "articles.json"), data, 0644)
+    188: 	}
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/01-blog-system/main.go:182] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    181: 	if data, err := json.MarshalIndent(s.users, "", "  "); err == nil {
+  > 182: 		os.WriteFile(filepath.Join(s.dataDir, "users.json"), data, 0644)
+    183: 	}
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/01-blog-system/main.go:166] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    165: 	if data, err := os.ReadFile(filepath.Join(s.dataDir, "comments.json")); err == nil {
+  > 166: 		json.Unmarshal(data, &s.comments)
+    167: 		if len(s.comments) > 0 {
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/01-blog-system/main.go:152] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    151: 	if data, err := os.ReadFile(filepath.Join(s.dataDir, "articles.json")); err == nil {
+  > 152: 		json.Unmarshal(data, &s.articles)
+    153: 		if len(s.articles) > 0 {
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/01-blog-system/main.go:138] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    137: 	if data, err := os.ReadFile(filepath.Join(s.dataDir, "users.json")); err == nil {
+  > 138: 		json.Unmarshal(data, &s.users)
+    139: 		if len(s.users) > 0 {
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/01-blog-system/main.go:122] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    121: 	// 创建数据目录
+  > 122: 	os.MkdirAll(dataDir, 0755)
+    123: 
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/06-projects/01-blog-system/internal/validation/validator.go:336] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    335: 			var num int
+  > 336: 			fmt.Sscanf(part, "%d", &num)
+    337: 			if num < 0 || num > 255 {
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/12-grpc-communication/main.go:1420] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    1419: 		w.WriteHeader(http.StatusOK)
+  > 1420: 		w.Write([]byte("# Prometheus metrics placeholder\n"))
+    1421: 	})
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/10-docker/main.go:192] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    191: 	w.Header().Set("Content-Type", "application/json")
+  > 192: 	json.NewEncoder(w).Encode(status)
+    193: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/10-docker/main.go:173] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    172: 	w.Header().Set("Content-Type", "application/json")
+  > 173: 	json.NewEncoder(w).Encode(response)
+    174: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/09-rate-limiting/main.go:604] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    603: 	w.Header().Set("Content-Type", "application/json")
+  > 604: 	json.NewEncoder(w).Encode(stats)
+    605: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/08-containerization/main.go:463] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    462: 	w.Header().Set("Content-Type", "application/json")
+  > 463: 	json.NewEncoder(w).Encode(metrics)
+    464: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/08-containerization/main.go:455] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    454: 		}
+  > 455: 		json.NewEncoder(w).Encode(response)
+    456: 	}
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/08-containerization/main.go:446] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    445: 		w.Header().Set("Content-Type", "application/json")
+  > 446: 		json.NewEncoder(w).Encode(response)
+    447: 	} else {
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/08-containerization/main.go:433] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    432: 	w.Header().Set("Content-Type", "application/json")
+  > 433: 	json.NewEncoder(w).Encode(response)
+    434: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/08-containerization/main.go:422] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    421: 	w.WriteHeader(statusCode)
+  > 422: 	json.NewEncoder(w).Encode(health)
+    423: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/08-containerization/main.go:407] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    406: 	w.Header().Set("Content-Type", "application/json")
+  > 407: 	json.NewEncoder(w).Encode(response)
+    408: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/08-containerization/main.go:394] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    393: 	w.Header().Set("Content-Type", "application/json")
+  > 394: 	json.NewEncoder(w).Encode(response)
+    395: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/06-monitoring/main.go:1124] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    1123: 		if err != nil {
+  > 1124: 			conn.Close()
+    1125: 			delete(md.clients, conn)
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/06-monitoring/main.go:1058] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    1057: 	w.Header().Set("Content-Type", "application/json")
+  > 1058: 	json.NewEncoder(w).Encode(alerts)
+    1059: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/06-monitoring/main.go:1050] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    1049: 	w.Header().Set("Content-Type", "application/json")
+  > 1050: 	json.NewEncoder(w).Encode(response)
+    1051: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/06-monitoring/main.go:1029] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    1028: 	w.Header().Set("Content-Type", "application/json")
+  > 1029: 	json.NewEncoder(w).Encode(logs)
+    1030: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/06-monitoring/main.go:1010] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    1009: 	w.Header().Set("Content-Type", "application/json")
+  > 1010: 	json.NewEncoder(w).Encode(spans)
+    1011: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/06-monitoring/main.go:995] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    994: 	w.Header().Set("Content-Type", "application/json")
+  > 995: 	json.NewEncoder(w).Encode(metrics)
+    996: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/06-monitoring/main.go:987] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    986: 	w.Header().Set("Content-Type", "application/json")
+  > 987: 	json.NewEncoder(w).Encode(metrics)
+    988: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/05-distributed-transactions/main.go:886] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    885: 		api.tccManager.AddTCCParticipant(tx.ID, api.accountSvc)
+  > 886: 		api.tccManager.AddTCCParticipant(tx.ID, api.inventorySvc)
+    887: 
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/05-distributed-transactions/main.go:885] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    884: 		tx, _ := api.tccManager.BeginTCCTransaction(context.Background())
+  > 885: 		api.tccManager.AddTCCParticipant(tx.ID, api.accountSvc)
+    886: 		api.tccManager.AddTCCParticipant(tx.ID, api.inventorySvc)
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/05-distributed-transactions/main.go:855] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    854: 	w.Header().Set("Content-Type", "application/json")
+  > 855: 	json.NewEncoder(w).Encode(api.inventorySvc.inventory)
+    856: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/05-distributed-transactions/main.go:850] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    849: 	w.Header().Set("Content-Type", "application/json")
+  > 850: 	json.NewEncoder(w).Encode(api.accountSvc.accounts)
+    851: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/05-distributed-transactions/main.go:845] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    844: 	w.Header().Set("Content-Type", "application/json")
+  > 845: 	json.NewEncoder(w).Encode(map[string]string{"status": "executed"})
+    846: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/05-distributed-transactions/main.go:822] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    821: 	w.Header().Set("Content-Type", "application/json")
+  > 822: 	json.NewEncoder(w).Encode(tx)
+    823: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/05-distributed-transactions/main.go:819] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    818: 	api.tccManager.AddTCCParticipant(tx.ID, api.accountSvc)
+  > 819: 	api.tccManager.AddTCCParticipant(tx.ID, api.inventorySvc)
+    820: 
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/05-distributed-transactions/main.go:818] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    817: 	// 添加参与者
+  > 818: 	api.tccManager.AddTCCParticipant(tx.ID, api.accountSvc)
+    819: 	api.tccManager.AddTCCParticipant(tx.ID, api.inventorySvc)
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/05-distributed-transactions/main.go:807] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    806: 	w.Header().Set("Content-Type", "application/json")
+  > 807: 	json.NewEncoder(w).Encode(map[string]string{"status": "committed"})
+    808: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/05-distributed-transactions/main.go:793] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    792: 	w.Header().Set("Content-Type", "application/json")
+  > 793: 	json.NewEncoder(w).Encode(tx)
+    794: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/05-distributed-transactions/main.go:790] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    789: 	api.tpcManager.AddParticipant(tx.ID, api.accountSvc)
+  > 790: 	api.tpcManager.AddParticipant(tx.ID, api.inventorySvc)
+    791: 
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/05-distributed-transactions/main.go:789] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    788: 	// 添加参与者
+  > 789: 	api.tpcManager.AddParticipant(tx.ID, api.accountSvc)
+    790: 	api.tpcManager.AddParticipant(tx.ID, api.inventorySvc)
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/05-distributed-transactions/main.go:318] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    317: 		log.Printf("事务超时，执行回滚: %s", txID)
+  > 318: 		tpc.AbortTransaction(context.Background(), txID)
+    319: 	} else {
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/04-messaging/main.go:926] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    925: 
+  > 926: 		eventBus.PublishEvent(orderEvent)
+    927: 	}()
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/04-messaging/main.go:900] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    899: 
+  > 900: 		eventBus.PublishEvent(userEvent)
+    901: 
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/04-messaging/main.go:874] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    873: 		w.Header().Set("Content-Type", "application/json")
+  > 874: 		json.NewEncoder(w).Encode(events)
+    875: 	}).Methods("GET")
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/04-messaging/main.go:842-846] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    841: 
+  > 842: 	eventBus.SubscribeToEvent("OrderCreated", func(event Event) error {
+  > 843: 		log.Printf("处理订单创建事件: %s", event.GetAggregateID())
+  > 844: 		eventStreamServer.BroadcastEvent(event)
+  > 845: 		return nil
+  > 846: 	})
+    847: 
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/04-messaging/main.go:836-840] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    835: 	// 订阅事件处理器
+  > 836: 	eventBus.SubscribeToEvent("UserCreated", func(event Event) error {
+  > 837: 		log.Printf("处理用户创建事件: %s", event.GetAggregateID())
+  > 838: 		eventStreamServer.BroadcastEvent(event)
+  > 839: 		return nil
+  > 840: 	})
+    841: 
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/04-messaging/main.go:811] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    810: 	w.Header().Set("Content-Type", "application/json")
+  > 811: 	json.NewEncoder(w).Encode(map[string]string{"event_id": event.EventID})
+    812: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/04-messaging/main.go:784] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    783: 	w.Header().Set("Content-Type", "application/json")
+  > 784: 	json.NewEncoder(w).Encode(map[string]string{"event_id": event.EventID})
+    785: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/04-messaging/main.go:734] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    733: 		if err != nil {
+  > 734: 			conn.Close()
+    735: 			delete(ess.clients, conn)
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/04-messaging/main.go:555-557] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    554: 	for _, step := range saga.GetSteps() {
+  > 555: 		sm.eventBus.SubscribeToEvent(step.EventType, func(event Event) error {
+  > 556: 			return sm.handleEvent(event)
+  > 557: 		})
+    558: 	}
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/04-messaging/main.go:367] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    366: 	for _, reader := range kmq.readers {
+  > 367: 		reader.Close()
+    368: 	}
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/04-messaging/main.go:363] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    362: 	for _, writer := range kmq.writers {
+  > 363: 		writer.Close()
+    364: 	}
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/03-configuration/main.go:1090] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    1089: 			config.Items["server.port"].Value = 8888
+  > 1090: 			source.Save(config)
+    1091: 		}()
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/03-configuration/main.go:1054] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    1053: 		w.Header().Set("Content-Type", "application/json")
+  > 1054: 		json.NewEncoder(w).Encode(response)
+    1055: 	}).Methods("GET")
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/03-configuration/main.go:946] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    945: func NewFileConfigurationSource(basePath, encryptionKey string) *FileConfigurationSource {
+  > 946: 	os.MkdirAll(basePath, 0755)
+    947: 	return &FileConfigurationSource{
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/03-configuration/main.go:764] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    763: 	w.Header().Set("Content-Type", "application/json")
+  > 764: 	json.NewEncoder(w).Encode(history)
+    765: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/03-configuration/main.go:738] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    737: 		if err != nil {
+  > 738: 			conn.Close()
+    739: 			delete(s.clients, conn)
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/03-configuration/main.go:695] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    694: 	w.Header().Set("Content-Type", "application/json")
+  > 695: 	json.NewEncoder(w).Encode(item)
+    696: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/03-configuration/main.go:658] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    657: 	w.Header().Set("Content-Type", "application/json")
+  > 658: 	json.NewEncoder(w).Encode(config)
+    659: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/03-configuration/main.go:638] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    637: 	w.Header().Set("Content-Type", "application/json")
+  > 638: 	json.NewEncoder(w).Encode(config)
+    639: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/02-api-gateway/main.go:1864] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    1863: 		w.Header().Set("Content-Type", "application/json")
+  > 1864: 		json.NewEncoder(w).Encode(health)
+    1865: 	}).Methods("GET")
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/02-api-gateway/main.go:1853] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    1852: 		w.Header().Set("Content-Type", "application/json")
+  > 1853: 		json.NewEncoder(w).Encode(metrics.GetMetrics())
+    1854: 	}).Methods("GET")
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/02-api-gateway/main.go:1822] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    1821: 	log.Printf("模拟服务 %s 启动在端口 %d", name, port)
+  > 1822: 	http.ListenAndServe(fmt.Sprintf(":%d", port), router)
+    1823: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/02-api-gateway/main.go:1818] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    1817: 		w.Header().Set("Content-Type", "application/json")
+  > 1818: 		json.NewEncoder(w).Encode(health)
+    1819: 	}).Methods("GET")
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/02-api-gateway/main.go:1806] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    1805: 		w.Header().Set("Content-Type", "application/json")
+  > 1806: 		json.NewEncoder(w).Encode(payments)
+    1807: 	}).Methods("GET")
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/02-api-gateway/main.go:1797] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    1796: 		w.Header().Set("Content-Type", "application/json")
+  > 1797: 		json.NewEncoder(w).Encode(orders)
+    1798: 	}).Methods("GET")
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/02-api-gateway/main.go:1788] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    1787: 		w.Header().Set("Content-Type", "application/json")
+  > 1788: 		json.NewEncoder(w).Encode(users)
+    1789: 	}).Methods("GET")
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/02-api-gateway/main.go:1604] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    1603: 	w.WriteHeader(http.StatusOK)
+  > 1604: 	json.NewEncoder(w).Encode(map[string]string{"message": "端点状态已更新"})
+    1605: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/02-api-gateway/main.go:1583] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    1582: 	w.Header().Set("Content-Type", "application/json")
+  > 1583: 	json.NewEncoder(w).Encode(endpoints)
+    1584: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/02-api-gateway/main.go:1571] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    1570: 	w.WriteHeader(http.StatusCreated)
+  > 1571: 	json.NewEncoder(w).Encode(route)
+    1572: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/02-api-gateway/main.go:1551] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    1550: 	w.Header().Set("Content-Type", "application/json")
+  > 1551: 	json.NewEncoder(w).Encode(routes)
+    1552: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/01-service-discovery/main.go:834] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    833: 	if gateway.server != nil {
+  > 834: 		gateway.server.Shutdown(ctx)
+    835: 	}
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/01-service-discovery/main.go:797] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    796: 				log.Printf("调用用户服务成功: %d", resp.StatusCode)
+  > 797: 				resp.Body.Close()
+    798: 			}
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/01-service-discovery/main.go:708] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    707: 	w.Header().Set("Content-Type", "application/json")
+  > 708: 	json.NewEncoder(w).Encode(health)
+    709: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/01-service-discovery/main.go:697] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    696: 	w.Header().Set("Content-Type", "application/json")
+  > 697: 	json.NewEncoder(w).Encode(instances)
+    698: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/01-service-discovery/main.go:683] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    682: 	w.Header().Set("Content-Type", "application/json")
+  > 683: 	json.NewEncoder(w).Encode(services)
+    684: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/01-service-discovery/main.go:675] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    674: 	// 复制响应体
+  > 675: 	io.Copy(w, resp.Body)
+    676: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/01-service-discovery/main.go:613] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    612: 		}
+  > 613: 		s.registry.UpdateHealth(serviceID, status)
+    614: 	}
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/01-service-discovery/main.go:600] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    599: 	w.Header().Set("Content-Type", "application/json")
+  > 600: 	json.NewEncoder(w).Encode(health)
+    601: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/01-service-discovery/main.go:588] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    587: 	w.Header().Set("Content-Type", "application/json")
+  > 588: 	json.NewEncoder(w).Encode(user)
+    589: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/01-service-discovery/main.go:574] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    573: 	w.Header().Set("Content-Type", "application/json")
+  > 574: 	json.NewEncoder(w).Encode(users)
+    575: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/01-service-discovery/main.go:558] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    557: 	}
+  > 558: 	s.registry.Deregister(instance.ID)
+    559: 
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/01-service-discovery/main.go:276] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    275: 
+  > 276: 	r.UpdateHealth(instance.ID, status)
+    277: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/05-microservices/01-service-discovery/main.go:266] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    265: 	} else {
+  > 266: 		resp.Body.Close()
+    267: 		if resp.StatusCode == http.StatusOK {
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/04-web/10-security/main.go:938-941] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    937: 		w.Header().Set("Content-Type", "application/json")
+  > 938: 		json.NewEncoder(w).Encode(map[string]string{
+  > 939: 			"status": "healthy",
+  > 940: 			"time":   time.Now().Format(time.RFC3339),
+  > 941: 		})
+    942: 	}).Methods("GET")
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/04-web/10-security/main.go:932] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    931: 		w.Header().Set("Content-Type", "application/json")
+  > 932: 		json.NewEncoder(w).Encode(events)
+    933: 	}).Methods("GET")
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/04-web/10-security/main.go:583] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    582: 	w.Header().Set("Content-Type", "application/json")
+  > 583: 	json.NewEncoder(w).Encode(response)
+    584: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/04-web/10-security/main.go:567] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    566: 	w.Header().Set("Content-Type", "application/json")
+  > 567: 	json.NewEncoder(w).Encode(user)
+    568: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/04-web/10-security/main.go:556] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    555: 	w.Header().Set("Content-Type", "application/json")
+  > 556: 	json.NewEncoder(w).Encode(response)
+    557: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/04-web/10-security/main.go:544] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    543: 	w.Header().Set("Content-Type", "application/json")
+  > 544: 	json.NewEncoder(w).Encode(response)
+    545: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/04-web/10-security/main.go:356] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    355: 	bytes := make([]byte, 32)
+  > 356: 	rand.Read(bytes)
+    357: 	return base64.URLEncoding.EncodeToString(bytes)
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/04-web/09-testing/main.go:876] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    875: 	var createResponse APIResponse
+  > 876: 	parseResponse(w, &createResponse)
+    877: 
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/04-web/09-testing/main.go:834] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    833: 		var response map[string]interface{}
+  > 834: 		json.Unmarshal(w.Body.Bytes(), &response)
+    835: 
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/04-web/09-testing/main.go:517] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    516: 				var response APIResponse
+  > 517: 				parseResponse(w, &response)
+    518: 				return response.Success
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/04-web/09-testing/main.go:505] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    504: 				var response APIResponse
+  > 505: 				parseResponse(w, &response)
+    506: 				return response.Success
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/04-web/09-testing/main.go:490] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    489: 				var response ErrorResponse
+  > 490: 				parseResponse(w, &response)
+    491: 				return !response.Success
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/04-web/09-testing/main.go:474] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    473: 				var response APIResponse
+  > 474: 				parseResponse(w, &response)
+    475: 				return response.Success
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/04-web/09-testing/main.go:458] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    457: 				var response ErrorResponse
+  > 458: 				parseResponse(w, &response)
+    459: 				return !response.Success
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/04-web/09-testing/main.go:446] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    445: 				var response APIResponse
+  > 446: 				parseResponse(w, &response)
+    447: 				return response.Success
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/04-web/09-testing/main.go:434] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    433: 				var response APIResponse
+  > 434: 				parseResponse(w, &response)
+    435: 				return response.Success
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/04-web/09-testing/main.go:373] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    372: 
+  > 373: 	json.NewEncoder(w).Encode(response)
+    374: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/04-web/09-testing/main.go:360] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    359: 
+  > 360: 	json.NewEncoder(w).Encode(response)
+    361: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/04-web/07-file-upload/main.go:457] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    456: 		uploadedFiles = append(uploadedFiles, fileInfo)
+  > 457: 		file.Close()
+    458: 	}
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/04-web/07-file-upload/main.go:431] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    430: 			errors = append(errors, fmt.Sprintf("%s: 保存失败", header.Filename))
+  > 431: 			file.Close()
+    432: 			continue
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/04-web/07-file-upload/main.go:420] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    419: 			errors = append(errors, fmt.Sprintf("%s: 计算哈希失败", header.Filename))
+  > 420: 			file.Close()
+    421: 			continue
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/04-web/07-file-upload/main.go:412] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    411: 			errors = append(errors, fmt.Sprintf("%s: %s", header.Filename, err.Error()))
+  > 412: 			file.Close()
+    413: 			continue
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/04-web/07-file-upload/main.go:404] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    403: 			errors = append(errors, fmt.Sprintf("%s: %s", header.Filename, err.Error()))
+  > 404: 			file.Close()
+    405: 			continue
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/04-web/07-file-upload/main.go:370-373] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    369: 	w.Header().Set("Content-Type", "application/json")
+  > 370: 	json.NewEncoder(w).Encode(map[string]interface{}{
+  > 371: 		"success": true,
+  > 372: 		"file":    fileInfo,
+  > 373: 	})
+    374: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/04-web/06-templates/main.go:851-854] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    850: 		w.Header().Set("Content-Type", "application/json")
+  > 851: 		json.NewEncoder(w).Encode(map[string]interface{}{
+  > 852: 			"success": true,
+  > 853: 			"message": "感谢您的留言，我们会尽快回复！",
+  > 854: 		})
+    855: 	} else {
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/04-web/06-templates/main.go:840-843] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    839: 			w.WriteHeader(http.StatusBadRequest)
+  > 840: 			json.NewEncoder(w).Encode(map[string]interface{}{
+  > 841: 				"success": false,
+  > 842: 				"errors":  errors,
+  > 843: 			})
+    844: 			return
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/04-web/06-templates/main.go:788-792] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    787: 	w.Header().Set("Content-Type", "application/json")
+  > 788: 	json.NewEncoder(w).Encode(map[string]string{
+  > 789: 		"url":      "/static/uploads/" + filename,
+  > 790: 		"filename": header.Filename,
+  > 791: 		"size":     strconv.FormatInt(header.Size, 10),
+  > 792: 	})
+    793: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/04-web/06-templates/main.go:767] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    766: 	uploadDir := "static/uploads"
+  > 767: 	os.MkdirAll(uploadDir, 0755)
+    768: 
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/04-web/06-templates/main.go:738-741] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    737: 	w.Header().Set("Content-Type", "application/json")
+  > 738: 	json.NewEncoder(w).Encode(map[string]interface{}{
+  > 739: 		"posts": app.posts,
+  > 740: 		"total": len(app.posts),
+  > 741: 	})
+    742: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/04-web/06-templates/main.go:432] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    431: 	for _, dir := range dirs {
+  > 432: 		os.MkdirAll(dir, 0755)
+    433: 	}
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/04-web/05-database/main.go:605] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    604: 	w.Header().Set("Content-Type", "application/json")
+  > 605: 	json.NewEncoder(w).Encode(stats)
+    606: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/04-web/05-database/main.go:586] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    585: 	w.WriteHeader(http.StatusCreated)
+  > 586: 	json.NewEncoder(w).Encode(post)
+    587: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/04-web/05-database/main.go:561] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    560: 	w.Header().Set("Content-Type", "application/json")
+  > 561: 	json.NewEncoder(w).Encode(user)
+    562: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/04-web/05-database/main.go:534-538] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    533: 	w.Header().Set("Content-Type", "application/json")
+  > 534: 	json.NewEncoder(w).Encode(map[string]interface{}{
+  > 535: 		"users": users,
+  > 536: 		"page":  page,
+  > 537: 		"limit": limit,
+  > 538: 	})
+    539: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/04-web/04-websocket/main.go:557] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    556: 	if conn, exists := pool.connections[id]; exists {
+  > 557: 		conn.Close()
+    558: 		delete(pool.connections, id)
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/04-web/04-websocket/main.go:499] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    498: 	tmpl := template.Must(template.New("chat").Parse(chatHTML))
+  > 499: 	tmpl.Execute(w, nil)
+    500: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/04-web/04-websocket/main.go:366] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    365: 	w.Header().Set("Content-Type", "application/json")
+  > 366: 	json.NewEncoder(w).Encode(response)
+    367: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/04-web/04-websocket/main.go:327] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    326: 	if userID == "" || username == "" || roomID == "" {
+  > 327: 		conn.Close()
+    328: 		return
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/04-web/04-websocket/main.go:301] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    300: 		case <-ticker.C:
+  > 301: 			c.Conn.SetWriteDeadline(time.Now().Add(10 * time.Second))
+    302: 			if err := c.Conn.WriteMessage(websocket.PingMessage, nil); err != nil {
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/04-web/04-websocket/main.go:290] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    289: 			if !ok {
+  > 290: 				c.Conn.WriteMessage(websocket.CloseMessage, []byte{})
+    291: 				return
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/04-web/04-websocket/main.go:288] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    287: 		case message, ok := <-c.Send:
+  > 288: 			c.Conn.SetWriteDeadline(time.Now().Add(10 * time.Second))
+    289: 			if !ok {
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/04-web/04-websocket/main.go:282] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    281: 		ticker.Stop()
+  > 282: 		c.Conn.Close()
+    283: 	}()
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/04-web/04-websocket/main.go:231] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    230: 	c.Conn.SetPongHandler(func(string) error {
+  > 231: 		c.Conn.SetReadDeadline(time.Now().Add(60 * time.Second))
+    232: 		return nil
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/04-web/04-websocket/main.go:229] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    228: 	// 设置读取超时
+  > 229: 	c.Conn.SetReadDeadline(time.Now().Add(60 * time.Second))
+    230: 	c.Conn.SetPongHandler(func(string) error {
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/04-web/04-websocket/main.go:225] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    224: 		c.Hub.Unregister <- c
+  > 225: 		c.Conn.Close()
+    226: 	}()
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/04-web/03-middleware-auth/main.go:810] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    809: 	w.Header().Set("Content-Type", "application/json")
+  > 810: 	json.NewEncoder(w).Encode(response)
+    811: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/04-web/03-middleware-auth/main.go:792] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    791: 	w.Header().Set("Content-Type", "application/json")
+  > 792: 	json.NewEncoder(w).Encode(response)
+    793: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/04-web/03-middleware-auth/main.go:780] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    779: 	w.Header().Set("Content-Type", "application/json")
+  > 780: 	json.NewEncoder(w).Encode(response)
+    781: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/04-web/03-middleware-auth/main.go:762] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    761: 	w.Header().Set("Content-Type", "application/json")
+  > 762: 	json.NewEncoder(w).Encode(response)
+    763: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/04-web/03-middleware-auth/main.go:737] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    736: 	w.Header().Set("Content-Type", "application/json")
+  > 737: 	json.NewEncoder(w).Encode(response)
+    738: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/04-web/03-middleware-auth/main.go:717] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    716: 	w.Header().Set("Content-Type", "application/json")
+  > 717: 	json.NewEncoder(w).Encode(response)
+    718: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/04-web/03-middleware-auth/main.go:699] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    698: 	if err == nil {
+  > 699: 		ac.authService.Logout(cookie.Value)
+    700: 	}
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/04-web/03-middleware-auth/main.go:692] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    691: 	w.Header().Set("Content-Type", "application/json")
+  > 692: 	json.NewEncoder(w).Encode(response)
+    693: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/04-web/03-middleware-auth/main.go:654] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    653: 	w.Header().Set("Content-Type", "application/json")
+  > 654: 	json.NewEncoder(w).Encode(response)
+    655: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/04-web/03-middleware-auth/main.go:373] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    372: 	user.LoginAt = time.Now()
+  > 373: 	as.store.UpdateUser(user)
+    374: 
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/04-web/02-routing-rest/main.go:622] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    621: 	w.WriteHeader(statusCode)
+  > 622: 	json.NewEncoder(w).Encode(data)
+    623: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/03-concurrency/04-context/main.go:269] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    268: 			defer wg.Done()
+  > 269: 			batchJob(ctx, id, count)
+    270: 		}(job.id, job.itemCount)
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/03-concurrency/04-context/main.go:212] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    211: 			defer wg.Done()
+  > 212: 			httpRequest(httpCtx, u)
+    213: 		}(url)
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/03-concurrency/04-context/main.go:189] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    188: 			defer wg.Done()
+  > 189: 			slowTask(ctx, id, duration)
+    190: 		}(task.id, task.duration)
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/02-advanced/12-go124-features/main.go:938] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    937: 	// 执行现代化工作流
+  > 938: 	toolchain.ExecuteWorkflow("modern-ci")
+    939: 
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/02-advanced/12-go124-features/main.go:259] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    258: 	manager.UseTool("swag")
+  > 259: 	manager.UseTool("golangci-lint")
+    260: 
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/02-advanced/12-go124-features/main.go:258] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    257: 	manager.UseTool("golangci-lint")
+  > 258: 	manager.UseTool("swag")
+    259: 	manager.UseTool("golangci-lint")
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/02-advanced/12-go124-features/main.go:257] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    256: 	// 模拟工具使用
+  > 257: 	manager.UseTool("golangci-lint")
+    258: 	manager.UseTool("swag")
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/02-advanced/07-packages/main.go:444] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    443: 
+  > 444: 	userSvc.CreateUser(user)
+    445: 	retrievedUser, _ := userSvc.GetUser(1)
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/02-advanced/07-packages/logger/logger.go:249] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    248: 
+  > 249: 	l.output.Write(output)
+    250: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/02-advanced/01-interfaces/main.go:790] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    789: 	for _, notifier := range nm.notifiers {
+  > 790: 		notifier.Notify(title, message)
+    791: 	}
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/02-advanced/01-interfaces/main.go:772] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    771: 	fmt.Printf("    加载结果: %s\n", value)
+  > 772: 	store.Delete("user1")
+    773: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/02-advanced/01-interfaces/main.go:769] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    768: 	fmt.Printf("  测试 %s:\n", name)
+  > 769: 	store.Save("user1", "张三")
+    770: 	value, _ := store.Load("user1")
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/02-advanced/01-interfaces/main.go:538] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    537: 	// 写入
+  > 538: 	rw.Write("新数据")
+    539: 
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/02-advanced/01-interfaces/main.go:515] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    514: func copyData(w Writer, data string) {
+  > 515: 	w.Write(data)
+    516: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/02-advanced/01-interfaces/main.go:493] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    492: func closeResource(c Closer) {
+  > 493: 	c.Close()
+    494: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/02-advanced/01-interfaces/main.go:489] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    488: func writeData(w Writer, data string) {
+  > 489: 	w.Write(data)
+    490: }
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/00-assessment-system/evaluators/project_eval.go:1180-1194] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    1179: 
+  > 1180: 	filepath.WalkDir(projectPath, func(path string, d fs.DirEntry, err error) error {
+  > 1181: 		if err != nil || d.IsDir() {
+  > 1182: 			return err
+  > 1183: 		}
+  > 1184: 
+  > 1185: 		if strings.HasSuffix(path, "_test.go") {
+  > 1186: 			content, err := os.ReadFile(path)
+  > 1187: 			if err == nil {
+  > 1188: 				re := regexp.MustCompile(`func\s+Example\w*\s*\(`)
+  > 1189: 				count += len(re.FindAll(content, -1))
+  > 1190: 			}
+  > 1191: 		}
+  > 1192: 
+  > 1193: 		return nil
+  > 1194: 	})
+    1195: 
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/00-assessment-system/evaluators/project_eval.go:1157-1171] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    1156: 
+  > 1157: 	filepath.WalkDir(projectPath, func(path string, d fs.DirEntry, err error) error {
+  > 1158: 		if err != nil || d.IsDir() {
+  > 1159: 			return err
+  > 1160: 		}
+  > 1161: 
+  > 1162: 		if strings.HasSuffix(path, "_test.go") {
+  > 1163: 			content, err := os.ReadFile(path)
+  > 1164: 			if err == nil {
+  > 1165: 				re := regexp.MustCompile(`func\s+Benchmark\w+\s*\(`)
+  > 1166: 				count += len(re.FindAll(content, -1))
+  > 1167: 			}
+  > 1168: 		}
+  > 1169: 
+  > 1170: 		return nil
+  > 1171: 	})
+    1172: 
+
+Autofix: 
+
+[/home/runner/work/go-mastery/go-mastery/00-assessment-system/evaluators/project_eval.go:1133-1148] - G104 (CWE-703): Errors unhandled. (Confidence: HIGH, Severity: LOW)
+    1132: 
+  > 1133: 	filepath.WalkDir(projectPath, func(path string, d fs.DirEntry, err error) error {
+  > 1134: 		if err != nil || d.IsDir() {
+  > 1135: 			return err
+  > 1136: 		}
+  > 1137: 
+  > 1138: 		if strings.HasSuffix(path, "_test.go") {
+  > 1139: 			content, err := os.ReadFile(path)
+  > 1140: 			if err == nil {
+  > 1141: 				// 简单的正则匹配测试函数
+  > 1142: 				re := regexp.MustCompile(`func\s+Test\w+\s*\(`)
+  > 1143: 				count += len(re.FindAll(content, -1))
+  > 1144: 			}
+  > 1145: 		}
+  > 1146: 
+  > 1147: 		return nil
+  > 1148: 	})
+    1149: 
+
+Autofix: 
+
+Summary:
+  Gosec  : 2.21.4
+  Files  : 161
+  Lines  : 131578
+  Nosec  : 7
+  Issues : 485
+

@@ -38,6 +38,8 @@ import (
 	"sync"
 	"sync/atomic"
 	"time"
+
+	"go-mastery/common/security"
 )
 
 // 安全随机数生成函数
@@ -298,7 +300,7 @@ func (pp *PerformanceProfiler) monitorMemory() {
 			var m runtime.MemStats
 			runtime.ReadMemStats(&m)
 
-			pp.metrics.MemoryAllocated = int64(m.Alloc)
+			pp.metrics.MemoryAllocated = security.MustSafeUint64ToInt64(m.Alloc)
 			pp.metrics.GoroutineCount = runtime.NumGoroutine()
 			pp.metrics.GCCount = m.NumGC
 			pp.metrics.GCPauseTotal = time.Duration(m.PauseTotalNs)
@@ -482,8 +484,8 @@ func (bs *BenchmarkSuite) RunBenchmark(name string, fn func()) BenchmarkResult {
 		Name:         name,
 		Iterations:   iterations,
 		NsPerOp:      duration.Nanoseconds() / iterations,
-		AllocedBytes: int64(m2.TotalAlloc - m1.TotalAlloc),
-		AllocsPerOp:  int64(m2.Mallocs-m1.Mallocs) / iterations,
+		AllocedBytes: security.MustSafeUint64ToInt64(m2.TotalAlloc - m1.TotalAlloc),
+		AllocsPerOp:  security.MustSafeUint64ToInt64(m2.Mallocs-m1.Mallocs) / iterations,
 	}
 
 	bs.results = append(bs.results, result)
@@ -701,8 +703,8 @@ func (mm *MemoryManager) printMemoryStats() {
 	runtime.ReadMemStats(&m)
 
 	fmt.Printf("[内存] 堆大小: %s, 使用: %s, GC次数: %d, 暂停: %v\n",
-		formatBytes(int64(m.HeapSys)),
-		formatBytes(int64(m.HeapAlloc)),
+		formatBytes(security.MustSafeUint64ToInt64(m.HeapSys)),
+		formatBytes(security.MustSafeUint64ToInt64(m.HeapAlloc)),
 		m.NumGC,
 		time.Duration(m.PauseTotalNs))
 }
@@ -727,7 +729,7 @@ func (mm *MemoryManager) TriggerGCTuning() {
 		var m runtime.MemStats
 		runtime.ReadMemStats(&m)
 		fmt.Printf("  堆大小: %s, GC次数: %d\n",
-			formatBytes(int64(m.HeapAlloc)), m.NumGC)
+			formatBytes(security.MustSafeUint64ToInt64(m.HeapAlloc)), m.NumGC)
 	}
 
 	// 恢复原始设置
@@ -758,7 +760,7 @@ func (mm *MemoryManager) DetectMemoryLeak() {
 	var m1 runtime.MemStats
 	runtime.GC()
 	runtime.ReadMemStats(&m1)
-	fmt.Printf("开始内存: %s\n", formatBytes(int64(m1.HeapAlloc)))
+	fmt.Printf("开始内存: %s\n", formatBytes(security.MustSafeUint64ToInt64(m1.HeapAlloc)))
 
 	// 模拟潜在的内存泄漏
 	leakyFunction()
@@ -767,10 +769,10 @@ func (mm *MemoryManager) DetectMemoryLeak() {
 	var m2 runtime.MemStats
 	runtime.GC()
 	runtime.ReadMemStats(&m2)
-	fmt.Printf("结束内存: %s\n", formatBytes(int64(m2.HeapAlloc)))
+	fmt.Printf("结束内存: %s\n", formatBytes(security.MustSafeUint64ToInt64(m2.HeapAlloc)))
 
 	// 检测泄漏
-	leaked := int64(m2.HeapAlloc) - int64(m1.HeapAlloc)
+	leaked := security.MustSafeUint64ToInt64(m2.HeapAlloc) - security.MustSafeUint64ToInt64(m1.HeapAlloc)
 	if leaked > 0 {
 		fmt.Printf("⚠️ 可能的内存泄漏: %s\n", formatBytes(leaked))
 	} else {
