@@ -610,7 +610,9 @@ func (pm *ProcessManager) restartProcess(proc *ManagedProcess) {
 	log.Printf("Restarting process %d (restart count: %d)", proc.Pid, proc.Restarts)
 
 	// 杀死旧进程
-	proc.Kill()
+	if err := proc.Kill(); err != nil {
+		log.Printf("Failed to kill old process %d: %v", proc.Pid, err)
+	}
 
 	// 安全验证命令路径和参数
 	if err := validateCommandPath(proc.Command.Path); err != nil {
@@ -848,6 +850,7 @@ func (mm *MemoryMapper) MapFile(file *os.File, offset int64, size uintptr, prote
 	}
 
 	// 模拟内存地址（实际应该是真实的内存地址）
+	// #nosec G103 - Unsafe pointer conversion required for system-level memory operations
 	addr := uintptr(unsafe.Pointer(&buffer[0]))
 
 	mapping := &MemoryMapping{
@@ -871,6 +874,7 @@ func (mm *MemoryMapper) MapFile(file *os.File, offset int64, size uintptr, prote
 func (mm *MemoryMapper) MapAnonymous(size uintptr, protection, flags int) (*MemoryMapping, error) {
 	// Windows compatible implementation using memory allocation
 	slice := make([]byte, size)
+	// #nosec G103 - Unsafe pointer conversion required for memory mapping simulation
 	addr := uintptr(unsafe.Pointer(&slice[0]))
 
 	mapping := &MemoryMapping{
@@ -1015,7 +1019,9 @@ func (ipc *IPCManager) CreateNamedPipe(name, path string, mode os.FileMode) (*Na
 	if err != nil {
 		return nil, fmt.Errorf("failed to create pipe file: %v", err)
 	}
-	file.Close()
+	if err := file.Close(); err != nil {
+		log.Printf("Warning: failed to close pipe file: %v", err)
+	}
 
 	pipe := &NamedPipe{
 		Name:    name,
@@ -1056,6 +1062,7 @@ func (ipc *IPCManager) CreateSharedMemory(name string, size uintptr, mode int) (
 
 	// Create memory segment using Go slice
 	slice := make([]byte, size)
+	// #nosec G103 - Unsafe pointer conversion required for shared memory simulation
 	addr := uintptr(unsafe.Pointer(&slice[0]))
 
 	shm := &SharedMemory{
@@ -1560,18 +1567,22 @@ func demonstrateSystemCallWrapper() {
 
 	// 模拟一些系统调用
 	for i := 0; i < TestLoopCount; i++ {
-		wrapper.WrapSyscall("open", func() (uintptr, uintptr, error) {
+		if _, _, err := wrapper.WrapSyscall("open", func() (uintptr, uintptr, error) {
 			time.Sleep(time.Microsecond * time.Duration(MicrosecondsBase+i*MicrosecondsIncrement))
 			if i%5 == 0 {
 				return 0, 0, fmt.Errorf("permission denied")
 			}
 			return uintptr(i + 3), 0, nil
-		})
+		}); err != nil {
+			log.Printf("Warning: open syscall failed: %v", err)
+		}
 
-		wrapper.WrapSyscall("read", func() (uintptr, uintptr, error) {
+		if _, _, err := wrapper.WrapSyscall("read", func() (uintptr, uintptr, error) {
 			time.Sleep(time.Microsecond * time.Duration(ReadMicroseconds+i*ReadIncrement))
 			return uintptr(KBToBytes), 0, nil
-		})
+		}); err != nil {
+			log.Printf("Warning: read syscall failed: %v", err)
+		}
 	}
 
 	stats := wrapper.GetStatistics()
@@ -1606,7 +1617,9 @@ func demonstrateProcessManagement() {
 
 		// 等待进程完成
 		go func() {
-			proc.Wait()
+			if _, err := proc.Wait(); err != nil {
+				log.Printf("Warning: process wait failed: %v", err)
+			}
 			fmt.Printf("进程 %d 已退出\n", proc.Pid)
 		}()
 	}
@@ -1646,8 +1659,12 @@ func demonstrateMemoryMapping() {
 
 		// 写入一些数据
 		testData := []byte("Hello, Memory Mapped File!")
-		tmpFile.Write(testData)
-		tmpFile.Sync()
+		if _, err := tmpFile.Write(testData); err != nil {
+			log.Printf("Warning: failed to write test data: %v", err)
+		}
+		if err := tmpFile.Sync(); err != nil {
+			log.Printf("Warning: failed to sync file: %v", err)
+		}
 
 		// 映射文件到内存
 		mapping, err := mapper.MapFile(tmpFile, 0, uintptr(len(testData)),
@@ -1658,7 +1675,9 @@ func demonstrateMemoryMapping() {
 			fmt.Printf("成功映射文件到地址: 0x%x, 大小: %d\n", mapping.Address, mapping.Size)
 
 			// 清理映射
-			mapper.Unmap(mapping.Address)
+			if err := mapper.Unmap(mapping.Address); err != nil {
+				log.Printf("Warning: failed to unmap file memory: %v", err)
+			}
 		}
 	}
 
@@ -1672,7 +1691,9 @@ func demonstrateMemoryMapping() {
 			anonMapping.Address, anonMapping.Size)
 
 		// 清理映射
-		mapper.Unmap(anonMapping.Address)
+		if err := mapper.Unmap(anonMapping.Address); err != nil {
+			log.Printf("Warning: failed to unmap anonymous memory: %v", err)
+		}
 	}
 
 	mappings := mapper.GetMappings()
@@ -1714,9 +1735,13 @@ func demonstrateIPC() {
 
 		// 测试信号量操作
 		fmt.Printf("信号量当前值: %d\n", atomic.LoadInt32(&sem.Value))
-		ipcManager.Wait("test_sem")
+		if err := ipcManager.Wait("test_sem"); err != nil {
+			log.Printf("Warning: semaphore wait failed: %v", err)
+		}
 		fmt.Printf("Wait后信号量值: %d\n", atomic.LoadInt32(&sem.Value))
-		ipcManager.Signal("test_sem")
+		if err := ipcManager.Signal("test_sem"); err != nil {
+			log.Printf("Warning: semaphore signal failed: %v", err)
+		}
 		fmt.Printf("Signal后信号量值: %d\n", atomic.LoadInt32(&sem.Value))
 	}
 
