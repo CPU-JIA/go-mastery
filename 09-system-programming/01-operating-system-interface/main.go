@@ -76,6 +76,115 @@ const (
 )
 
 // ==================
+// 安全辅助函数
+// ==================
+
+// validateCommandPath 验证命令路径的安全性
+func validateCommandPath(path string) error {
+	if path == "" {
+		return fmt.Errorf("command path cannot be empty")
+	}
+
+	// 清理路径
+	cleanPath := filepath.Clean(path)
+
+	// 检查是否包含危险路径组件
+	if strings.Contains(cleanPath, "..") {
+		return fmt.Errorf("command path contains directory traversal")
+	}
+
+	// 检查路径长度
+	if len(cleanPath) > MaxPathLength {
+		return fmt.Errorf("command path too long: %d > %d", len(cleanPath), MaxPathLength)
+	}
+
+	// 检查文件是否存在且可执行
+	info, err := os.Stat(cleanPath)
+	if err != nil {
+		return fmt.Errorf("command not found: %v", err)
+	}
+
+	if info.IsDir() {
+		return fmt.Errorf("command path is a directory")
+	}
+
+	return nil
+}
+
+// validateCommandArgs 验证命令参数的安全性
+func validateCommandArgs(args []string) error {
+	for i, arg := range args {
+		if len(arg) > MaxArgumentLength {
+			return fmt.Errorf("argument %d too long: %d > %d", i, len(arg), MaxArgumentLength)
+		}
+
+		// 检查危险字符
+		if strings.ContainsAny(arg, ";|&`$(){}[]<>") {
+			return fmt.Errorf("argument %d contains potentially dangerous characters", i)
+		}
+	}
+	return nil
+}
+
+// secureProcPath 安全地构建 /proc 路径
+func secureProcPath(pid int, subpath string) (string, error) {
+	// 验证PID
+	if pid <= 0 || pid > 4194304 { // Linux PID maximum
+		return "", fmt.Errorf("invalid PID: %d", pid)
+	}
+
+	// 验证子路径
+	allowedSubpaths := map[string]bool{
+		"stat":    true,
+		"cmdline": true,
+		"status":  true,
+	}
+
+	if !allowedSubpaths[subpath] {
+		return "", fmt.Errorf("unauthorized proc subpath: %s", subpath)
+	}
+
+	// 构建安全路径
+	path := fmt.Sprintf("/proc/%d/%s", pid, subpath)
+
+	// 验证最终路径
+	cleanPath := filepath.Clean(path)
+	if !strings.HasPrefix(cleanPath, "/proc/") {
+		return "", fmt.Errorf("path validation failed: %s", cleanPath)
+	}
+
+	return cleanPath, nil
+}
+
+// secureFilePath 安全地验证和清理文件路径
+func secureFilePath(path string) (string, error) {
+	if path == "" {
+		return "", fmt.Errorf("file path cannot be empty")
+	}
+
+	// 清理路径
+	cleanPath := filepath.Clean(path)
+
+	// 检查路径遍历
+	if strings.Contains(cleanPath, "..") {
+		return "", fmt.Errorf("path contains directory traversal")
+	}
+
+	// 检查路径长度
+	if len(cleanPath) > MaxPathLength {
+		return "", fmt.Errorf("path too long: %d > %d", len(cleanPath), MaxPathLength)
+	}
+
+	// 获取绝对路径
+	absPath, err := filepath.Abs(cleanPath)
+	if err != nil {
+		return "", fmt.Errorf("failed to get absolute path: %v", err)
+	}
+
+	return absPath, nil
+}
+
+// ==================
 // 1. 系统调用接口封装
 // ==================
 
@@ -503,7 +612,19 @@ func (pm *ProcessManager) restartProcess(proc *ManagedProcess) {
 	// 杀死旧进程
 	proc.Kill()
 
-	// 重新启动
+	// 安全验证命令路径和参数
+	if err := validateCommandPath(proc.Command.Path); err != nil {
+		log.Printf("Failed to validate command path: %v", err)
+		return
+	}
+
+	if err := validateCommandArgs(proc.Command.Args[1:]); err != nil {
+		log.Printf("Failed to validate command arguments: %v", err)
+		return
+	}
+
+	// 重新启动 - 使用验证过的命令
+	// #nosec G204 - Command path and arguments are validated above
 	newCmd := exec.Command(proc.Command.Path, proc.Command.Args[1:]...)
 	newCmd.Dir = proc.Command.Dir
 	newCmd.Env = proc.Command.Env
@@ -881,9 +1002,16 @@ func NewIPCManager() *IPCManager {
 }
 
 func (ipc *IPCManager) CreateNamedPipe(name, path string, mode os.FileMode) (*NamedPipe, error) {
+	// 安全验证和清理文件路径
+	safePath, err := secureFilePath(path)
+	if err != nil {
+		return nil, fmt.Errorf("invalid file path: %v", err)
+	}
+
 	// Windows compatible implementation - named pipes not directly supported
 	// Create a regular file as placeholder
-	file, err := os.OpenFile(path, os.O_CREATE|os.O_RDWR, mode)
+	// #nosec G304 - Path is validated above using secureFilePath
+	file, err := os.OpenFile(safePath, os.O_CREATE|os.O_RDWR, mode)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create pipe file: %v", err)
 	}
@@ -1251,13 +1379,27 @@ func (srm *SystemResourceMonitor) updateLinuxProcessInfo() {
 }
 
 func (srm *SystemResourceMonitor) readLinuxProcessInfo(pid int) *ProcessInfo {
-	statPath := fmt.Sprintf("/proc/%d/stat", pid)
+	// 安全构建 stat 路径
+	statPath, err := secureProcPath(pid, "stat")
+	if err != nil {
+		log.Printf("Failed to validate stat path for PID %d: %v", pid, err)
+		return nil
+	}
+
+	// #nosec G304 - Path is validated above using secureProcPath
 	statContent, err := os.ReadFile(statPath)
 	if err != nil {
 		return nil
 	}
 
-	cmdlinePath := fmt.Sprintf("/proc/%d/cmdline", pid)
+	// 安全构建 cmdline 路径
+	cmdlinePath, err := secureProcPath(pid, "cmdline")
+	if err != nil {
+		log.Printf("Failed to validate cmdline path for PID %d: %v", pid, err)
+		return nil
+	}
+
+	// #nosec G304 - Path is validated above using secureProcPath
 	cmdlineContent, err := os.ReadFile(cmdlinePath)
 	if err != nil {
 		return nil
