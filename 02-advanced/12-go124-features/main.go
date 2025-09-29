@@ -537,7 +537,7 @@ func (pp *PerformanceProfiler) StartMeasurement(name string) *PerformanceMeasure
 	measurement := &PerformanceMeasurement{
 		Name:             name,
 		StartTime:        time.Now(),
-		MemoryBefore:     int64(m.Alloc),
+		MemoryBefore:     int64(m.TotalAlloc), // 使用TotalAlloc替代Alloc，不受GC影响
 		GoroutinesBefore: runtime.NumGoroutine(),
 		GCPauses:         make([]time.Duration, 0),
 	}
@@ -550,7 +550,7 @@ func (pp *PerformanceProfiler) EndMeasurement(measurement *PerformanceMeasuremen
 	runtime.ReadMemStats(&m)
 
 	measurement.Duration = time.Since(measurement.StartTime)
-	measurement.MemoryAfter = int64(m.Alloc)
+	measurement.MemoryAfter = int64(m.TotalAlloc) // 使用TotalAlloc替代Alloc，不受GC影响
 	measurement.GoroutinesAfter = runtime.NumGoroutine()
 
 	pp.measurements = append(pp.measurements, *measurement)

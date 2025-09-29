@@ -1,3 +1,6 @@
+// Package main demonstrates switch statement usage in Go language.
+// This module covers basic switch, multiple values, fallthrough,
+// type switch, and practical examples.
 package main
 
 import (
@@ -7,34 +10,105 @@ import (
 	"time"
 )
 
+const (
+	// 星期常量
+	WeekdayMon = 1
+	WeekdayTue = 2
+	WeekdayWed = 3
+	WeekdayThu = 4
+	WeekdayFri = 5
+	WeekdaySat = 6
+	WeekdaySun = 7
+
+	// 月份常量
+	January   = 1
+	February  = 2
+	March     = 3
+	April     = 4
+	May       = 5
+	June      = 6
+	July      = 7
+	August    = 8
+	September = 9
+	October   = 10
+	November  = 11
+	December  = 12
+
+	// HTTP状态码
+	StatusOK                  = 200
+	StatusCreated             = 201
+	StatusAccepted            = 202
+	StatusNoContent           = 204
+	StatusMovedPermanently    = 301
+	StatusFound               = 302
+	StatusNotModified         = 304
+	StatusBadRequest          = 400
+	StatusUnauthorized        = 401
+	StatusForbidden           = 403
+	StatusNotFound            = 404
+	StatusInternalServerError = 500
+	StatusNotImplemented      = 501
+	StatusBadGateway          = 502
+	StatusServiceUnavailable  = 503
+
+	// 分数等级
+	GradeExcellent = 90
+	GradeGood      = 80
+	GradeFair      = 70
+	GradePass      = 60
+
+	// 温度阈值
+	TempHot  = 35
+	TempWarm = 25
+	TempMild = 15
+	TempCool = 5
+
+	// 年龄阈值
+	AdultAge = 18
+
+	// 数值常量
+	DefaultLevel = 3
+	NumberFive   = 5
+	NumberSeven  = 7
+	NumberTen    = 10
+
+	// HTTP状态码类别
+	StatusClass2xx = 2
+	StatusClass3xx = 3
+	StatusClass4xx = 4
+	StatusClass5xx = 5
+
+	// 其他常量
+	FloatHalf = 0.5
+)
+
+const (
+	// 状态字符串常量
+	StateIdle    = "idle"
+	StateRunning = "running"
+	StatePaused  = "paused"
+	StateStopped = "stopped"
+)
+
 // 安全随机数生成函数
-func secureRandomInt(max int) int {
-	n, err := rand.Int(rand.Reader, big.NewInt(int64(max)))
+func secureRandomInt(maxValue int) int {
+	n, err := rand.Int(rand.Reader, big.NewInt(int64(maxValue)))
 	if err != nil {
 		// 安全fallback：使用时间戳
 		// G115安全修复：确保转换不会溢出
-		fallback := time.Now().UnixNano() % int64(max)
+		fallback := time.Now().UnixNano() % int64(maxValue)
 		// 检查是否在int范围内
 		if fallback > int64(^uint(0)>>1) {
-			fallback = fallback % int64(^uint(0)>>1)
+			fallback %= int64(^uint(0) >> 1)
 		}
 		return int(fallback)
 	}
 	// G115安全修复：检查int64到int的安全转换
 	result := n.Int64()
 	if result > int64(^uint(0)>>1) {
-		result = result % int64(max)
+		result %= int64(maxValue)
 	}
 	return int(result)
-}
-
-func secureRandomFloat32() float32 {
-	n, err := rand.Int(rand.Reader, big.NewInt(1<<24))
-	if err != nil {
-		// 安全fallback：使用时间戳
-		return float32(time.Now().UnixNano()%1000) / 1000.0
-	}
-	return float32(n.Int64()) / float32(1<<24)
 }
 
 /*
@@ -88,23 +162,23 @@ func demonstrateBasicSwitch() {
 	fmt.Println("1. 基本switch语句:")
 
 	// 星期几
-	day := 3
+	day := WeekdayWed
 	fmt.Printf("今天是星期%d，", day)
 
 	switch day {
-	case 1:
+	case WeekdayMon:
 		fmt.Println("星期一")
-	case 2:
+	case WeekdayTue:
 		fmt.Println("星期二")
-	case 3:
+	case WeekdayWed:
 		fmt.Println("星期三")
-	case 4:
+	case WeekdayThu:
 		fmt.Println("星期四")
-	case 5:
+	case WeekdayFri:
 		fmt.Println("星期五")
-	case 6:
+	case WeekdaySat:
 		fmt.Println("星期六")
-	case 7:
+	case WeekdaySun:
 		fmt.Println("星期日")
 	default:
 		fmt.Println("无效的日期")
@@ -138,9 +212,9 @@ func demonstrateBasicSwitch() {
 		fmt.Println("是负数")
 	case number == 0:
 		fmt.Println("是零")
-	case number > 0 && number <= 10:
+	case number > 0 && number <= NumberTen:
 		fmt.Println("是1-10的正数")
-	case number > 10:
+	case number > NumberTen:
 		fmt.Println("是大于10的正数")
 	}
 
@@ -152,17 +226,17 @@ func demonstrateMultipleValues() {
 	fmt.Println("2. 多值匹配:")
 
 	// 月份季节判断
-	month := 8
+	month := August
 	fmt.Printf("第%d月是", month)
 
 	switch month {
-	case 12, 1, 2:
+	case December, January, February:
 		fmt.Println("冬季")
-	case 3, 4, 5:
+	case March, April, May:
 		fmt.Println("春季")
-	case 6, 7, 8:
+	case June, July, August:
 		fmt.Println("夏季")
-	case 9, 10, 11:
+	case September, October, November:
 		fmt.Println("秋季")
 	default:
 		fmt.Println("无效月份")
@@ -186,17 +260,17 @@ func demonstrateMultipleValues() {
 	}
 
 	// HTTP状态码分类
-	statusCode := 404
+	statusCode := StatusNotFound
 	fmt.Printf("HTTP状态码 %d: ", statusCode)
 
 	switch statusCode {
-	case 200, 201, 202, 204:
+	case StatusOK, StatusCreated, StatusAccepted, StatusNoContent:
 		fmt.Println("成功响应")
-	case 301, 302, 304:
+	case StatusMovedPermanently, StatusFound, StatusNotModified:
 		fmt.Println("重定向")
-	case 400, 401, 403, 404:
+	case StatusBadRequest, StatusUnauthorized, StatusForbidden, StatusNotFound:
 		fmt.Println("客户端错误")
-	case 500, 501, 502, 503:
+	case StatusInternalServerError, StatusNotImplemented, StatusBadGateway, StatusServiceUnavailable:
 		fmt.Println("服务器错误")
 	default:
 		fmt.Println("其他状态码")
@@ -213,16 +287,16 @@ func demonstrateFallthrough() {
 	fmt.Printf("分数 %d 的评价: ", score)
 
 	switch {
-	case score >= 90:
+	case score >= GradeExcellent:
 		fmt.Print("优秀")
 		fallthrough
-	case score >= 80:
+	case score >= GradeGood:
 		fmt.Print("良好")
 		fallthrough
-	case score >= 70:
+	case score >= GradeFair:
 		fmt.Print("中等")
 		fallthrough
-	case score >= 60:
+	case score >= GradePass:
 		fmt.Print("及格")
 		fallthrough
 	default:
@@ -230,14 +304,14 @@ func demonstrateFallthrough() {
 	}
 
 	// 权限检查示例
-	userLevel := 3
+	userLevel := DefaultLevel
 	fmt.Printf("\n用户等级 %d 拥有的权限: ", userLevel)
 
 	switch userLevel {
 	case 4:
 		fmt.Print("系统管理 ")
 		fallthrough
-	case 3:
+	case DefaultLevel:
 		fmt.Print("用户管理 ")
 		fallthrough
 	case 2:
@@ -255,7 +329,7 @@ func demonstrateFallthrough() {
 	fmt.Printf("\n数字 %d 的处理流程: ", num)
 
 	switch {
-	case num > 5:
+	case num > NumberFive:
 		fmt.Print("大数处理→")
 		fallthrough
 	case num > 0:
@@ -273,21 +347,21 @@ func demonstrateExpressionlessSwitch() {
 	fmt.Println("4. 无表达式switch:")
 
 	// 等价于 switch true
-	temperature := 25
+	temperature := TempWarm
 	humidity := 60
 
 	fmt.Printf("温度%d°C，湿度%d%%，天气状况: ", temperature, humidity)
 
 	switch {
-	case temperature > 35:
+	case temperature > TempHot:
 		fmt.Println("酷热")
-	case temperature > 25 && humidity > 70:
+	case temperature > TempWarm && humidity > 70:
 		fmt.Println("闷热")
-	case temperature > 25:
+	case temperature > TempWarm:
 		fmt.Println("温暖")
-	case temperature > 15:
+	case temperature > TempMild:
 		fmt.Println("温和")
-	case temperature > 5:
+	case temperature > TempCool:
 		fmt.Println("凉爽")
 	default:
 		fmt.Println("寒冷")
@@ -305,9 +379,9 @@ func demonstrateExpressionlessSwitch() {
 		fmt.Println("优秀")
 	case age >= 21 && income > 40000 && hasJob:
 		fmt.Println("良好")
-	case age >= 18 && income > 20000:
+	case age >= AdultAge && income > 20000:
 		fmt.Println("一般")
-	case age >= 18:
+	case age >= AdultAge:
 		fmt.Println("较差")
 	default:
 		fmt.Println("不符合条件")
@@ -381,7 +455,7 @@ func demonstrateTypeSwitch() {
 	switch value := data.(type) {
 	case string:
 		fmt.Printf("字符串数据: %s，转为大写: %s\n",
-			value, fmt.Sprintf("%s", value))
+			value, value)
 	case int:
 		fmt.Printf("整数数据: %d，平方: %d\n", value, value*value)
 	case float64:
@@ -491,34 +565,52 @@ func demonstratePracticalExamples() {
 	fmt.Println("8. 实际应用示例:")
 
 	// 1. 简单的状态机
-	fmt.Println("简单状态机示例:")
-	state := "idle"
+	demonstrateStateMachine()
 
-	for i := 0; i < 5; i++ {
+	// 2. 文件扩展名处理
+	demonstrateFileTypeDetection()
+
+	// 3. 错误码处理
+	demonstrateErrorCodeHandling()
+
+	// 4. 计算器操作
+	demonstrateCalculatorOperations()
+
+	fmt.Println()
+}
+
+// 状态机示例
+func demonstrateStateMachine() {
+	fmt.Println("简单状态机示例:")
+	state := StateIdle
+
+	for i := 0; i < NumberFive; i++ {
 		fmt.Printf("  状态 %d: %s → ", i+1, state)
 
 		switch state {
-		case "idle":
-			state = "running"
+		case StateIdle:
+			state = StateRunning
 			fmt.Println("开始运行")
-		case "running":
+		case StateRunning:
 			if i%2 == 0 {
-				state = "paused"
+				state = StatePaused
 				fmt.Println("暂停")
 			} else {
-				state = "stopped"
+				state = StateStopped
 				fmt.Println("停止")
 			}
-		case "paused":
-			state = "running"
+		case StatePaused:
+			state = StateRunning
 			fmt.Println("恢复运行")
-		case "stopped":
-			state = "idle"
+		case StateStopped:
+			state = StateIdle
 			fmt.Println("重置为空闲")
 		}
 	}
+}
 
-	// 2. 文件扩展名处理
+// 文件类型检测示例
+func demonstrateFileTypeDetection() {
 	files := []string{"document.pdf", "image.jpg", "data.csv", "script.go", "unknown.xyz"}
 
 	fmt.Println("\n文件类型识别:")
@@ -526,13 +618,7 @@ func demonstratePracticalExamples() {
 		fmt.Printf("  %s: ", filename)
 
 		// 获取扩展名
-		ext := ""
-		for i := len(filename) - 1; i >= 0; i-- {
-			if filename[i] == '.' {
-				ext = filename[i:]
-				break
-			}
-		}
+		ext := getFileExtension(filename)
 
 		switch ext {
 		case ".pdf":
@@ -549,49 +635,73 @@ func demonstratePracticalExamples() {
 			fmt.Println("未知类型")
 		}
 	}
+}
 
-	// 3. 错误码处理
+// 获取文件扩展名
+func getFileExtension(filename string) string {
+	for i := len(filename) - 1; i >= 0; i-- {
+		if filename[i] == '.' {
+			return filename[i:]
+		}
+	}
+	return ""
+}
+
+// 错误码处理示例
+func demonstrateErrorCodeHandling() {
 	fmt.Println("\n错误码处理:")
-	errorCodes := []int{200, 404, 500, 403, 201}
+	errorCodes := []int{StatusOK, StatusNotFound, StatusInternalServerError, StatusForbidden, StatusCreated}
 
 	for _, code := range errorCodes {
 		fmt.Printf("  状态码 %d: ", code)
 
 		switch code / 100 { // 使用除法获取状态码类别
-		case 2:
-			switch code {
-			case 200:
-				fmt.Println("请求成功")
-			case 201:
-				fmt.Println("创建成功")
-			case 204:
-				fmt.Println("无内容")
-			default:
-				fmt.Println("成功响应")
-			}
-		case 3:
+		case StatusClass2xx:
+			handleSuccessStatusCode(code)
+		case StatusClass3xx:
 			fmt.Println("重定向")
-		case 4:
-			switch code {
-			case 400:
-				fmt.Println("请求错误")
-			case 401:
-				fmt.Println("未授权")
-			case 403:
-				fmt.Println("禁止访问")
-			case 404:
-				fmt.Println("未找到")
-			default:
-				fmt.Println("客户端错误")
-			}
-		case 5:
+		case StatusClass4xx:
+			handleClientErrorStatusCode(code)
+		case StatusClass5xx:
 			fmt.Println("服务器错误")
 		default:
 			fmt.Println("未知状态码")
 		}
 	}
+}
 
-	// 4. 计算器操作
+// 处理成功状态码
+func handleSuccessStatusCode(code int) {
+	switch code {
+	case StatusOK:
+		fmt.Println("请求成功")
+	case StatusCreated:
+		fmt.Println("创建成功")
+	case StatusNoContent:
+		fmt.Println("无内容")
+	default:
+		fmt.Println("成功响应")
+	}
+}
+
+// 处理客户端错误状态码
+func handleClientErrorStatusCode(code int) {
+	switch code {
+	case StatusBadRequest:
+		fmt.Println("请求错误")
+	case StatusUnauthorized:
+		fmt.Println("未授权")
+	case StatusForbidden:
+		fmt.Println("禁止访问")
+	case StatusNotFound:
+		fmt.Println("未找到")
+	default:
+		fmt.Println("客户端错误")
+	}
+}
+
+// 计算器操作示例
+func demonstrateCalculatorOperations() {
 	fmt.Println("\n简单计算器:")
 	operations := []struct {
 		a, b float64
@@ -625,8 +735,6 @@ func demonstratePracticalExamples() {
 			fmt.Println("不支持的操作")
 		}
 	}
-
-	fmt.Println()
 }
 
 // 辅助函数

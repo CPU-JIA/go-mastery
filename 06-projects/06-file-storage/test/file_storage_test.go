@@ -3,6 +3,7 @@ package test
 import (
 	"bytes"
 	"context"
+	"fmt"
 	"io"
 	"mime/multipart"
 	"net/http"
@@ -137,9 +138,6 @@ func TestFileService(t *testing.T) {
 			Header:   make(map[string][]string),
 		}
 		fileHeader.Header.Set("Content-Type", "text/plain")
-
-		// 模拟文件读取器
-		reader := strings.NewReader(content)
 
 		// 上传文件
 		options := services.UploadOptions{

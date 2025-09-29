@@ -13,7 +13,7 @@ import (
 	"strings"
 	"time"
 
-	"../models"
+	"assessment-system/models"
 )
 
 // CodeAnalyzer 代码分析工具
@@ -256,36 +256,18 @@ func NewReportGenerator() *ReportGenerator {
 }
 
 // GenerateAssessmentReport 生成评估报告
-func (rg *ReportGenerator) GenerateAssessmentReport(assessment *models.Assessment) string {
+func (rg *ReportGenerator) GenerateAssessmentReport(result *models.AssessmentResult) string {
 	var report strings.Builder
 
 	report.WriteString("# 代码评估报告\n\n")
-	report.WriteString(fmt.Sprintf("**学生ID:** %s\n", assessment.StudentID))
-	report.WriteString(fmt.Sprintf("**项目名称:** %s\n", assessment.ProjectName))
-	report.WriteString(fmt.Sprintf("**评估时间:** %s\n", assessment.CreatedAt.Format("2006-01-02 15:04:05")))
-	report.WriteString(fmt.Sprintf("**总分:** %.2f/100\n\n", assessment.OverallScore))
+	report.WriteString(fmt.Sprintf("**会话ID:** %s\n", result.SessionID))
+	report.WriteString(fmt.Sprintf("**评估时间:** %s\n", time.Now().Format("2006-01-02 15:04:05")))
+	report.WriteString(fmt.Sprintf("**总分:** %.2f/%.2f\n\n", result.OverallScore, result.MaxScore))
 
 	report.WriteString("## 评估结果\n\n")
-	for _, result := range assessment.Results {
-		report.WriteString(fmt.Sprintf("### %s\n", result.Category))
-		report.WriteString(fmt.Sprintf("**得分:** %.2f/100\n", result.Score))
-		report.WriteString(fmt.Sprintf("**权重:** %.1f%%\n", result.Weight*100))
-		report.WriteString(fmt.Sprintf("**反馈:** %s\n\n", result.Feedback))
-
-		if len(result.Issues) > 0 {
-			report.WriteString("**发现的问题:**\n")
-			for _, issue := range result.Issues {
-				report.WriteString(fmt.Sprintf("- %s\n", issue))
-			}
-			report.WriteString("\n")
-		}
-	}
-
-	if len(assessment.Recommendations) > 0 {
-		report.WriteString("## 改进建议\n\n")
-		for i, rec := range assessment.Recommendations {
-			report.WriteString(fmt.Sprintf("%d. %s\n", i+1, rec))
-		}
+	for dimension, score := range result.DimensionScores {
+		report.WriteString(fmt.Sprintf("### %s\n", dimension))
+		report.WriteString(fmt.Sprintf("**得分:** %.2f/100\n", score))
 		report.WriteString("\n")
 	}
 
@@ -293,27 +275,25 @@ func (rg *ReportGenerator) GenerateAssessmentReport(assessment *models.Assessmen
 }
 
 // GenerateProgressReport 生成进度报告
-func (rg *ReportGenerator) GenerateProgressReport(student *models.Student) string {
+func (rg *ReportGenerator) GenerateProgressReport(student *models.StudentProfile) string {
 	var report strings.Builder
 
 	report.WriteString("# 学习进度报告\n\n")
 	report.WriteString(fmt.Sprintf("**学生姓名:** %s\n", student.Name))
 	report.WriteString(fmt.Sprintf("**邮箱:** %s\n", student.Email))
-	report.WriteString(fmt.Sprintf("**当前级别:** %s\n", student.Level))
-	report.WriteString(fmt.Sprintf("**加入时间:** %s\n\n", student.JoinedAt.Format("2006-01-02")))
+	report.WriteString(fmt.Sprintf("**当前阶段:** %d\n", student.CurrentStage))
 
-	if len(student.Assessments) > 0 {
-		report.WriteString("## 评估历史\n\n")
-		for _, assessment := range student.Assessments {
-			report.WriteString(fmt.Sprintf("- **%s** - %.2f分 (%s)\n",
-				assessment.ProjectName,
-				assessment.OverallScore,
-				assessment.CreatedAt.Format("2006-01-02")))
+	if len(student.Projects) > 0 {
+		report.WriteString("## 项目历史\n\n")
+		for _, project := range student.Projects {
+			report.WriteString(fmt.Sprintf("- **%s** - %.2f分\n",
+				project.Name,
+				project.OverallScore))
 		}
 		report.WriteString("\n")
 
 		// 计算进度
-		progress := student.CalculateProgress()
+		progress := float64(student.CurrentStage) / 15.0 * 100
 		report.WriteString(fmt.Sprintf("**整体进度:** %.1f%%\n\n", progress))
 	}
 
@@ -490,6 +470,5 @@ func (cr *CLIRunner) showHelp() {
   assess   - 评估当前项目
   report   - 生成详细报告
   config   - 查看配置
-  quit     - 退出程序
-`)
+  quit     - 退出程序`)
 }

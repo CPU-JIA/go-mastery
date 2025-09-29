@@ -1,8 +1,30 @@
+// Package main demonstrates struct usage in Go language.
+// This module covers struct definition, initialization, methods,
+// embedding, tags, and practical examples.
 package main
 
 import (
 	"fmt"
 	"time"
+)
+
+const (
+	// DefaultAge represents the default age value for examples.
+	DefaultAge = 25
+	// MiddleAge represents a middle-aged person's age.
+	MiddleAge = 30
+	// SampleAge represents a sample age value for demonstrations.
+	SampleAge = 32
+
+	// DefaultTimeout represents the default timeout value in seconds.
+	DefaultTimeout = 30
+	// ModifiedAge represents the modified age value for testing.
+	ModifiedAge = 999
+)
+
+const (
+	// ModifiedName represents the modified name value for testing.
+	ModifiedName = "Modified"
 )
 
 /*
@@ -51,28 +73,31 @@ func main() {
 	demonstratePracticalExamples()
 }
 
-// 基本结构体定义
+// Person represents a basic person with name, age and city information.
 type Person struct {
 	Name string
 	Age  int
 	City string
 }
 
+// Point represents a 2D coordinate point with X and Y values.
 type Point struct {
 	X, Y float64
 }
 
+// Rectangle represents a rectangle with width and height dimensions.
 type Rectangle struct {
 	Width, Height float64
 }
 
-// 缓存系统相关类型定义
+// CacheItem represents a cached item with value and timestamp information.
 type CacheItem struct {
 	Value     interface{}
 	ExpiresAt time.Time
 	CreatedAt time.Time
 }
 
+// Cache represents an in-memory cache with TTL support.
 type Cache struct {
 	items map[string]CacheItem
 	ttl   time.Duration
@@ -87,13 +112,13 @@ func demonstrateStructDefinition() {
 	fmt.Printf("零值结构体: %+v\n", p1) // %+v 显示字段名
 
 	// 2. 字面量初始化（按字段顺序）
-	p2 := Person{"张三", 25, "北京"}
+	p2 := Person{"张三", DefaultAge, "北京"}
 	fmt.Printf("按顺序初始化: %+v\n", p2)
 
 	// 3. 字段名初始化（推荐）
 	p3 := Person{
 		Name: "李四",
-		Age:  30,
+		Age:  MiddleAge,
 		City: "上海",
 	}
 	fmt.Printf("按字段名初始化: %+v\n", p3)
@@ -241,7 +266,7 @@ func demonstrateStructPointers() {
 	fmt.Printf("指针传递后: %+v\n", original)
 
 	// 返回结构体指针
-	newPerson := createPerson("Frank", 32, "重庆")
+	newPerson := createPerson("Frank", SampleAge, "重庆")
 	fmt.Printf("创建的新人: %+v\n", *newPerson)
 
 	// 指针数组
@@ -744,7 +769,7 @@ func demonstratePracticalExamples() {
 
 	// 设置缓存
 	cache.Set("user:123", map[string]string{"name": "张三", "email": "zhang@example.com"})
-	cache.Set("config:timeout", 30)
+	cache.Set("config:timeout", DefaultTimeout)
 
 	fmt.Println("\n缓存演示:")
 
@@ -764,13 +789,13 @@ func demonstratePracticalExamples() {
 
 // 值传递修改（不会影响原结构体）
 func modifyPersonByValue(p Person) {
-	p.Age = 999
-	p.Name = "Modified"
+	p.Age = ModifiedAge
+	p.Name = ModifiedName
 }
 
 // 指针传递修改（会影响原结构体）
 func modifyPersonByPointer(p *Person) {
-	p.Age = 999
+	p.Age = ModifiedAge
 	p.Name = "Modified"
 }
 
@@ -792,7 +817,7 @@ func processData(data struct {
 }
 
 // 显示结构体标签（使用反射）
-func showStructTags(v interface{}) {
+func showStructTags(_ interface{}) {
 	fmt.Println("结构体标签信息:")
 	// 这里应该使用reflect包，为简化示例，只是打印说明
 	fmt.Println("  ID字段: json:\"id\", xml:\"product_id\", db:\"product_id\"")
@@ -801,7 +826,7 @@ func showStructTags(v interface{}) {
 }
 
 // 简单的验证函数
-func validateStruct(v interface{}) {
+func validateStruct(_ interface{}) {
 	fmt.Println("结构体验证:")
 	fmt.Println("  ✓ 所有必需字段都已填写")
 	fmt.Println("  ✓ 邮箱格式正确")
@@ -809,7 +834,7 @@ func validateStruct(v interface{}) {
 	fmt.Println("  ✓ 密码长度符合要求")
 }
 
-// 缓存方法
+// Set stores a value in the cache with the configured TTL.
 func (c *Cache) Set(key string, value interface{}) {
 	c.items[key] = CacheItem{
 		Value:     value,
@@ -818,6 +843,7 @@ func (c *Cache) Set(key string, value interface{}) {
 	}
 }
 
+// Get retrieves a value from the cache, returning the value and whether it was found.
 func (c *Cache) Get(key string) (interface{}, bool) {
 	item, exists := c.items[key]
 	if !exists {

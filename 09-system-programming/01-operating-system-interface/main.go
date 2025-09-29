@@ -51,6 +51,28 @@ const (
 	PROT_WRITE  = 2
 	MAP_SHARED  = 1
 	MAP_PRIVATE = 2
+
+	// Path and security constants
+	MaxPathLength       = 260   // Windows maximum path length
+	MaxArgumentLength   = 1024  // Maximum argument length for security
+	DefaultPermission   = 0o600 // Safe file permission
+	DefaultPageSize     = 4096  // Standard page size
+	DefaultTimeoutSec   = 10    // Default timeout in seconds
+	DefaultTickerSec    = 1     // Default ticker interval
+	MaxSemaphoreValue   = 5     // Maximum semaphore value
+	MaxMessageQueueSize = 10    // Maximum message queue size
+	MaxProcessDisplay   = 5     // Maximum processes to display
+
+	// System call testing constants
+	TestLoopCount         = 10
+	MicrosecondsBase      = 100
+	MicrosecondsIncrement = 10
+	ReadMicroseconds      = 50
+	ReadIncrement         = 5
+	HashMultiplier        = 31
+	ProcessTimeoutSec     = 30
+	KBToBytes             = 1024
+	SecondsToHours        = 3600
 )
 
 // ==================
@@ -321,7 +343,7 @@ func validateExecutablePath(path string) error {
 	}
 
 	// 检查路径长度，防止缓冲区溢出
-	if len(cleanPath) > 260 { // Windows最大路径长度
+	if len(cleanPath) > MaxPathLength {
 		return fmt.Errorf("可执行文件路径过长")
 	}
 
@@ -340,7 +362,7 @@ func validateProcessArgs(args []string) error {
 
 	for i, arg := range args {
 		// 检查参数长度
-		if len(arg) > 1024 {
+		if len(arg) > MaxArgumentLength {
 			return fmt.Errorf("参数 %d 过长", i)
 		}
 
@@ -1062,7 +1084,7 @@ func (ipc *IPCManager) generateKey(name string) int {
 	// 简单的键生成算法
 	hash := 0
 	for _, c := range name {
-		hash = hash*31 + int(c)
+		hash = hash*HashMultiplier + int(c)
 	}
 	return hash & 0x7FFFFFFF // 确保是正数
 }
@@ -1163,7 +1185,7 @@ func (srm *SystemResourceMonitor) updateLinuxMemoryInfo() {
 
 		// 转换为字节 (从kB)
 		if len(fields) > 2 && fields[2] == "kB" {
-			value *= 1024
+			value *= KBToBytes
 		}
 
 		switch name {
@@ -1189,7 +1211,7 @@ func (srm *SystemResourceMonitor) updateGenericMemoryInfo() {
 		TotalPhysical:     m.Sys,
 		AvailablePhysical: m.Sys - m.Alloc,
 		UsedPhysical:      m.Alloc,
-		PageSize:          4096, // 假设4KB页面
+		PageSize:          DefaultPageSize, // 默认页面大小
 	}
 }
 
@@ -1389,17 +1411,15 @@ type SystemSnapshot struct {
 // 7. 主演示函数
 // ==================
 
-func demonstrateSystemProgramming() {
-	fmt.Println("=== Go系统编程：操作系统接口掌控演示 ===")
-
-	// 1. 系统调用包装器演示
-	fmt.Println("\n1. 系统调用包装器演示")
+// demonstrateSystemCallWrapper 演示系统调用包装器
+func demonstrateSystemCallWrapper() {
+	fmt.Println("1. 系统调用包装器演示")
 	wrapper := NewSystemCallWrapper()
 
 	// 模拟一些系统调用
-	for i := 0; i < 10; i++ {
+	for i := 0; i < TestLoopCount; i++ {
 		wrapper.WrapSyscall("open", func() (uintptr, uintptr, error) {
-			time.Sleep(time.Microsecond * time.Duration(100+i*10))
+			time.Sleep(time.Microsecond * time.Duration(MicrosecondsBase+i*MicrosecondsIncrement))
 			if i%5 == 0 {
 				return 0, 0, fmt.Errorf("permission denied")
 			}
@@ -1407,8 +1427,8 @@ func demonstrateSystemProgramming() {
 		})
 
 		wrapper.WrapSyscall("read", func() (uintptr, uintptr, error) {
-			time.Sleep(time.Microsecond * time.Duration(50+i*5))
-			return uintptr(1024), 0, nil
+			time.Sleep(time.Microsecond * time.Duration(ReadMicroseconds+i*ReadIncrement))
+			return uintptr(KBToBytes), 0, nil
 		})
 	}
 
@@ -1418,8 +1438,10 @@ func demonstrateSystemProgramming() {
 		fmt.Printf("  %s: 调用%d次, 平均耗时%v, 错误率%.2f%%\n",
 			name, stat.CallCount, stat.AverageTime, stat.ErrorRate*100)
 	}
+}
 
-	// 2. 进程管理演示
+// demonstrateProcessManagement 演示进程管理
+func demonstrateProcessManagement() {
 	fmt.Println("\n2. 进程管理演示")
 	procManager := NewProcessManager()
 
@@ -1430,7 +1452,7 @@ func demonstrateSystemProgramming() {
 		HealthCheck: func() bool {
 			return true // 简单的健康检查
 		},
-		Timeout: time.Second * 30,
+		Timeout: time.Second * ProcessTimeoutSec,
 	}
 
 	// 创建一个简单的echo进程
@@ -1450,8 +1472,10 @@ func demonstrateSystemProgramming() {
 	// 显示管理的进程
 	processes := procManager.GetProcesses()
 	fmt.Printf("管理的进程数量: %d\n", len(processes))
+}
 
-	// 3. 信号处理演示
+// demonstrateSignalHandling 演示信号处理
+func demonstrateSignalHandling() (*SignalHandler, func()) {
 	fmt.Println("\n3. 信号处理演示")
 	signalHandler := NewSignalHandler()
 
@@ -1464,9 +1488,11 @@ func demonstrateSystemProgramming() {
 	})
 
 	signalHandler.Start()
-	defer signalHandler.Stop()
+	return signalHandler, func() { signalHandler.Stop() }
+}
 
-	// 4. 内存映射演示
+// demonstrateMemoryMapping 演示内存映射
+func demonstrateMemoryMapping() {
 	fmt.Println("\n4. 内存映射演示")
 	mapper := NewMemoryMapper()
 
@@ -1495,7 +1521,7 @@ func demonstrateSystemProgramming() {
 	}
 
 	// 创建匿名内存映射
-	anonMapping, err := mapper.MapAnonymous(4096,
+	anonMapping, err := mapper.MapAnonymous(DefaultPageSize,
 		PROT_READ|PROT_WRITE, MAP_PRIVATE)
 	if err != nil {
 		fmt.Printf("匿名内存映射失败: %v\n", err)
@@ -1509,8 +1535,10 @@ func demonstrateSystemProgramming() {
 
 	mappings := mapper.GetMappings()
 	fmt.Printf("当前活跃的内存映射数量: %d\n", len(mappings))
+}
 
-	// 5. 进程间通信演示
+// demonstrateIPC 演示进程间通信
+func demonstrateIPC() {
 	fmt.Println("\n5. 进程间通信(IPC)演示")
 	ipcManager := NewIPCManager()
 
@@ -1526,7 +1554,7 @@ func demonstrateSystemProgramming() {
 	defer os.RemoveAll(tempDir)
 
 	pipePath := filepath.Join(tempDir, "test_fifo")
-	pipe, err := ipcManager.CreateNamedPipe(pipeName, pipePath, 0600) // 使用更安全的权限
+	pipe, err := ipcManager.CreateNamedPipe(pipeName, pipePath, DefaultPermission) // 使用更安全的权限
 	if err != nil {
 		fmt.Printf("创建命名管道失败: %v\n", err)
 	} else {
@@ -1536,7 +1564,7 @@ func demonstrateSystemProgramming() {
 	}
 
 	// 创建信号量
-	sem, err := ipcManager.CreateSemaphore("test_sem", 1, 5)
+	sem, err := ipcManager.CreateSemaphore("test_sem", 1, MaxSemaphoreValue)
 	if err != nil {
 		fmt.Printf("创建信号量失败: %v\n", err)
 	} else {
@@ -1551,7 +1579,7 @@ func demonstrateSystemProgramming() {
 	}
 
 	// 创建消息队列
-	mq, err := ipcManager.CreateMessageQueue("test_mq", 10)
+	mq, err := ipcManager.CreateMessageQueue("test_mq", MaxMessageQueueSize)
 	if err != nil {
 		fmt.Printf("创建消息队列失败: %v\n", err)
 	} else {
@@ -1573,12 +1601,13 @@ func demonstrateSystemProgramming() {
 			}
 		}
 	}
+}
 
-	// 6. 系统资源监控演示
+// demonstrateResourceMonitoring 演示系统资源监控
+func demonstrateResourceMonitoring() (*SystemResourceMonitor, func()) {
 	fmt.Println("\n6. 系统资源监控演示")
 	monitor := NewSystemResourceMonitor()
 	monitor.Start()
-	defer monitor.Stop()
 
 	// 等待一些监控数据
 	time.Sleep(time.Second * 2)
@@ -1587,9 +1616,9 @@ func demonstrateSystemProgramming() {
 
 	fmt.Printf("系统快照 (时间: %v):\n", snapshot.Timestamp.Format("15:04:05"))
 	fmt.Printf("  内存信息:\n")
-	fmt.Printf("    总物理内存: %d MB\n", snapshot.Memory.TotalPhysical/1024/1024)
-	fmt.Printf("    可用物理内存: %d MB\n", snapshot.Memory.AvailablePhysical/1024/1024)
-	fmt.Printf("    已用物理内存: %d MB\n", snapshot.Memory.UsedPhysical/1024/1024)
+	fmt.Printf("    总物理内存: %d MB\n", snapshot.Memory.TotalPhysical/KBToBytes/KBToBytes)
+	fmt.Printf("    可用物理内存: %d MB\n", snapshot.Memory.AvailablePhysical/KBToBytes/KBToBytes)
+	fmt.Printf("    已用物理内存: %d MB\n", snapshot.Memory.UsedPhysical/KBToBytes/KBToBytes)
 	fmt.Printf("    页面大小: %d bytes\n", snapshot.Memory.PageSize)
 
 	fmt.Printf("  进程信息:\n")
@@ -1604,7 +1633,7 @@ func demonstrateSystemProgramming() {
 
 	count := 0
 	for _, pid := range pids {
-		if count >= 5 {
+		if count >= MaxProcessDisplay {
 			break
 		}
 		proc := snapshot.Processes[pid]
@@ -1622,6 +1651,11 @@ func demonstrateSystemProgramming() {
 	fmt.Printf("  文件句柄:\n")
 	fmt.Printf("    监控的文件句柄数量: %d\n", len(snapshot.FileHandles))
 
+	return monitor, func() { monitor.Stop() }
+}
+
+// demonstrateUserAndSystemInfo 演示用户和系统信息
+func demonstrateUserAndSystemInfo() {
 	// 7. 用户和组信息
 	fmt.Println("\n7. 用户和组信息")
 	currentUser, err := user.Current()
@@ -1663,11 +1697,38 @@ func demonstrateSystemProgramming() {
 			if len(fields) >= 1 {
 				seconds, err := strconv.ParseFloat(fields[0], 64)
 				if err == nil {
-					fmt.Printf("系统运行时间: %.2f 小时\n", seconds/3600)
+					fmt.Printf("系统运行时间: %.2f 小时\n", seconds/SecondsToHours)
 				}
 			}
 		}
 	}
+}
+
+func demonstrateSystemProgramming() {
+	fmt.Println("=== Go系统编程：操作系统接口掌控演示 ===")
+
+	// 1. 系统调用包装器演示
+	demonstrateSystemCallWrapper()
+
+	// 2. 进程管理演示
+	demonstrateProcessManagement()
+
+	// 3. 信号处理演示
+	_, stopSignalHandler := demonstrateSignalHandling()
+	defer stopSignalHandler()
+
+	// 4. 内存映射演示
+	demonstrateMemoryMapping()
+
+	// 5. 进程间通信演示
+	demonstrateIPC()
+
+	// 6. 系统资源监控演示
+	_, stopMonitor := demonstrateResourceMonitoring()
+	defer stopMonitor()
+
+	// 7. 用户和系统信息演示
+	demonstrateUserAndSystemInfo()
 }
 
 func main() {
