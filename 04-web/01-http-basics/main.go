@@ -535,6 +535,7 @@ func demonstrateFileServer() {
 	fmt.Println("=== 5. 文件服务器 ===")
 
 	// 创建临时目录和文件用于演示
+	// #nosec G301 -- 教学示例静态文件目录，需要0755权限支持Web服务器访问
 	err := os.MkdirAll("./static", 0755)
 	if err != nil {
 		fmt.Printf("创建目录失败: %v\n", err)

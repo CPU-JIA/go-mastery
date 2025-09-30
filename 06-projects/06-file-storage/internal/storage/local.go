@@ -25,6 +25,7 @@ func NewLocalStorage(config config.StorageConfig) (FileStorage, error) {
 	}
 
 	// 创建目录
+	// #nosec G301 -- 本地存储基础目录，需要0755权限支持文件服务访问
 	if err := os.MkdirAll(basePath, 0755); err != nil {
 		return nil, fmt.Errorf("failed to create storage directory: %w", err)
 	}
@@ -39,6 +40,7 @@ func (ls *LocalStorage) Save(ctx context.Context, path string, content io.Reader
 	fullPath := filepath.Join(ls.basePath, path)
 
 	// 确保目录存在
+	// #nosec G301 -- 文件保存时创建父目录，需要0755权限支持Web服务器访问
 	if err := os.MkdirAll(filepath.Dir(fullPath), 0755); err != nil {
 		return fmt.Errorf("failed to create directory: %w", err)
 	}

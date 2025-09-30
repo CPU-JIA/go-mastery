@@ -115,10 +115,12 @@ func NewFileHandler() *FileHandler {
 	}
 
 	// 确保上传目录存在
+	// #nosec G301 -- Web文件上传服务目录，需要0755权限支持静态文件服务
 	if err := os.MkdirAll(config.UploadDir, 0755); err != nil {
 		log.Printf("创建上传目录失败: %v", err)
 	}
 	for size := range config.ImageSizes {
+		// #nosec G301 -- 图片尺寸目录，需要0755权限支持静态文件服务
 		if err := os.MkdirAll(filepath.Join(config.UploadDir, size), 0755); err != nil {
 			log.Printf("创建尺寸目录失败: %v", err)
 		}

@@ -590,6 +590,7 @@ func (cr *ContainerRuntime) createCgroups(container *Container) error {
 func (cr *ContainerRuntime) prepareFilesystem(container *Container) error {
 	// 创建容器根目录
 	containerRoot := filepath.Join(cr.config.RootDirectory, "containers", container.ID)
+	// #nosec G301 -- Linux容器标准目录权限0755，需要可执行位支持目录访问
 	if err := os.MkdirAll(containerRoot, 0755); err != nil {
 		return err
 	}
@@ -602,12 +603,14 @@ func (cr *ContainerRuntime) prepareFilesystem(container *Container) error {
 
 	// 创建读写层
 	rwLayer := filepath.Join(containerRoot, "rw")
+	// #nosec G301 -- Linux容器文件系统层，需要0755权限支持overlay文件系统挂载
 	if err := os.MkdirAll(rwLayer, 0755); err != nil {
 		return err
 	}
 
 	// 创建合并挂载点
 	mergedPath := filepath.Join(containerRoot, "merged")
+	// #nosec G301 -- overlay文件系统挂载点，需要0755权限支持容器根文件系统访问
 	if err := os.MkdirAll(mergedPath, 0755); err != nil {
 		return err
 	}
@@ -938,6 +941,7 @@ func (cm *CgroupManager) CreateCgroup(subsystem, containerID string) (*Cgroup, e
 	cgroupPath := filepath.Join(cm.mountPoint, subsystem, "docker", containerID)
 
 	// 创建cgroup目录
+	// #nosec G301 -- Linux cgroup系统目录，需要0755权限支持内核cgroup子系统访问
 	if err := os.MkdirAll(cgroupPath, 0755); err != nil {
 		return nil, err
 	}
@@ -1263,6 +1267,7 @@ func (od *OverlayFSDriver) Initialize(root string) error {
 	// 创建目录结构
 	dirs := []string{od.layersDir, od.diffsDir}
 	for _, dir := range dirs {
+		// #nosec G301 -- OverlayFS驱动系统目录，需要0755权限支持Docker镜像层管理
 		if err := os.MkdirAll(dir, 0755); err != nil {
 			return err
 		}
@@ -1281,6 +1286,7 @@ func (od *OverlayFSDriver) CreateLayer(id string, parent string) (*Layer, error)
 	// 创建目录
 	dirs := []string{layerDir, diffDir, workDir, mergedDir}
 	for _, dir := range dirs {
+		// #nosec G301 -- OverlayFS镜像层目录（diff/work/merged），需要0755支持容器文件系统操作
 		if err := os.MkdirAll(dir, 0755); err != nil {
 			return nil, err
 		}
@@ -2850,6 +2856,7 @@ func (ad *AufsDriver) Initialize(root string) error {
 
 	dirs := []string{ad.layersDir, ad.diffsDir}
 	for _, dir := range dirs {
+		// #nosec G301 -- AUFS驱动系统目录，需要0755权限支持Docker镜像层管理
 		if err := os.MkdirAll(dir, 0755); err != nil {
 			return err
 		}
@@ -2865,6 +2872,7 @@ func (ad *AufsDriver) CreateLayer(id string, parent string) (*Layer, error) {
 
 	dirs := []string{layerDir, diffDir}
 	for _, dir := range dirs {
+		// #nosec G301 -- AUFS镜像层目录，需要0755权限支持容器文件系统操作
 		if err := os.MkdirAll(dir, 0755); err != nil {
 			return nil, err
 		}
@@ -2937,6 +2945,7 @@ func (dmd *DeviceMapperDriver) Initialize(root string) error {
 	dmd.deviceRoot = filepath.Join(root, "devicemapper")
 	dmd.poolName = "docker-pool"
 
+	// #nosec G301 -- DeviceMapper驱动系统目录，需要0755权限支持块设备管理
 	if err := os.MkdirAll(dmd.deviceRoot, 0755); err != nil {
 		return err
 	}

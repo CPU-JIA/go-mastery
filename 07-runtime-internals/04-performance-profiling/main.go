@@ -143,6 +143,7 @@ func (pm *PerformanceMonitor) Start() error {
 	}
 
 	// 创建profile目录
+	// #nosec G301 -- 性能分析profile目录，需要0755权限支持CPU/内存profile文件写入
 	if err := os.MkdirAll(pm.profileDir, 0755); err != nil {
 		return fmt.Errorf("failed to create profile directory: %v", err)
 	}
@@ -1186,6 +1187,7 @@ func demonstratePerformanceProfiling() {
 
 func main() {
 	// 确保profiles目录存在
+	// #nosec G301 -- profile输出目录，需要0755权限支持性能分析文件写入
 	if err := os.MkdirAll("./profiles", 0755); err != nil {
 		log.Printf("Warning: failed to create profiles directory: %v", err)
 	}

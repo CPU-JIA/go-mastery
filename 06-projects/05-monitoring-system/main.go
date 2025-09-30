@@ -763,6 +763,7 @@ func NewStorage(dataDir string) *Storage {
 		dataDir: dataDir,
 	}
 
+	// #nosec G301 -- 监控系统数据目录，需要0755权限支持日志和指标文件写入
 	os.MkdirAll(dataDir, 0755)
 	return storage
 }

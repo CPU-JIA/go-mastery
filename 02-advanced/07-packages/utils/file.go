@@ -90,6 +90,7 @@ func GetFilenameWithoutExtension(filename string) string {
 
 // CreateDirectory 创建目录（如果不存在）
 func CreateDirectory(dir string) error {
+	// #nosec G301 -- 教学工具包示例代码，通用目录创建函数需要0755支持文件操作
 	return os.MkdirAll(dir, 0755)
 }
 

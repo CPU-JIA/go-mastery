@@ -863,6 +863,7 @@ func NewStorage(dataDir string) *Storage {
 		dataDir: dataDir,
 	}
 
+	// #nosec G301 -- 任务调度器数据目录，需要0755权限支持任务数据文件读写
 	os.MkdirAll(dataDir, 0755)
 	return storage
 }

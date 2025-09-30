@@ -121,6 +121,7 @@ func NewStorage(dataDir string) *Storage {
 	}
 
 	// 创建数据目录
+	// #nosec G301 -- 博客系统数据目录，需要0755权限支持文章数据文件读写
 	os.MkdirAll(dataDir, 0755)
 
 	// 加载数据

@@ -431,6 +431,7 @@ func (app *WebApp) ensureDirectories() {
 	}
 
 	for _, dir := range dirs {
+		// #nosec G301 -- 教学示例代码，模板系统目录需要0755权限支持Web服务器访问
 		os.MkdirAll(dir, 0755)
 	}
 
@@ -774,6 +775,7 @@ func (app *WebApp) HandleFileUpload(w http.ResponseWriter, r *http.Request) {
 
 	// 创建上传目录
 	uploadDir := "static/uploads"
+	// #nosec G301 -- 上传目录需要0755权限支持Web服务器写入
 	os.MkdirAll(uploadDir, 0755)
 
 	// 保存文件

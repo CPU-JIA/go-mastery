@@ -945,6 +945,7 @@ type FileConfigurationSource struct {
 }
 
 func NewFileConfigurationSource(basePath, encryptionKey string) *FileConfigurationSource {
+	// #nosec G301 -- 教学示例代码，配置服务数据目录需要0755权限支持文件读写
 	os.MkdirAll(basePath, 0755)
 	return &FileConfigurationSource{
 		basePath:  basePath,

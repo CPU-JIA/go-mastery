@@ -154,6 +154,7 @@ func NewStorage(dataDir string) *Storage {
 		dataDir:  dataDir,
 	}
 
+	// #nosec G301 -- 聊天系统数据目录，需要0755权限支持消息数据文件读写
 	os.MkdirAll(dataDir, 0755)
 	storage.loadData()
 	storage.createDefaultData()

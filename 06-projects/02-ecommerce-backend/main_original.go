@@ -247,6 +247,7 @@ func NewStore(dataDir string) *Store {
 		dataDir: dataDir,
 	}
 
+	// #nosec G301 -- 电商系统数据目录，需要0755权限支持JSON数据文件读写
 	os.MkdirAll(dataDir, 0755)
 	store.loadData()
 	store.createSampleData()

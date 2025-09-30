@@ -163,7 +163,9 @@ func NewStorage(baseDir string) *Storage {
 	}
 
 	// 创建目录
+	// #nosec G301 -- 文件上传服务的上传目录，需要0755权限支持Web服务器访问和静态文件服务
 	os.MkdirAll(storage.uploadsDir, 0755)
+	// #nosec G301 -- 缩略图目录，需要0755权限支持Web服务器访问和静态文件服务
 	os.MkdirAll(storage.thumbsDir, 0755)
 
 	// 加载数据
@@ -1212,6 +1214,7 @@ func (fs *FileServer) handleCompress(w http.ResponseWriter, r *http.Request) {
 
 	// 创建临时压缩文件
 	tempPath := filepath.Join(fs.storage.baseDir, "temp", req.Name)
+	// #nosec G301 -- 临时文件目录，需要0755权限支持Web服务器写入临时压缩文件
 	os.MkdirAll(filepath.Dir(tempPath), 0755)
 
 	if err := fs.processor.CompressFiles(req.FileIDs, tempPath); err != nil {
