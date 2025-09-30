@@ -25,6 +25,8 @@ import (
 	"regexp"
 	"strings"
 	"time"
+
+	"go-mastery/common/security"
 )
 
 // ProjectEvaluator 项目评估器
@@ -1741,7 +1743,10 @@ func (pe *ProjectEvaluator) saveResults() error {
 		return fmt.Errorf("序列化结果失败: %v", err)
 	}
 
-	if err := os.WriteFile(pe.config.ResultsPath, data, 0644); err != nil {
+	if err := security.SecureWriteFile(pe.config.ResultsPath, data, &security.SecureFileOptions{
+		Mode:      security.GetRecommendedMode("data"),
+		CreateDir: true,
+	}); err != nil {
 		return fmt.Errorf("保存结果文件失败: %v", err)
 	}
 

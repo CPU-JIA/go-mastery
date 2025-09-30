@@ -222,7 +222,11 @@ func (pp *PerformanceProfiler) StartProfiling() error {
 
 	// CPU Profile
 	if pp.config.EnableCPUProfile {
-		cpuFile, err := os.Create(fmt.Sprintf("cpu_%s.prof", pp.name))
+		// G301/G306安全修复：使用安全权限创建性能分析文件
+		cpuFile, err := security.SecureCreateFile(
+			fmt.Sprintf("cpu_%s.prof", pp.name),
+			security.GetRecommendedMode("temp"),
+		)
 		if err != nil {
 			return err
 		}
@@ -236,7 +240,11 @@ func (pp *PerformanceProfiler) StartProfiling() error {
 
 	// Trace
 	if pp.config.EnableTrace {
-		traceFile, err := os.Create(fmt.Sprintf("trace_%s.out", pp.name))
+		// G301/G306安全修复：使用安全权限创建trace文件
+		traceFile, err := security.SecureCreateFile(
+			fmt.Sprintf("trace_%s.out", pp.name),
+			security.GetRecommendedMode("temp"),
+		)
 		if err != nil {
 			return err
 		}
@@ -273,7 +281,11 @@ func (pp *PerformanceProfiler) StopProfiling() error {
 
 	// 生成内存Profile
 	if pp.config.EnableMemoryProfile {
-		memFile, err := os.Create(fmt.Sprintf("mem_%s.prof", pp.name))
+		// G301/G306安全修复：使用安全权限创建内存分析文件
+		memFile, err := security.SecureCreateFile(
+			fmt.Sprintf("mem_%s.prof", pp.name),
+			security.GetRecommendedMode("temp"),
+		)
 		if err != nil {
 			return err
 		}

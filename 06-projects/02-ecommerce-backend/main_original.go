@@ -31,6 +31,8 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"go-mastery/common/security"
 )
 
 // ====================
@@ -317,7 +319,10 @@ func (s *Store) saveData() error {
 
 	for filename, data := range files {
 		if jsonData, err := json.MarshalIndent(data, "", "  "); err == nil {
-			os.WriteFile(filepath.Join(s.dataDir, filename), jsonData, 0644)
+			security.SecureWriteFile(filepath.Join(s.dataDir, filename), jsonData, &security.SecureFileOptions{
+				Mode:      security.GetRecommendedMode("data"),
+				CreateDir: true,
+			})
 		}
 	}
 

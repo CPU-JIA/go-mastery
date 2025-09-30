@@ -33,6 +33,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"go-mastery/common/security"
 )
 
 // ====================
@@ -179,17 +181,26 @@ func (s *Storage) loadData() {
 func (s *Storage) saveData() error {
 	// 保存用户数据
 	if data, err := json.MarshalIndent(s.users, "", "  "); err == nil {
-		os.WriteFile(filepath.Join(s.dataDir, "users.json"), data, 0644)
+		security.SecureWriteFile(filepath.Join(s.dataDir, "users.json"), data, &security.SecureFileOptions{
+			Mode:      security.GetRecommendedMode("data"),
+			CreateDir: true,
+		})
 	}
 
 	// 保存文章数据
 	if data, err := json.MarshalIndent(s.articles, "", "  "); err == nil {
-		os.WriteFile(filepath.Join(s.dataDir, "articles.json"), data, 0644)
+		security.SecureWriteFile(filepath.Join(s.dataDir, "articles.json"), data, &security.SecureFileOptions{
+			Mode:      security.GetRecommendedMode("data"),
+			CreateDir: true,
+		})
 	}
 
 	// 保存评论数据
 	if data, err := json.MarshalIndent(s.comments, "", "  "); err == nil {
-		os.WriteFile(filepath.Join(s.dataDir, "comments.json"), data, 0644)
+		security.SecureWriteFile(filepath.Join(s.dataDir, "comments.json"), data, &security.SecureFileOptions{
+			Mode:      security.GetRecommendedMode("data"),
+			CreateDir: true,
+		})
 	}
 
 	return nil

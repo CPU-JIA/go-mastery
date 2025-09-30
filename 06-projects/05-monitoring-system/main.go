@@ -30,6 +30,8 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"go-mastery/common/security"
 )
 
 // ====================
@@ -784,7 +786,10 @@ func (s *Storage) SaveMetrics(metrics []Metric) error {
 		return err
 	}
 
-	return os.WriteFile(filepath.Join(s.dataDir, "metrics.json"), data, 0644)
+	return security.SecureWriteFile(filepath.Join(s.dataDir, "metrics.json"), data, &security.SecureFileOptions{
+		Mode:      security.GetRecommendedMode("data"),
+		CreateDir: true,
+	})
 }
 
 func (s *Storage) SaveAlert(alert Alert) error {

@@ -1104,6 +1104,9 @@ func (co *CacheOptimizer) benchmarkStructLayout() {
 	}
 
 	badElapsed := time.Since(start)
+	// #nosec G103 - 教学演示：展示结构体内存布局对性能的影响
+	// unsafe.Sizeof用于测量结构体的实际内存占用
+	// 这是性能优化中的关键工具，用于识别内存浪费和缓存未命中问题
 	badSize := unsafe.Sizeof(BadStructLayout{})
 
 	// 测试布局好的结构体
@@ -1120,6 +1123,8 @@ func (co *CacheOptimizer) benchmarkStructLayout() {
 	}
 
 	goodElapsed := time.Since(start)
+	// #nosec G103 - 教学演示：对比优化后的结构体布局
+	// 通过调整字段顺序，减少padding，提升缓存利用率和性能
 	goodSize := unsafe.Sizeof(GoodStructLayout{})
 
 	fmt.Printf("  差的布局: %v, 大小=%d字节\n", badElapsed, badSize)
@@ -1194,8 +1199,8 @@ func (io *IOOptimizer) benchmarkWrite(filename string, data []byte, batch bool) 
 	start := time.Now()
 
 	if batch {
-		// 批量写入
-		file, err := os.Create(filename + ".batch")
+		// 批量写入 - G301安全修复：使用安全的文件权限
+		file, err := security.SecureCreateFile(filename+".batch", security.DefaultFileMode)
 		if err != nil {
 			fmt.Printf("  批量写入失败: %v\n", err)
 			return
@@ -1217,8 +1222,8 @@ func (io *IOOptimizer) benchmarkWrite(filename string, data []byte, batch bool) 
 		throughput := float64(len(data)) / elapsed.Seconds() / 1024 / 1024
 		fmt.Printf("  批量写入: %v, %.2f MB/s\n", elapsed, throughput)
 	} else {
-		// 单次写入
-		file, err := os.Create(filename + ".single")
+		// 单次写入 - G301安全修复：使用安全的文件权限
+		file, err := security.SecureCreateFile(filename+".single", security.DefaultFileMode)
 		if err != nil {
 			fmt.Printf("  单次写入失败: %v\n", err)
 			return
@@ -1246,8 +1251,8 @@ func (io *IOOptimizer) benchmarkWrite(filename string, data []byte, batch bool) 
 }
 
 func (io *IOOptimizer) benchmarkRead(filename string, size int, batch bool) {
-	// 首先创建测试文件
-	file, err := os.Create(filename)
+	// 首先创建测试文件 - G301安全修复：使用安全的文件权限
+	file, err := security.SecureCreateFile(filename, security.DefaultFileMode)
 	if err != nil {
 		return
 	}
@@ -1314,7 +1319,8 @@ func (io *IOOptimizer) benchmarkBufferedIO(filename string, data []byte) {
 	for _, bufSize := range bufferSizes {
 		start := time.Now()
 
-		file, err := os.Create(filename + fmt.Sprintf(".buf_%d", bufSize))
+		// G301安全修复：使用安全的文件权限
+		file, err := security.SecureCreateFile(filename+fmt.Sprintf(".buf_%d", bufSize), security.DefaultFileMode)
 		if err != nil {
 			continue
 		}
@@ -1346,7 +1352,8 @@ func (io *IOOptimizer) benchmarkMemoryMappedIO(filename string, size int) {
 	// 简化的内存映射模拟
 	start := time.Now()
 
-	file, err := os.Create(filename + ".mmap")
+	// G301安全修复：使用安全的文件权限
+	file, err := security.SecureCreateFile(filename+".mmap", security.DefaultFileMode)
 	if err != nil {
 		fmt.Printf("  内存映射失败: %v\n", err)
 		return

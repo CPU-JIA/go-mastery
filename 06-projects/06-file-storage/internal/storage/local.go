@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"file-storage-service/internal/config"
+	"go-mastery/common/security"
 )
 
 // LocalStorage 本地文件存储实现
@@ -44,7 +45,8 @@ func (ls *LocalStorage) Save(ctx context.Context, path string, content io.Reader
 	}
 
 	// 创建文件
-	file, err := os.Create(fullPath)
+	// G301/G306安全修复：使用安全权限创建文件
+	file, err := security.SecureCreateFile(fullPath, security.DefaultFileMode)
 	if err != nil {
 		return fmt.Errorf("failed to create file: %w", err)
 	}
@@ -61,11 +63,10 @@ func (ls *LocalStorage) Save(ctx context.Context, path string, content io.Reader
 
 // Get 获取文件
 func (ls *LocalStorage) Get(ctx context.Context, path string) (io.ReadCloser, error) {
-	fullPath := filepath.Join(ls.basePath, path)
-
-	// 安全检查：防止路径遍历
-	if !strings.HasPrefix(filepath.Clean(fullPath), ls.basePath) {
-		return nil, fmt.Errorf("invalid file path")
+	// G304安全修复：使用security.GetSafePath防止路径遍历攻击
+	fullPath, err := security.GetSafePath(ls.basePath, path)
+	if err != nil {
+		return nil, fmt.Errorf("invalid file path: %w", err)
 	}
 
 	file, err := os.Open(fullPath)
@@ -78,14 +79,13 @@ func (ls *LocalStorage) Get(ctx context.Context, path string) (io.ReadCloser, er
 
 // Delete 删除文件
 func (ls *LocalStorage) Delete(ctx context.Context, path string) error {
-	fullPath := filepath.Join(ls.basePath, path)
-
-	// 安全检查
-	if !strings.HasPrefix(filepath.Clean(fullPath), ls.basePath) {
-		return fmt.Errorf("invalid file path")
+	// G304安全修复：使用security.GetSafePath防止路径遍历攻击
+	fullPath, err := security.GetSafePath(ls.basePath, path)
+	if err != nil {
+		return fmt.Errorf("invalid file path: %w", err)
 	}
 
-	err := os.Remove(fullPath)
+	err = os.Remove(fullPath)
 	if err != nil && !os.IsNotExist(err) {
 		return fmt.Errorf("failed to delete file: %w", err)
 	}
@@ -95,14 +95,13 @@ func (ls *LocalStorage) Delete(ctx context.Context, path string) error {
 
 // Exists 检查文件是否存在
 func (ls *LocalStorage) Exists(ctx context.Context, path string) (bool, error) {
-	fullPath := filepath.Join(ls.basePath, path)
-
-	// 安全检查
-	if !strings.HasPrefix(filepath.Clean(fullPath), ls.basePath) {
-		return false, fmt.Errorf("invalid file path")
+	// G304安全修复：使用security.GetSafePath防止路径遍历攻击
+	fullPath, err := security.GetSafePath(ls.basePath, path)
+	if err != nil {
+		return false, fmt.Errorf("invalid file path: %w", err)
 	}
 
-	_, err := os.Stat(fullPath)
+	_, err = os.Stat(fullPath)
 	if err == nil {
 		return true, nil
 	}
@@ -114,11 +113,10 @@ func (ls *LocalStorage) Exists(ctx context.Context, path string) (bool, error) {
 
 // Size 获取文件大小
 func (ls *LocalStorage) Size(ctx context.Context, path string) (int64, error) {
-	fullPath := filepath.Join(ls.basePath, path)
-
-	// 安全检查
-	if !strings.HasPrefix(filepath.Clean(fullPath), ls.basePath) {
-		return 0, fmt.Errorf("invalid file path")
+	// G304安全修复：使用security.GetSafePath防止路径遍历攻击
+	fullPath, err := security.GetSafePath(ls.basePath, path)
+	if err != nil {
+		return 0, fmt.Errorf("invalid file path: %w", err)
 	}
 
 	stat, err := os.Stat(fullPath)
@@ -151,11 +149,10 @@ func (ls *LocalStorage) DeleteMultiple(ctx context.Context, paths []string) erro
 
 // GetMetadata 获取文件元数据
 func (ls *LocalStorage) GetMetadata(ctx context.Context, path string) (map[string]string, error) {
-	fullPath := filepath.Join(ls.basePath, path)
-
-	// 安全检查
-	if !strings.HasPrefix(filepath.Clean(fullPath), ls.basePath) {
-		return nil, fmt.Errorf("invalid file path")
+	// G304安全修复：使用security.GetSafePath防止路径遍历攻击
+	fullPath, err := security.GetSafePath(ls.basePath, path)
+	if err != nil {
+		return nil, fmt.Errorf("invalid file path: %w", err)
 	}
 
 	stat, err := os.Stat(fullPath)
@@ -241,7 +238,8 @@ func (ls *LocalStorage) HealthCheck(ctx context.Context) error {
 
 	// 尝试创建临时文件
 	tempFile := filepath.Join(ls.basePath, ".health_check_"+fmt.Sprintf("%d", time.Now().UnixNano()))
-	file, err := os.Create(tempFile)
+	// G301/G306安全修复：使用安全权限创建临时文件
+	file, err := security.SecureCreateFile(tempFile, security.GetRecommendedMode("temp"))
 	if err != nil {
 		return fmt.Errorf("cannot create files in storage directory: %w", err)
 	}

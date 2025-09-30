@@ -28,6 +28,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"go-mastery/common/security"
 )
 
 // CodeQualityEvaluator 代码质量评估器
@@ -285,6 +287,7 @@ func (g *GolintTool) Version() string { return "latest" }
 func (g *GolintTool) Execute(projectPath string) (*ToolResult, error) {
 	start := time.Now()
 
+	// #nosec G204 - 固定命令，无用户输入，用于代码质量检查
 	cmd := exec.Command("golint", "./...")
 	cmd.Dir = projectPath
 	output, err := cmd.CombinedOutput()
@@ -365,6 +368,7 @@ func (gv *GovetTool) Version() string { return "latest" }
 func (gv *GovetTool) Execute(projectPath string) (*ToolResult, error) {
 	start := time.Now()
 
+	// #nosec G204 - 固定命令，无用户输入，用于静态代码分析
 	cmd := exec.Command("go", "vet", "./...")
 	cmd.Dir = projectPath
 	output, err := cmd.CombinedOutput()
@@ -453,6 +457,7 @@ func (gc *GocycloTool) Version() string { return "latest" }
 func (gc *GocycloTool) Execute(projectPath string) (*ToolResult, error) {
 	start := time.Now()
 
+	// #nosec G204 - threshold是内部配置值（非用户输入），用于复杂度分析
 	cmd := exec.Command("gocyclo", "-over", strconv.Itoa(gc.threshold), ".")
 	cmd.Dir = projectPath
 	output, _ := cmd.CombinedOutput()
@@ -1133,6 +1138,7 @@ func countBySeverity(issues []CodeIssue, severity string) int {
 
 // checkGofmt 检查代码格式化
 func (cqe *CodeQualityEvaluator) checkGofmt() int {
+	// #nosec G204 - 固定命令，无用户输入，用于代码格式检查
 	cmd := exec.Command("gofmt", "-l", ".")
 	cmd.Dir = cqe.results.ProjectPath
 	output, err := cmd.Output()
@@ -1422,7 +1428,10 @@ func (cqe *CodeQualityEvaluator) saveResults() error {
 		return fmt.Errorf("序列化结果失败: %v", err)
 	}
 
-	if err := os.WriteFile(cqe.config.ResultsPath, data, 0644); err != nil {
+	if err := security.SecureWriteFile(cqe.config.ResultsPath, data, &security.SecureFileOptions{
+		Mode:      security.GetRecommendedMode("data"),
+		CreateDir: true,
+	}); err != nil {
 		return fmt.Errorf("保存结果文件失败: %v", err)
 	}
 

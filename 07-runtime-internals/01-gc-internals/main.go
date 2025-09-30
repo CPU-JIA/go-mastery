@@ -676,6 +676,9 @@ func NewFinalizableObject(id int, resourceName string) *FinalizableObject {
 	obj := &FinalizableObject{
 		ID: id,
 		Resource: &ExternalResource{
+			// #nosec G103 - 教学演示：展示终结器和外部资源管理
+			// 这里使用unsafe.Pointer模拟外部资源句柄（如文件描述符、数据库连接等）
+			// 在实际生产代码中，外部句柄应由系统API返回
 			Handle: uintptr(unsafe.Pointer(&id)), // 模拟外部句柄
 			Name:   resourceName,
 		},

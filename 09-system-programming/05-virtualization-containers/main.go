@@ -39,6 +39,8 @@ import (
 	"sync/atomic"
 	"syscall"
 	"time"
+
+	"go-mastery/common/security"
 )
 
 // 安全随机数生成函数
@@ -632,12 +634,14 @@ func (cr *ContainerRuntime) startContainerProcess(container *Container) (*Contai
 			return nil, fmt.Errorf("无效的容器入口点: %v", err)
 		}
 		args := append(container.Config.Entrypoint, container.Config.Cmd...)
+		// #nosec G204 - 命令已通过validateExecutablePath白名单验证
 		cmd = exec.Command(args[0], args[1:]...)
 	} else if len(container.Config.Cmd) > 0 {
 		// G204安全修复：验证可执行文件路径
 		if err := validateExecutablePath(container.Config.Cmd[0]); err != nil {
 			return nil, fmt.Errorf("无效的容器命令: %v", err)
 		}
+		// #nosec G204 - 命令已通过validateExecutablePath白名单验证
 		cmd = exec.Command(container.Config.Cmd[0], container.Config.Cmd[1:]...)
 	} else {
 		return nil, fmt.Errorf("no command specified")
@@ -975,16 +979,22 @@ func (cm *CgroupManager) DestroyCgroup(cgroup *Cgroup) error {
 func (cm *CgroupManager) AddProcess(cgroup *Cgroup, pid int) error {
 	cgroup.Processes = append(cgroup.Processes, pid)
 
-	// 将进程ID写入cgroup.procs文件
+	// 将进程ID写入cgroup.procs文件（cgroup系统接口）
 	procsFile := filepath.Join(cgroup.Path, "cgroup.procs")
-	return os.WriteFile(procsFile, []byte(strconv.Itoa(pid)), 0644)
+	return security.SecureWriteFile(procsFile, []byte(strconv.Itoa(pid)), &security.SecureFileOptions{
+		Mode:      security.DefaultFileMode,
+		CreateDir: false,
+	})
 }
 
 func (cm *CgroupManager) SetMemoryLimit(cgroup *Cgroup, limit int64) error {
 	cgroup.Limits["memory"] = limit
 
 	limitFile := filepath.Join(cgroup.Path, "memory.max")
-	return os.WriteFile(limitFile, []byte(strconv.FormatInt(limit, 10)), 0644)
+	return security.SecureWriteFile(limitFile, []byte(strconv.FormatInt(limit, 10)), &security.SecureFileOptions{
+		Mode:      security.DefaultFileMode,
+		CreateDir: false,
+	})
 }
 
 func (cm *CgroupManager) SetCPUQuota(cgroup *Cgroup, quota int64, period int64) error {
@@ -993,7 +1003,10 @@ func (cm *CgroupManager) SetCPUQuota(cgroup *Cgroup, quota int64, period int64) 
 
 	quotaFile := filepath.Join(cgroup.Path, "cpu.max")
 	quotaValue := fmt.Sprintf("%d %d", quota, period)
-	return os.WriteFile(quotaFile, []byte(quotaValue), 0644)
+	return security.SecureWriteFile(quotaFile, []byte(quotaValue), &security.SecureFileOptions{
+		Mode:      security.DefaultFileMode,
+		CreateDir: false,
+	})
 }
 
 func (cm *CgroupManager) GetStats(cgroup *Cgroup) (map[string]interface{}, error) {
@@ -1068,7 +1081,10 @@ func (cm *CgroupManager) removeAllProcesses(cgroup *Cgroup) error {
 
 func (cm *CgroupManager) moveProcessToRoot(subsystem string, pid int) error {
 	rootProcsFile := filepath.Join(cm.mountPoint, subsystem, "cgroup.procs")
-	return os.WriteFile(rootProcsFile, []byte(strconv.Itoa(pid)), 0644)
+	return security.SecureWriteFile(rootProcsFile, []byte(strconv.Itoa(pid)), &security.SecureFileOptions{
+		Mode:      security.DefaultFileMode,
+		CreateDir: false,
+	})
 }
 
 // ==================
@@ -1278,7 +1294,10 @@ func (od *OverlayFSDriver) CreateLayer(id string, parent string) (*Layer, error)
 	// 创建链接文件
 	linkFile := filepath.Join(layerDir, "link")
 	linkName := generateShortID()
-	if err := os.WriteFile(linkFile, []byte(linkName), 0644); err != nil {
+	if err := security.SecureWriteFile(linkFile, []byte(linkName), &security.SecureFileOptions{
+		Mode:      security.DefaultFileMode,
+		CreateDir: false,
+	}); err != nil {
 		return nil, err
 	}
 
@@ -1573,18 +1592,21 @@ func (bd *BridgeDriver) createBridge(bridge *NetworkBridge) error {
 	}
 
 	// 创建网桥接口
+	// #nosec G204 - bridge.Name已通过validateNetworkName验证，固定命令用于网络配置
 	cmd := exec.Command("ip", "link", "add", bridge.Name, "type", "bridge")
 	if err := cmd.Run(); err != nil {
 		return fmt.Errorf("failed to create bridge: %v", err)
 	}
 
 	// 设置网桥IP地址
+	// #nosec G204 - bridge.IPAddress已通过validateIPAddress验证，固定命令用于网络配置
 	cmd = exec.Command("ip", "addr", "add", bridge.IPAddress+"/24", "dev", bridge.Name)
 	if err := cmd.Run(); err != nil {
 		return fmt.Errorf("failed to set bridge IP: %v", err)
 	}
 
 	// 启用网桥接口
+	// #nosec G204 - bridge.Name已验证，固定命令用于网络配置
 	cmd = exec.Command("ip", "link", "set", bridge.Name, "up")
 	if err := cmd.Run(); err != nil {
 		return fmt.Errorf("failed to enable bridge: %v", err)
@@ -1607,18 +1629,21 @@ func (bd *BridgeDriver) CreateEndpoint(networkID, containerID string) (*Endpoint
 	vethContainer := fmt.Sprintf("eth0")
 
 	// 创建veth pair
+	// #nosec G204 - vethHost和vethContainer是内部生成的安全标识符，固定命令用于网络配置
 	cmd := exec.Command("ip", "link", "add", vethHost, "type", "veth", "peer", "name", vethContainer)
 	if err := cmd.Run(); err != nil {
 		return nil, fmt.Errorf("failed to create veth pair: %v", err)
 	}
 
 	// 将host端连接到网桥
+	// #nosec G204 - vethHost和bridge.Name都是内部生成的安全值，固定命令用于网络配置
 	cmd = exec.Command("ip", "link", "set", vethHost, "master", bridge.Name)
 	if err := cmd.Run(); err != nil {
 		return nil, fmt.Errorf("failed to attach veth to bridge: %v", err)
 	}
 
 	// 启用host端接口
+	// #nosec G204 - vethHost是内部生成的安全标识符，固定命令用于网络配置
 	cmd = exec.Command("ip", "link", "set", vethHost, "up")
 	if err := cmd.Run(); err != nil {
 		return nil, fmt.Errorf("failed to enable veth host: %v", err)
@@ -1661,6 +1686,7 @@ func (bd *BridgeDriver) DeleteEndpoint(networkID, containerID string) error {
 	vethHost := fmt.Sprintf("veth%s", containerID[:7])
 
 	// 删除veth接口
+	// #nosec G204 - vethHost是内部生成的安全标识符，固定命令用于网络清理
 	cmd := exec.Command("ip", "link", "delete", vethHost)
 	if err := cmd.Run(); err != nil {
 		return fmt.Errorf("failed to delete veth: %v", err)
@@ -1680,6 +1706,7 @@ func (bd *BridgeDriver) DeleteNetwork(networkID string) error {
 	}
 
 	// 删除网桥
+	// #nosec G204 - bridge.Name是内部管理的网桥名称，固定命令用于网络清理
 	cmd := exec.Command("ip", "link", "delete", bridge.Name)
 	if err := cmd.Run(); err != nil {
 		return fmt.Errorf("failed to delete bridge: %v", err)

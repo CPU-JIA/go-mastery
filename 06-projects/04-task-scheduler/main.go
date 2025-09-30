@@ -29,6 +29,8 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"go-mastery/common/security"
 )
 
 // ====================
@@ -874,7 +876,10 @@ func (s *Storage) SaveTasks(tasks map[string]*Task) error {
 		return err
 	}
 
-	return os.WriteFile(filepath.Join(s.dataDir, "tasks.json"), data, 0644)
+	return security.SecureWriteFile(filepath.Join(s.dataDir, "tasks.json"), data, &security.SecureFileOptions{
+		Mode:      security.GetRecommendedMode("data"),
+		CreateDir: true,
+	})
 }
 
 func (s *Storage) LoadTasks() (map[string]*Task, error) {
@@ -916,7 +921,10 @@ func (s *Storage) SaveExecutions(executions []TaskExecution) error {
 		return err
 	}
 
-	return os.WriteFile(filepath.Join(s.dataDir, "executions.json"), data, 0644)
+	return security.SecureWriteFile(filepath.Join(s.dataDir, "executions.json"), data, &security.SecureFileOptions{
+		Mode:      security.GetRecommendedMode("data"),
+		CreateDir: true,
+	})
 }
 
 func (s *Storage) LoadExecutions() ([]TaskExecution, error) {

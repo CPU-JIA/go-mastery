@@ -39,6 +39,8 @@ import (
 	"sync"
 	"sync/atomic"
 	"time"
+
+	"go-mastery/common/security"
 )
 
 // 安全随机数生成函数
@@ -2686,7 +2688,11 @@ func demonstratePerformanceTestingFramework() {
 	} else {
 		// 保存报告到文件
 		reportPath := fmt.Sprintf("performance_report_%s.html", time.Now().Format("20060102_150405"))
-		if err := os.WriteFile(reportPath, htmlReport, 0644); err != nil {
+		// G301/G306安全修复：使用安全权限写入报告文件
+		if err := security.SecureWriteFile(reportPath, htmlReport, &security.SecureFileOptions{
+			Mode:      security.GetRecommendedMode("data"),
+			CreateDir: false,
+		}); err != nil {
 			fmt.Printf("保存报告失败: %v\n", err)
 		} else {
 			fmt.Printf("性能报告已保存: %s\n", reportPath)

@@ -44,6 +44,8 @@ import (
 	"time"
 
 	_ "image/gif"
+
+	"go-mastery/common/security"
 )
 
 // ====================
@@ -191,7 +193,10 @@ func (s *Storage) saveData() {
 
 	// 保存文件信息
 	if data, err := json.MarshalIndent(s.files, "", "  "); err == nil {
-		os.WriteFile(filepath.Join(s.baseDir, "files.json"), data, 0644)
+		security.SecureWriteFile(filepath.Join(s.baseDir, "files.json"), data, &security.SecureFileOptions{
+			Mode:      security.GetRecommendedMode("data"),
+			CreateDir: true,
+		})
 	}
 
 	// 保存访问日志 (只保留最近1000条)
@@ -200,7 +205,10 @@ func (s *Storage) saveData() {
 		logs = logs[len(logs)-1000:]
 	}
 	if data, err := json.MarshalIndent(logs, "", "  "); err == nil {
-		os.WriteFile(filepath.Join(s.baseDir, "access_logs.json"), data, 0644)
+		security.SecureWriteFile(filepath.Join(s.baseDir, "access_logs.json"), data, &security.SecureFileOptions{
+			Mode:      security.GetRecommendedMode("data"),
+			CreateDir: true,
+		})
 	}
 }
 
@@ -606,7 +614,7 @@ func (fp *FileProcessor) ProcessUpload(header *multipart.FileHeader, file multip
 }
 
 func (fp *FileProcessor) saveFile(src io.Reader, filePath string, encrypt bool) error {
-	dst, err := os.Create(filePath)
+	dst, err := security.SecureCreateFile(filePath, security.DefaultFileMode)
 	if err != nil {
 		return err
 	}
@@ -776,7 +784,7 @@ func (fp *FileProcessor) generateThumbnail(img image.Image, fileID, sizeName str
 	thumbFileName := fmt.Sprintf("%s_%s.jpg", fileID, sizeName)
 	thumbPath := filepath.Join(fp.storage.thumbsDir, thumbFileName)
 
-	thumbFile, err := os.Create(thumbPath)
+	thumbFile, err := security.SecureCreateFile(thumbPath, security.DefaultFileMode)
 	if err != nil {
 		return "", nil, err
 	}
@@ -823,7 +831,7 @@ func (fp *FileProcessor) resizeImage(img image.Image, width, height int) image.I
 }
 
 func (fp *FileProcessor) CompressFiles(fileIDs []string, outputPath string) error {
-	zipFile, err := os.Create(outputPath)
+	zipFile, err := security.SecureCreateFile(outputPath, security.DefaultFileMode)
 	if err != nil {
 		return err
 	}

@@ -29,6 +29,8 @@ import (
 	"time"
 
 	"github.com/gorilla/websocket"
+
+	"go-mastery/common/security"
 )
 
 // ====================
@@ -185,17 +187,26 @@ func (s *Storage) saveData() {
 
 	// 保存用户数据
 	if data, err := json.MarshalIndent(s.users, "", "  "); err == nil {
-		os.WriteFile(filepath.Join(s.dataDir, "users.json"), data, 0644)
+		security.SecureWriteFile(filepath.Join(s.dataDir, "users.json"), data, &security.SecureFileOptions{
+			Mode:      security.GetRecommendedMode("data"),
+			CreateDir: true,
+		})
 	}
 
 	// 保存房间数据
 	if data, err := json.MarshalIndent(s.rooms, "", "  "); err == nil {
-		os.WriteFile(filepath.Join(s.dataDir, "rooms.json"), data, 0644)
+		security.SecureWriteFile(filepath.Join(s.dataDir, "rooms.json"), data, &security.SecureFileOptions{
+			Mode:      security.GetRecommendedMode("data"),
+			CreateDir: true,
+		})
 	}
 
 	// 保存消息数据
 	if data, err := json.MarshalIndent(s.messages, "", "  "); err == nil {
-		os.WriteFile(filepath.Join(s.dataDir, "messages.json"), data, 0644)
+		security.SecureWriteFile(filepath.Join(s.dataDir, "messages.json"), data, &security.SecureFileOptions{
+			Mode:      security.GetRecommendedMode("data"),
+			CreateDir: true,
+		})
 	}
 }
 
@@ -892,35 +903,28 @@ func (s *ChatServer) handleUsersAPI(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *ChatServer) handleStaticFiles(w http.ResponseWriter, r *http.Request) {
-	// Remove the /static/ prefix and serve the file
-	filePath := strings.TrimPrefix(r.URL.Path, "/static/")
+	// 从URL路径获取用户请求的文件名
+	userPath := strings.TrimPrefix(r.URL.Path, "/static/")
 
-	// 安全修复：防止路径遍历攻击
-	// 清理路径并确保不能访问上级目录
-	filePath = filepath.Clean(filePath)
-	if strings.Contains(filePath, "..") || strings.HasPrefix(filePath, "/") {
+	// G304安全修复：使用security.GetSafePath防止路径遍历攻击
+	fullPath, err := security.GetSafePath("static", userPath)
+	if err != nil {
+		log.Printf("路径验证失败 [%s]: %v", userPath, err)
 		http.Error(w, "Invalid file path", http.StatusBadRequest)
 		return
 	}
 
 	// Determine content type based on file extension
 	var contentType string
-	if strings.HasSuffix(filePath, ".css") {
+	if strings.HasSuffix(fullPath, ".css") {
 		contentType = "text/css"
-	} else if strings.HasSuffix(filePath, ".js") {
+	} else if strings.HasSuffix(fullPath, ".js") {
 		contentType = "application/javascript"
 	} else {
 		contentType = "application/octet-stream"
 	}
 
 	// Try to read the file
-	fullPath := filepath.Join("static", filePath)
-	// 二次安全检查：确保最终路径在static目录内
-	if !strings.HasPrefix(filepath.Clean(fullPath), "static"+string(filepath.Separator)) && fullPath != "static" {
-		http.Error(w, "Access denied", http.StatusForbidden)
-		return
-	}
-
 	if data, err := os.ReadFile(fullPath); err == nil {
 		w.Header().Set("Content-Type", contentType)
 		w.Write(data)

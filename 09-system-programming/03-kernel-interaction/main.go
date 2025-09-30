@@ -955,6 +955,9 @@ func (kmm *KernelMemoryManager) CreateMemoryPool(name string, objectSize int, in
 
 	// 预分配对象
 	for i := 0; i < initialCount; i++ {
+		// #nosec G103 - 教学演示：模拟内核内存池对象分配
+		// 在真实的内核内存管理中，对象地址由内核分配器返回
+		// 这里使用unsafe.Pointer模拟内存地址，仅用于演示内存池的工作原理
 		obj := PoolObject{
 			Address:   uintptr(unsafe.Pointer(&[1]byte{})),
 			Index:     i,
@@ -1770,6 +1773,10 @@ func (keb *KernelEventBuffer) GetEvents(count int) []*KernelEvent {
 }
 
 func (ka *KernelAllocator) Allocate(size uintptr, allocType AllocationType, flags AllocationFlags) (uintptr, error) {
+	// #nosec G103 - 教学演示：模拟内核级别的内存分配
+	// 在真实的内核中，内存分配通过buddy allocator、slab allocator等系统机制完成
+	// 这里演示了内核如何跟踪分配的内存地址和元数据
+	// 实际内核分配会使用物理地址，这里用Go slice模拟
 	// 简化的分配实现
 	slice := make([]byte, size)
 	ptr := unsafe.Pointer(&slice[0])

@@ -38,6 +38,8 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"go-mastery/common/security"
 )
 
 // 安全随机数生成函数
@@ -339,7 +341,8 @@ func (cp *CPUProfiler) StartProfile() error {
 		return fmt.Errorf("CPU profiling already running")
 	}
 
-	file, err := os.Create(cp.profileFile)
+	// G301安全修复：使用安全的文件权限创建profile文件
+	file, err := security.SecureCreateFile(cp.profileFile, security.GetRecommendedMode("temp"))
 	if err != nil {
 		return fmt.Errorf("failed to create CPU profile file: %v", err)
 	}
@@ -418,7 +421,8 @@ func (mp *MemoryProfiler) WriteProfile() error {
 		runtime.GC() // 强制GC以获得准确的内存使用情况
 	}
 
-	file, err := os.Create(mp.profileFile)
+	// G301安全修复：使用安全的文件权限创建profile文件
+	file, err := security.SecureCreateFile(mp.profileFile, security.GetRecommendedMode("temp"))
 	if err != nil {
 		return fmt.Errorf("failed to create memory profile file: %v", err)
 	}
@@ -444,7 +448,8 @@ func (mp *MemoryProfiler) WriteProfile() error {
 }
 
 func (mp *MemoryProfiler) WriteAllocProfile() error {
-	file, err := os.Create(mp.profileFile + ".alloc")
+	// G301安全修复：使用安全的文件权限创建profile文件
+	file, err := security.SecureCreateFile(mp.profileFile+".alloc", security.GetRecommendedMode("temp"))
 	if err != nil {
 		return fmt.Errorf("failed to create alloc profile file: %v", err)
 	}
@@ -508,7 +513,8 @@ func (bp *BlockProfiler) WriteProfile() error {
 		return fmt.Errorf("block profiling not enabled")
 	}
 
-	file, err := os.Create(bp.profileFile)
+	// G301安全修复：使用安全的文件权限创建profile文件
+	file, err := security.SecureCreateFile(bp.profileFile, security.GetRecommendedMode("temp"))
 	if err != nil {
 		return fmt.Errorf("failed to create block profile file: %v", err)
 	}
@@ -575,7 +581,8 @@ func (mp *MutexProfiler) WriteProfile() error {
 		return fmt.Errorf("mutex profiling not enabled")
 	}
 
-	file, err := os.Create(mp.profileFile)
+	// G301安全修复：使用安全的文件权限创建profile文件
+	file, err := security.SecureCreateFile(mp.profileFile, security.GetRecommendedMode("temp"))
 	if err != nil {
 		return fmt.Errorf("failed to create mutex profile file: %v", err)
 	}
@@ -621,7 +628,8 @@ func NewGoroutineProfiler(profileFile string) *GoroutineProfiler {
 }
 
 func (gp *GoroutineProfiler) WriteProfile() error {
-	file, err := os.Create(gp.profileFile)
+	// G301安全修复：使用安全的文件权限创建profile文件
+	file, err := security.SecureCreateFile(gp.profileFile, security.GetRecommendedMode("temp"))
 	if err != nil {
 		return fmt.Errorf("failed to create goroutine profile file: %v", err)
 	}
@@ -723,7 +731,8 @@ func (et *ExecutionTracer) StartTrace() error {
 		return fmt.Errorf("execution tracing already running")
 	}
 
-	file, err := os.Create(et.traceFile)
+	// G301安全修复：使用安全的文件权限创建trace文件
+	file, err := security.SecureCreateFile(et.traceFile, security.GetRecommendedMode("temp"))
 	if err != nil {
 		return fmt.Errorf("failed to create trace file: %v", err)
 	}

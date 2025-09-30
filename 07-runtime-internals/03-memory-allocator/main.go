@@ -482,6 +482,9 @@ func (ma *MemoryAllocator) allocateLargeObject(size int) unsafe.Pointer {
 	ma.heap.mutex.Lock()
 	defer ma.heap.mutex.Unlock()
 
+	// #nosec G103 - 教学演示：模拟Go内存分配器的大对象分配
+	// 在真实的Go runtime中，大对象通过系统调用（如mmap）直接分配
+	// 这里使用unsafe.Pointer获取Go slice的底层内存地址来模拟系统内存
 	// 创建底层内存并保持引用
 	backingMem := make([]byte, size)
 	memPtr := unsafe.Pointer(&backingMem[0])
@@ -589,6 +592,9 @@ func (ma *MemoryAllocator) splitSpan(span *MockSpan, pages int) *MockSpan {
 }
 
 func (ma *MemoryAllocator) createNewSpan(sizeClass int, classInfo SizeClassInfo) *MockSpan {
+	// #nosec G103 - 教学演示：模拟Go内存分配器的span创建过程
+	// 在真实的Go runtime中，span内存通过arena分配器从操作系统获取
+	// 这里演示了span如何管理原始内存地址
 	// 为演示目的创建实际的backing memory
 	// 在真实的Go运行时中，这里会调用系统分配函数
 	memSize := classInfo.Pages * ma.heap.PageSize
@@ -630,6 +636,9 @@ func (ma *MemoryAllocator) allocateFromSpan(span *MockSpan) unsafe.Pointer {
 			span.AllocBits[span.FreeIndex] = true
 			span.AllocCount++
 
+			// #nosec G103 - 教学演示：展示Go内存分配器如何从span中分配对象
+			// 在真实的Go runtime中，分配器通过计算偏移量来定位空闲对象
+			// 这里演示了安全的指针算术：先转换为slice索引，再获取指针
 			// SAFETY: 在真实实现中需要确保指针算术的安全性
 			// 这里为了演示目的，我们检查backingMemory是否存在
 			if span.backingMemory != nil {
@@ -762,6 +771,9 @@ func (ad *AlignmentDemo) demonstrateAlignment() {
 		ptr unsafe.Pointer
 	)
 
+	// #nosec G103 - 教学演示：展示Go类型系统的内存对齐规则
+	// unsafe.Sizeof和unsafe.Alignof用于查询类型的内存布局信息
+	// 这些信息对于理解内存分配器的行为和优化结构体布局至关重要
 	fmt.Printf("基本类型对齐:\n")
 	fmt.Printf("  bool:    %d字节, 对齐: %d\n", unsafe.Sizeof(b), unsafe.Alignof(b))
 	fmt.Printf("  int8:    %d字节, 对齐: %d\n", unsafe.Sizeof(i8), unsafe.Alignof(i8))
@@ -791,6 +803,9 @@ func (ad *AlignmentDemo) demonstrateAlignment() {
 	var bad BadStruct
 	var good GoodStruct
 
+	// #nosec G103 - 教学演示：展示结构体字段对齐和内存布局优化
+	// unsafe.Sizeof和unsafe.Offsetof用于分析结构体的内存布局
+	// 这对于性能优化（减少缓存未命中）和内存节省非常重要
 	fmt.Printf("\n结构体对齐:\n")
 	fmt.Printf("  BadStruct:  %d字节 (内存浪费)\n", unsafe.Sizeof(bad))
 	fmt.Printf("  GoodStruct: %d字节 (优化对齐)\n", unsafe.Sizeof(good))

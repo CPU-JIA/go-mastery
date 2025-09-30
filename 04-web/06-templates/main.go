@@ -15,6 +15,7 @@ import (
 	"time"
 
 	"github.com/gorilla/mux"
+	"go-mastery/common/security"
 )
 
 /*
@@ -282,15 +283,16 @@ func NewStaticFileServer(basePath string) *StaticFileServer {
 }
 
 func (sfs *StaticFileServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	// 安全检查：防止目录遍历攻击
-	requestedPath := r.URL.Path
-	if strings.Contains(requestedPath, "..") {
+	// 从URL路径获取用户请求的文件名
+	requestedPath := strings.TrimPrefix(r.URL.Path, "/static/")
+
+	// G304安全修复：使用security.GetSafePath防止路径遍历攻击
+	filePath, err := security.GetSafePath(sfs.basePath, requestedPath)
+	if err != nil {
+		log.Printf("路径验证失败 [%s]: %v", requestedPath, err)
 		http.Error(w, "禁止访问", http.StatusForbidden)
 		return
 	}
-
-	// 构建文件路径
-	filePath := filepath.Join(sfs.basePath, strings.TrimPrefix(requestedPath, "/static/"))
 
 	// 检查文件是否存在
 	fileInfo, err := os.Stat(filePath)
@@ -587,7 +589,11 @@ func (app *WebApp) createTemplateFiles() {
 
 	for path, content := range templates {
 		if _, err := os.Stat(path); os.IsNotExist(err) {
-			if err := os.WriteFile(path, []byte(content), 0644); err != nil {
+			// G301/G306安全修复：使用安全权限写入文件
+			if err := security.SecureWriteFile(path, []byte(content), &security.SecureFileOptions{
+				Mode:      security.GetRecommendedMode("data"),
+				CreateDir: true,
+			}); err != nil {
 				log.Printf("创建模板文件 %s 失败: %v", path, err)
 			}
 		}
@@ -678,7 +684,11 @@ function timeAgo(dateString) {
 
 	for path, content := range staticFiles {
 		if _, err := os.Stat(path); os.IsNotExist(err) {
-			if err := os.WriteFile(path, []byte(content), 0644); err != nil {
+			// G301/G306安全修复：使用安全权限写入文件
+			if err := security.SecureWriteFile(path, []byte(content), &security.SecureFileOptions{
+				Mode:      security.GetRecommendedMode("data"),
+				CreateDir: true,
+			}); err != nil {
 				log.Printf("创建静态文件 %s 失败: %v", path, err)
 			}
 		}
@@ -770,7 +780,8 @@ func (app *WebApp) HandleFileUpload(w http.ResponseWriter, r *http.Request) {
 	filename := fmt.Sprintf("%d_%s", time.Now().Unix(), header.Filename)
 	filepath := filepath.Join(uploadDir, filename)
 
-	dst, err := os.Create(filepath)
+	// G301/G306安全修复：使用安全权限创建文件
+	dst, err := security.SecureCreateFile(filepath, security.DefaultFileMode)
 	if err != nil {
 		http.Error(w, "创建文件失败", http.StatusInternalServerError)
 		return

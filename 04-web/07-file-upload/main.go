@@ -20,6 +20,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/nfnt/resize"
+	"go-mastery/common/security"
 )
 
 /*
@@ -156,7 +157,8 @@ func (ls *LocalStorage) Save(filename string, data io.Reader) error {
 		return err
 	}
 
-	file, err := os.Create(fullPath)
+	// G301/G306安全修复：使用安全权限创建文件
+	file, err := security.SecureCreateFile(fullPath, security.DefaultFileMode)
 	if err != nil {
 		return err
 	}
@@ -510,7 +512,8 @@ func (fh *FileHandler) processImage(file multipart.File, filename, mimeType stri
 		thumbPath := filepath.Join(sizeName, thumbFilename)
 
 		// 保存缩略图
-		thumbFile, err := os.Create(filepath.Join(fh.config.UploadDir, thumbPath))
+		// G301/G306安全修复：使用安全权限创建文件
+		thumbFile, err := security.SecureCreateFile(filepath.Join(fh.config.UploadDir, thumbPath), security.DefaultFileMode)
 		if err != nil {
 			return err
 		}
@@ -608,7 +611,8 @@ func (fh *FileHandler) HandleChunkUpload(w http.ResponseWriter, r *http.Request)
 
 	// 保存文件块
 	chunkPath := filepath.Join(fh.config.UploadDir, "chunks", chunkID, fmt.Sprintf("chunk_%d", chunkIndex))
-	chunkFile, err := os.Create(chunkPath)
+	// G301/G306安全修复：使用安全权限创建文件
+	chunkFile, err := security.SecureCreateFile(chunkPath, security.DefaultFileMode)
 	if err != nil {
 		http.Error(w, "创建文件块失败", http.StatusInternalServerError)
 		return
@@ -652,7 +656,8 @@ func (fh *FileHandler) HandleChunkUploadComplete(w http.ResponseWriter, r *http.
 	finalPath := filepath.Join(fh.config.UploadDir, finalFilename)
 
 	// 创建最终文件
-	finalFile, err := os.Create(finalPath)
+	// G301/G306安全修复：使用安全权限创建文件
+	finalFile, err := security.SecureCreateFile(finalPath, security.DefaultFileMode)
 	if err != nil {
 		http.Error(w, "创建最终文件失败", http.StatusInternalServerError)
 		return

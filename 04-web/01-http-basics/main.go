@@ -14,6 +14,8 @@ import (
 	"regexp"
 	"strings"
 	"time"
+
+	"go-mastery/common/security"
 )
 
 // =============================================================================
@@ -553,7 +555,10 @@ func demonstrateFileServer() {
 </body>
 </html>`
 
-	err = os.WriteFile("./static/index.html", []byte(htmlContent), 0644)
+	err = security.SecureWriteFile("./static/index.html", []byte(htmlContent), &security.SecureFileOptions{
+		Mode:      security.GetRecommendedMode("data"),
+		CreateDir: true,
+	})
 	if err != nil {
 		fmt.Printf("创建HTML文件失败: %v\n", err)
 		return
@@ -561,7 +566,10 @@ func demonstrateFileServer() {
 
 	// 创建示例文本文件
 	textContent := "这是一个文本文件示例。\n可以通过HTTP访问。"
-	err = os.WriteFile("./static/example.txt", []byte(textContent), 0644)
+	err = security.SecureWriteFile("./static/example.txt", []byte(textContent), &security.SecureFileOptions{
+		Mode:      security.GetRecommendedMode("data"),
+		CreateDir: true,
+	})
 	if err != nil {
 		fmt.Printf("创建文本文件失败: %v\n", err)
 		return

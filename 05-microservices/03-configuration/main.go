@@ -22,6 +22,8 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/gorilla/websocket"
 	"gopkg.in/yaml.v3"
+
+	"go-mastery/common/security"
 )
 
 /*
@@ -974,7 +976,10 @@ func (f *FileConfigurationSource) Save(config *Configuration) error {
 		return err
 	}
 
-	return os.WriteFile(filename, data, 0644)
+	return security.SecureWriteFile(filename, data, &security.SecureFileOptions{
+		Mode:      security.GetRecommendedMode("configuration"),
+		CreateDir: true,
+	})
 }
 
 func (f *FileConfigurationSource) Watch(app, env string) (<-chan *Configuration, error) {

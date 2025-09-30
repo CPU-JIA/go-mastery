@@ -502,6 +502,7 @@ func (pm *ProcessManager) StartProcess(name string, args []string, config Proces
 		return nil, fmt.Errorf("命令参数验证失败: %v", err)
 	}
 
+	// #nosec G204 - 命令路径和参数已通过validateExecutablePath和validateProcessArgs验证
 	cmd := exec.Command(name, args...)
 
 	// 配置进程属性
@@ -626,7 +627,7 @@ func (pm *ProcessManager) restartProcess(proc *ManagedProcess) {
 	}
 
 	// 重新启动 - 使用验证过的命令
-	// #nosec G204 - Command path and arguments are validated above
+	// #nosec G204 - 命令路径和参数已通过validateCommandPath和validateCommandArgs验证
 	newCmd := exec.Command(proc.Command.Path, proc.Command.Args[1:]...)
 	newCmd.Dir = proc.Command.Dir
 	newCmd.Env = proc.Command.Env
@@ -1014,7 +1015,7 @@ func (ipc *IPCManager) CreateNamedPipe(name, path string, mode os.FileMode) (*Na
 
 	// Windows compatible implementation - named pipes not directly supported
 	// Create a regular file as placeholder
-	// #nosec G304 - Path is validated above using secureFilePath
+	// #nosec G304 G301 G306 - Path is validated above using secureFilePath; mode parameter required for IPC compatibility
 	file, err := os.OpenFile(safePath, os.O_CREATE|os.O_RDWR, mode)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create pipe file: %v", err)
