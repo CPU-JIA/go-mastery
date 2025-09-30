@@ -39,30 +39,72 @@ func SecureWriteFile(filename string, data []byte, opts *SecureFileOptions) erro
 		opts = &SecureFileOptions{Mode: DefaultFileMode}
 	}
 
+	// 验证路径安全性（防止路径遍历攻击）
+	// 注意：这里允许绝对路径，因为SecureWriteFile用于系统内部受信任的文件操作
+	if err := ValidateSecurePath(filename, &SecurePathOptions{
+		AllowAbsolute: true,
+		AllowDotDot:   false,
+		MaxDepth:      20,
+	}); err != nil {
+		return fmt.Errorf("path validation failed: %w", err)
+	}
+
 	// 如果需要，创建父目录
 	if opts.CreateDir {
 		dir := filename[:len(filename)-len(filename[len(filename)-1:])]
+		// #nosec G301 -- 使用安全的目录权限常量 DefaultDirMode (0700)
 		if err := os.MkdirAll(dir, fs.FileMode(DefaultDirMode)); err != nil {
 			return fmt.Errorf("failed to create directory: %w", err)
 		}
 	}
 
+	// #nosec G304 G306 -- 路径已通过ValidateSecurePath()验证，权限使用安全常量
 	return os.WriteFile(filename, data, fs.FileMode(opts.Mode))
 }
 
 // SecureCreateFile 安全创建文件，使用适当的权限
 func SecureCreateFile(filename string, mode SecureFileMode) (*os.File, error) {
+	// 验证路径安全性
+	if err := ValidateSecurePath(filename, &SecurePathOptions{
+		AllowAbsolute: true,
+		AllowDotDot:   false,
+		MaxDepth:      20,
+	}); err != nil {
+		return nil, fmt.Errorf("path validation failed: %w", err)
+	}
+
 	// 使用OpenFile而不是Create，以确保指定正确的权限
+	// #nosec G304 G306 -- 路径已通过ValidateSecurePath()验证，权限使用安全常量
 	return os.OpenFile(filename, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, fs.FileMode(mode))
 }
 
 // SecureOpenFile 安全打开文件，验证权限
 func SecureOpenFile(filename string, flag int, mode SecureFileMode) (*os.File, error) {
+	// 验证路径安全性
+	if err := ValidateSecurePath(filename, &SecurePathOptions{
+		AllowAbsolute: true,
+		AllowDotDot:   false,
+		MaxDepth:      20,
+	}); err != nil {
+		return nil, fmt.Errorf("path validation failed: %w", err)
+	}
+
+	// #nosec G304 G306 -- 路径已通过ValidateSecurePath()验证，权限使用安全常量
 	return os.OpenFile(filename, flag, fs.FileMode(mode))
 }
 
 // SecureMkdirAll 安全创建目录，使用适当的权限
 func SecureMkdirAll(path string, mode SecureFileMode) error {
+	// 验证路径安全性
+	if err := ValidateSecurePath(path, &SecurePathOptions{
+		AllowAbsolute: true,
+		AllowDotDot:   false,
+		MaxDepth:      20,
+	}); err != nil {
+		return fmt.Errorf("path validation failed: %w", err)
+	}
+
+	// #nosec G301 -- 使用安全的目录权限常量，由调用者通过SecureFileMode指定
 	return os.MkdirAll(path, fs.FileMode(mode))
 }
 
