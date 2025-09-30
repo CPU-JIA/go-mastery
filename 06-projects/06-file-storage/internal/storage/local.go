@@ -5,7 +5,6 @@ import (
 	"io"
 	"os"
 	"path/filepath"
-	"strings"
 	"fmt"
 	"time"
 
@@ -69,6 +68,7 @@ func (ls *LocalStorage) Get(ctx context.Context, path string) (io.ReadCloser, er
 		return nil, fmt.Errorf("invalid file path: %w", err)
 	}
 
+	// #nosec G304 -- 路径已通过security.GetSafePath()验证，确保在basePath范围内
 	file, err := os.Open(fullPath)
 	if err != nil {
 		return nil, fmt.Errorf("failed to open file: %w", err)

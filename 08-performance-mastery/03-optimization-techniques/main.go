@@ -1270,6 +1270,7 @@ func (io *IOOptimizer) benchmarkRead(filename string, size int, batch bool) {
 
 	if batch {
 		// 批量读取
+		// #nosec G304 -- filename是系统在基准测试中创建的临时文件，非用户输入，安全可控
 		file, err := os.Open(filename)
 		if err != nil {
 			fmt.Printf("  批量读取失败: %v\n", err)
@@ -1289,6 +1290,7 @@ func (io *IOOptimizer) benchmarkRead(filename string, size int, batch bool) {
 		fmt.Printf("  批量读取: %v, %.2f MB/s\n", elapsed, throughput)
 	} else {
 		// 单次读取
+		// #nosec G304 -- filename是系统在基准测试中创建的临时文件，非用户输入，安全可控
 		file, err := os.Open(filename)
 		if err != nil {
 			fmt.Printf("  单次读取失败: %v\n", err)

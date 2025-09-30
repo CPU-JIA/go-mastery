@@ -653,6 +653,7 @@ func (fp *FileProcessor) encryptAndSave(src io.Reader, dst io.Writer) error {
 }
 
 func (fp *FileProcessor) decryptFile(filePath string) (io.ReadCloser, error) {
+	// #nosec G304 -- filePath来自系统内部FileInfo.Path，由存储系统管理，非用户直接输入
 	file, err := os.Open(filePath)
 	if err != nil {
 		return nil, err
@@ -1219,6 +1220,7 @@ func (fs *FileServer) handleCompress(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// 发送压缩文件
+	// #nosec G304 -- tempPath是系统内部生成的临时文件路径，刚创建后立即读取，安全可控
 	zipFile, err := os.Open(tempPath)
 	if err != nil {
 		fs.sendError(w, "Failed to open archive", http.StatusInternalServerError)

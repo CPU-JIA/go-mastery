@@ -925,6 +925,7 @@ func (s *ChatServer) handleStaticFiles(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Try to read the file
+	// #nosec G304 -- 路径已通过security.GetSafePath()验证，确保在static目录范围内，防止路径遍历攻击
 	if data, err := os.ReadFile(fullPath); err == nil {
 		w.Header().Set("Content-Type", contentType)
 		w.Write(data)

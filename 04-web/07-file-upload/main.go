@@ -667,6 +667,7 @@ func (fh *FileHandler) HandleChunkUploadComplete(w http.ResponseWriter, r *http.
 	// 合并所有块
 	for i := 0; i < req.TotalChunks; i++ {
 		chunkPath := filepath.Join(chunksDir, fmt.Sprintf("chunk_%d", i))
+		// #nosec G304 -- chunkPath由系统内部生成（chunksDir + chunk_序号），用于合并上传的文件块，安全可控
 		chunkFile, err := os.Open(chunkPath)
 		if err != nil {
 			http.Error(w, fmt.Sprintf("打开文件块 %d 失败", i), http.StatusInternalServerError)
@@ -744,6 +745,7 @@ func (fh *FileHandler) HandleFileList(w http.ResponseWriter, r *http.Request) {
 			}
 
 			// 检测MIME类型
+			// #nosec G304 -- path来自filepath.Walk遍历，是系统文件遍历获取的路径，非用户直接输入
 			if file, err := os.Open(path); err == nil {
 				buffer := make([]byte, 512)
 				if n, readErr := file.Read(buffer); readErr == nil {

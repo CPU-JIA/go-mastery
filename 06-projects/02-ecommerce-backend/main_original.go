@@ -270,6 +270,7 @@ func (s *Store) loadData() {
 	}
 
 	for filename, data := range files {
+		// #nosec G304 -- 文件名来自系统内部定义的固定列表（users.json等数据文件），不涉及用户输入，安全可控
 		if fileData, err := os.ReadFile(filepath.Join(s.dataDir, filename)); err == nil {
 			json.Unmarshal(fileData, data)
 		}

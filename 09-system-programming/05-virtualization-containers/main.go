@@ -1014,6 +1014,7 @@ func (cm *CgroupManager) GetStats(cgroup *Cgroup) (map[string]interface{}, error
 
 	// 读取内存统计
 	memStatFile := filepath.Join(cgroup.Path, "memory.stat")
+	// #nosec G304 -- cgroup.Path由CgroupManager管理，memory.stat是Linux内核标准cgroup文件，系统编程操作安全
 	if data, err := os.ReadFile(memStatFile); err == nil {
 		memStats := cm.parseMemoryStats(string(data))
 		stats["memory"] = memStats
@@ -1021,6 +1022,7 @@ func (cm *CgroupManager) GetStats(cgroup *Cgroup) (map[string]interface{}, error
 
 	// 读取CPU统计
 	cpuStatFile := filepath.Join(cgroup.Path, "cpu.stat")
+	// #nosec G304 -- cgroup.Path由CgroupManager管理，cpu.stat是Linux内核标准cgroup文件，系统编程操作安全
 	if data, err := os.ReadFile(cpuStatFile); err == nil {
 		cpuStats := cm.parseCPUStats(string(data))
 		stats["cpu"] = cpuStats

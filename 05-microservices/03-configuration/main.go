@@ -955,6 +955,7 @@ func NewFileConfigurationSource(basePath, encryptionKey string) *FileConfigurati
 func (f *FileConfigurationSource) Load(app, env string) (*Configuration, error) {
 	filename := filepath.Join(f.basePath, fmt.Sprintf("%s-%s.yaml", app, env))
 
+	// #nosec G304 -- 配置服务内部操作，路径由basePath和受控的app/env参数构建，basePath在初始化时设定
 	data, err := os.ReadFile(filename)
 	if err != nil {
 		return nil, err

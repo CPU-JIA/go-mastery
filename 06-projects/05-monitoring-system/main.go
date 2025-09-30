@@ -814,6 +814,7 @@ func (s *Storage) SaveLog(log LogEntry) error {
 
 	// 按日期分割日志文件
 	logFile := fmt.Sprintf("logs_%s.log", time.Now().Format("2006-01-02"))
+	// #nosec G304 -- 路径由系统内部生成（dataDir + 日期格式日志文件名），不涉及用户输入，安全可控
 	file, err := os.OpenFile(filepath.Join(s.dataDir, logFile), os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
 	if err != nil {
 		return err

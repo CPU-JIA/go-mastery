@@ -232,6 +232,7 @@ func (ps *ProjectScanner) ScanProject(rootPath string) (map[string]string, error
 		}
 
 		// 读取文件内容
+		// #nosec G304 -- 评估系统内部操作，path来自filepath.WalkDir遍历，为受信任的文件系统路径
 		content, err := os.ReadFile(path)
 		if err != nil {
 			return fmt.Errorf("failed to read file %s: %w", path, err)

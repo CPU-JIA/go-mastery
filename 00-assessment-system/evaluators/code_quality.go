@@ -798,6 +798,7 @@ func (cqe *CodeQualityEvaluator) analyzeProjectStructure(stats *QualityStatistic
 
 // analyzeGoFile 分析Go文件
 func (cqe *CodeQualityEvaluator) analyzeGoFile(filePath string) (total, code, comment, blank int, err error) {
+	// #nosec G304 -- 评估系统内部操作，filePath由系统内部调用传入，为受信任的文件路径
 	file, err := os.Open(filePath)
 	if err != nil {
 		return 0, 0, 0, 0, err
