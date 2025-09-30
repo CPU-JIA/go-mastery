@@ -16,7 +16,9 @@ func FileExists(filename string) bool {
 }
 
 // ReadFileLines 读取文件的所有行
+// 注意：这是教学示例代码。生产环境应使用common/security包的安全函数或添加路径验证
 func ReadFileLines(filename string) ([]string, error) {
+	// #nosec G304 -- 教学示例代码，演示基础文件I/O操作。生产环境应使用security.ValidateSecurePath()验证路径
 	file, err := os.Open(filename)
 	if err != nil {
 		return nil, err
@@ -33,7 +35,9 @@ func ReadFileLines(filename string) ([]string, error) {
 }
 
 // WriteFileLines 将字符串切片写入文件
+// 注意：这是教学示例代码。生产环境应使用common/security包的安全函数或添加路径验证
 func WriteFileLines(filename string, lines []string) error {
+	// #nosec G304 -- 教学示例代码，演示基础文件I/O操作。生产环境应使用security.ValidateSecurePath()验证路径并指定安全权限
 	file, err := os.Create(filename)
 	if err != nil {
 		return err
@@ -52,13 +56,16 @@ func WriteFileLines(filename string, lines []string) error {
 }
 
 // CopyFile 复制文件
+// 注意：这是教学示例代码。生产环境应使用common/security包的安全函数或添加路径验证
 func CopyFile(src, dst string) error {
+	// #nosec G304 -- 教学示例代码，演示基础文件I/O操作。生产环境应使用security.ValidateSecurePath()验证路径
 	sourceFile, err := os.Open(src)
 	if err != nil {
 		return err
 	}
 	defer sourceFile.Close()
 
+	// #nosec G304 -- 教学示例代码，演示基础文件I/O操作。生产环境应使用security.SecureCreateFile()指定安全权限
 	destFile, err := os.Create(dst)
 	if err != nil {
 		return err

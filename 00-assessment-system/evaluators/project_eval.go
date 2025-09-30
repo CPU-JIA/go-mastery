@@ -915,6 +915,7 @@ func (pe *ProjectEvaluator) calculateModuleBoundaries() float64 {
 func (pe *ProjectEvaluator) analyzeDependencies(projectPath string, deps *DependencyAnalysis) error {
 	// 读取go.mod文件
 	goModPath := filepath.Join(projectPath, "go.mod")
+	// #nosec G304 -- 项目评估系统内部操作，路径由系统filepath.Join生成，projectPath为受信任的项目根路径
 	content, err := os.ReadFile(goModPath)
 	if err != nil {
 		return fmt.Errorf("读取go.mod失败: %v", err)
@@ -1045,6 +1046,7 @@ func (pe *ProjectEvaluator) analyzeReadmeQuality(projectPath string) float64 {
 		readmePath = filepath.Join(projectPath, "readme.md")
 	}
 
+	// #nosec G304 -- 项目评估系统内部操作，路径由系统filepath.Join生成，projectPath为受信任的项目根路径
 	content, err := os.ReadFile(readmePath)
 	if err != nil {
 		return 0.0
@@ -1138,6 +1140,7 @@ func (pe *ProjectEvaluator) countTestFunctions(projectPath string) int {
 		}
 
 		if strings.HasSuffix(path, "_test.go") {
+			// #nosec G304 -- 项目评估系统内部操作，path来自filepath.WalkDir遍历，为受信任的文件系统路径
 			content, err := os.ReadFile(path)
 			if err == nil {
 				// 简单的正则匹配测试函数
@@ -1162,6 +1165,7 @@ func (pe *ProjectEvaluator) countBenchmarkFunctions(projectPath string) int {
 		}
 
 		if strings.HasSuffix(path, "_test.go") {
+			// #nosec G304 -- 项目评估系统内部操作，path来自filepath.WalkDir遍历，为受信任的文件系统路径
 			content, err := os.ReadFile(path)
 			if err == nil {
 				re := regexp.MustCompile(`func\s+Benchmark\w+\s*\(`)
@@ -1185,6 +1189,7 @@ func (pe *ProjectEvaluator) countExampleFunctions(projectPath string) int {
 		}
 
 		if strings.HasSuffix(path, "_test.go") {
+			// #nosec G304 -- 项目评估系统内部操作，path来自filepath.WalkDir遍历，为受信任的文件系统路径
 			content, err := os.ReadFile(path)
 			if err == nil {
 				re := regexp.MustCompile(`func\s+Example\w*\s*\(`)
