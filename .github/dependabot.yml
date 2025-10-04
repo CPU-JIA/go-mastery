@@ -1,0 +1,206 @@
+# 🤖 Dependabot自动依赖更新配置
+# 设计目标: 自动化依赖安全更新，保持零安全漏洞状态
+# 最后更新: 2025年2月5日
+
+version: 2
+updates:
+  # 主模块依赖更新
+  - package-ecosystem: "gomod"
+    directory: "/"
+    schedule:
+      interval: "weekly"  # 每周检查一次
+      day: "monday"       # 周一执行
+      time: "02:00"       # UTC 02:00 (北京时间10:00)
+
+    # PR配置
+    open-pull-requests-limit: 10
+    pull-request-branch-name:
+      separator: "-"
+
+    # 提交消息配置
+    commit-message:
+      prefix: "🔒 deps"
+      prefix-development: "🔧 deps(dev)"
+      include: "scope"
+
+    # 标签配置
+    labels:
+      - "dependencies"
+      - "security"
+      - "automated"
+
+    # 版本更新策略
+    versioning-strategy: "increase"
+
+    # 允许的更新类型
+    allow:
+      - dependency-type: "direct"        # 优先更新直接依赖
+      - dependency-type: "indirect"      # 也更新间接依赖
+
+    # 忽略特定依赖（如果需要固定某些版本）
+    # ignore:
+    #   - dependency-name: "github.com/example/pkg"
+    #     versions: ["2.x"]
+
+  # GitHub Actions更新
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "02:00"
+
+    commit-message:
+      prefix: "🔧 ci"
+      include: "scope"
+
+    labels:
+      - "ci-cd"
+      - "automated"
+
+  # 子模块: 00-assessment-system
+  - package-ecosystem: "gomod"
+    directory: "/00-assessment-system"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "03:00"
+
+    commit-message:
+      prefix: "🔒 deps(assessment)"
+
+    labels:
+      - "dependencies"
+      - "assessment-system"
+      - "automated"
+
+  # 子模块: 05-microservices/*
+  - package-ecosystem: "gomod"
+    directory: "/05-microservices/api-gateway"
+    schedule:
+      interval: "weekly"
+      day: "tuesday"
+      time: "02:00"
+
+    commit-message:
+      prefix: "🔒 deps(microservices)"
+
+    labels:
+      - "dependencies"
+      - "microservices"
+      - "automated"
+
+  # 子模块: 06-projects/*
+  - package-ecosystem: "gomod"
+    directory: "/06-projects/01-blog-system"
+    schedule:
+      interval: "weekly"
+      day: "tuesday"
+      time: "03:00"
+
+    commit-message:
+      prefix: "🔒 deps(projects)"
+
+    labels:
+      - "dependencies"
+      - "projects"
+      - "automated"
+
+  - package-ecosystem: "gomod"
+    directory: "/06-projects/02-ecommerce-backend"
+    schedule:
+      interval: "weekly"
+      day: "tuesday"
+      time: "03:30"
+
+    commit-message:
+      prefix: "🔒 deps(projects)"
+
+    labels:
+      - "dependencies"
+      - "projects"
+      - "automated"
+
+  - package-ecosystem: "gomod"
+    directory: "/06-projects/03-chat-system"
+    schedule:
+      interval: "weekly"
+      day: "tuesday"
+      time: "04:00"
+
+    commit-message:
+      prefix: "🔒 deps(projects)"
+
+    labels:
+      - "dependencies"
+      - "projects"
+      - "automated"
+
+  - package-ecosystem: "gomod"
+    directory: "/06-projects/04-task-scheduler"
+    schedule:
+      interval: "weekly"
+      day: "wednesday"
+      time: "02:00"
+
+    commit-message:
+      prefix: "🔒 deps(projects)"
+
+    labels:
+      - "dependencies"
+      - "projects"
+      - "automated"
+
+  - package-ecosystem: "gomod"
+    directory: "/06-projects/05-monitoring-system"
+    schedule:
+      interval: "weekly"
+      day: "wednesday"
+      time: "02:30"
+
+    commit-message:
+      prefix: "🔒 deps(projects)"
+
+    labels:
+      - "dependencies"
+      - "projects"
+      - "automated"
+
+  - package-ecosystem: "gomod"
+    directory: "/06-projects/06-file-storage"
+    schedule:
+      interval: "weekly"
+      day: "wednesday"
+      time: "03:00"
+
+    commit-message:
+      prefix: "🔒 deps(projects)"
+
+    labels:
+      - "dependencies"
+      - "projects"
+      - "automated"
+
+  # 子模块: 15-opensource-contribution
+  - package-ecosystem: "gomod"
+    directory: "/15-opensource-contribution"
+    schedule:
+      interval: "weekly"
+      day: "wednesday"
+      time: "03:30"
+
+    commit-message:
+      prefix: "🔒 deps(opensource)"
+
+    labels:
+      - "dependencies"
+      - "opensource"
+      - "automated"
+
+# 配置说明:
+# 1. 覆盖所有9个独立go.mod模块
+# 2. 每周一至周三分时段检查，避免同时触发过多PR
+# 3. 自动标记和分类，便于审查
+# 4. 提交消息符合项目规范(使用emoji前缀)
+# 5. 优先更新直接依赖，同时也更新间接依赖的安全补丁
+# 6. 与quality-assurance.yml CI/CD流水线完美配合
