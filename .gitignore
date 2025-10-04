@@ -258,3 +258,7 @@ debug_*
 !README*.md
 !QUALITY*.md
 !FINAL*.md
+# Assessment test results
+*_results.json
+*_evaluation*.json
+*_assessment*.json

@@ -9,11 +9,20 @@
 5. 认证考试框架
 6. 自动化评估配置
 7. 评估报告生成模型
+
+作者: JIA
+创建时间: 2025-10-03
+版本: 1.0.0
 */
 
+// Package models 提供Go语言学习评估系统的核心数据模型
+//
+// 本包定义了评估系统中所有关键的数据结构，包括评估结果、能力模型、
+// 学习进度跟踪等。这些模型是整个评估系统的基础架构。
 package models
 
 import (
+	"assessment-system/evaluators"
 	"encoding/json"
 	"time"
 )
@@ -415,7 +424,41 @@ type AssessmentFeedback struct {
 	Tags      []string  `json:"tags"`      // 标签
 }
 
-// NewAssessmentFramework 创建新的评估框架
+// NewAssessmentFramework 创建新的评估框架实例
+//
+// 功能说明:
+//
+//	本函数创建并初始化一个完整的评估框架对象，用于定义Go语言学习的
+//	多维度评估标准体系。框架包含维度定义、权重矩阵、评分规则等核心要素。
+//
+// 参数:
+//   - version: 框架版本号（如"1.0.0"），用于框架升级和兼容性管理
+//   - name: 框架名称（如"Go语言能力评估框架"），用于标识和展示
+//
+// 返回值:
+//   - *AssessmentFramework: 初始化完成的评估框架指针，包含以下默认配置：
+//   - 默认权重矩阵（技术深度40%、工程实践30%等）
+//   - 默认阈值（及格70分、优秀90分等）
+//   - 四级认证要求（Bronze、Silver、Gold、Platinum）
+//   - 启用自动评估和导师评审，关闭同伴评审
+//
+// 使用场景:
+//   - 系统初始化时创建评估标准
+//   - 为不同学习阶段定制评估框架
+//   - 实现多版本评估标准的并行管理
+//
+// 示例:
+//
+//	framework := NewAssessmentFramework("1.0.0", "Go语言能力评估框架")
+//	framework.AutoAssessment = true  // 启用自动评估
+//	framework.Dimensions = append(framework.Dimensions, customDimension)
+//
+// 注意事项:
+//   - 创建后的框架可以通过修改字段进行定制
+//   - 默认配置基于教学经验，适合大多数学习场景
+//   - 时间戳自动设置为当前时间
+//
+// 作者: JIA
 func NewAssessmentFramework(version, name string) *AssessmentFramework {
 	now := time.Now()
 	return &AssessmentFramework{
@@ -435,85 +478,270 @@ func NewAssessmentFramework(version, name string) *AssessmentFramework {
 	}
 }
 
-// getDefaultWeightMatrix 获取默认权重矩阵
+// getDefaultWeightMatrix 获取默认权重矩阵配置
+//
+// 功能说明:
+//
+//	本函数返回评估系统的默认权重分配矩阵，定义了各评估维度和评估方法的
+//	相对重要性。权重矩阵是评估框架的核心，直接影响最终得分的计算。
+//
+// 权重分配逻辑:
+//
+//	主要维度权重（总和=1.0）:
+//	  - 技术深度: 40% (TechnicalDepth) - 考察Go语言核心知识掌握程度
+//	  - 工程实践: 30% (EngineeringPractice) - 考察工程化开发能力
+//	  - 项目经验: 20% (ProjectExperience) - 考察实战项目完成质量
+//	  - 软技能: 10% (SoftSkills) - 考察沟通、文档等能力
+//
+//	评估方法权重（总和=1.0）:
+//	  - 自动化评估: 50% (AutomatedAssessment) - 代码质量工具分析
+//	  - 代码审查: 30% (CodeReview) - 人工代码审查
+//	  - 项目评估: 15% (ProjectEvaluation) - 项目完整性评估
+//	  - 同伴反馈: 3% (PeerFeedback) - 学习者互评
+//	  - 导师评估: 2% (MentorAssessment) - 导师专业评估
+//
+// 返回值:
+//   - WeightMatrix: 包含所有默认权重配置的权重矩阵结构体，
+//     StageWeights初始化为空map，可后续按阶段定制
+//
+// 设计理念:
+//   - 重视技术深度和自动化评估，确保客观性
+//   - 平衡理论知识与实践能力
+//   - 为不同学习阶段保留权重调整空间
+//
+// 使用场景:
+//   - NewAssessmentFramework中初始化默认权重
+//   - 创建标准评估框架时提供基准配置
+//   - 作为自定义权重配置的参考模板
+//
+// 作者: JIA
 func getDefaultWeightMatrix() WeightMatrix {
 	return WeightMatrix{
-		TechnicalDepth:      0.40,
-		EngineeringPractice: 0.30,
-		ProjectExperience:   0.20,
-		SoftSkills:          0.10,
+		TechnicalDepth:      WeightTechnicalDepth,
+		EngineeringPractice: WeightEngineeringPractice,
+		ProjectExperience:   WeightProjectExperience,
+		SoftSkills:          WeightSoftSkills,
 
-		AutomatedAssessment: 0.50,
-		CodeReview:          0.30,
-		ProjectEvaluation:   0.15,
-		PeerFeedback:        0.03,
-		MentorAssessment:    0.02,
+		AutomatedAssessment: WeightAutomatedAssessment,
+		CodeReview:          WeightCodeReview,
+		ProjectEvaluation:   WeightProjectEvaluation,
+		PeerFeedback:        WeightPeerFeedback,
+		MentorAssessment:    WeightMentorAssessment,
 
 		StageWeights: make(map[int]StageWeight),
 	}
 }
 
-// getDefaultThresholds 获取默认阈值设定
+// getDefaultThresholds 获取默认评估阈值配置
+//
+// 功能说明:
+//
+//	本函数返回评估系统使用的所有关键阈值配置。这些阈值定义了及格标准、
+//	优秀标准、最低质量要求等核心评判基准，是评估决策的重要依据。
+//
+// 阈值配置说明:
+//
+//   - passing_score (70.0): 及格分数线
+//     最低通过标准，低于此分数视为未达标
+//
+//   - excellent_score (90.0): 优秀分数线
+//     优秀水平标准，超过此分数可获得优秀认证
+//
+//   - min_coverage (80.0): 最低测试覆盖率要求
+//     代码测试覆盖率需达到80%以上，确保质量
+//
+//   - max_complexity (10.0): 最大圈复杂度允许值
+//     单函数圈复杂度超过10视为过于复杂，需要重构
+//
+//   - min_documentation (70.0): 最低文档完整度分数
+//     文档评分需达到70分以上，确保可维护性
+//
+//   - performance_target (95.0): 性能目标分数
+//     性能优化目标，接近此分数表示性能优秀
+//
+// 返回值:
+//   - map[string]float64: 键值对映射，键为阈值名称，值为阈值数值
+//
+// 设计考量:
+//   - 及格线70分符合教育学惯例
+//   - 测试覆盖率80%平衡了质量与开发效率
+//   - 复杂度10是业界公认的可维护性临界点
+//
+// 使用场景:
+//   - 初始化评估框架时设置默认阈值
+//   - 自动化评估工具进行质量判定
+//   - 生成评估报告时提供参考标准
+//
+// 作者: JIA
 func getDefaultThresholds() map[string]float64 {
 	return map[string]float64{
-		"passing_score":      70.0,
-		"excellent_score":    90.0,
-		"min_coverage":       80.0,
-		"max_complexity":     10.0,
-		"min_documentation":  85.0,
-		"performance_target": 95.0,
+		"passing_score":      ThresholdPassingScore,
+		"excellent_score":    ThresholdExcellentScore,
+		"min_coverage":       ThresholdMinCoverage,
+		"max_complexity":     ThresholdMaxComplexity,
+		"min_documentation":  ThresholdMinDocumentation,
+		"performance_target": ThresholdPerformanceTarget,
 	}
 }
 
-// getDefaultLevelRequirements 获取默认等级要求
+// getDefaultLevelRequirements 获取默认认证等级要求配置
+//
+// 功能说明:
+//
+//	本函数返回"Go从入门到通天"学习路径的四级认证体系要求。每个等级定义了
+//	完整的准入标准，包括分数要求、必修阶段、考试配置等，形成递进式能力认证。
+//
+// 四级认证体系详解:
+//
+//	🥉 Bronze（青铜级）- 入门认证
+//	  · 最低分数: 70分（及格线）
+//	  · 必修阶段: 1-3阶段（基础语法、进阶特性、并发编程）
+//	  · 考试类型: practical（实践考试）
+//	  · 考试时长: 120分钟
+//	  · 及格分数: 80分
+//	  适合：完成Go基础学习，具备基本开发能力的初学者
+//
+//	🥈 Silver（白银级）- 熟练认证
+//	  · 最低分数: 80分（良好水平）
+//	  · 必修阶段: 1-6阶段（增加Web开发、微服务、项目实战）
+//	  · 考试类型: comprehensive（综合考试）
+//	  · 考试时长: 180分钟
+//	  · 及格分数: 85分
+//	  适合：掌握Go核心技术，能够独立完成项目的开发者
+//
+//	🥇 Gold（黄金级）- 精通认证
+//	  · 最低分数: 85分（优秀水平）
+//	  · 必修阶段: 1-10阶段（增加性能优化、运行时原理、系统编程）
+//	  · 考试类型: advanced（高级考试）
+//	  · 考试时长: 240分钟
+//	  · 及格分数: 90分
+//	  适合：深度掌握Go技术栈，能够进行架构设计和性能调优的高级工程师
+//
+//	💎 Platinum（白金级）- 专家认证
+//	  · 最低分数: 90分（卓越水平）
+//	  · 必修阶段: 全部15阶段（包含编译器、大规模系统、开源贡献等）
+//	  · 考试类型: expert（专家考试）
+//	  · 考试时长: 300分钟
+//	  · 及格分数: 95分
+//	  适合：Go语言专家，能够参与语言生态建设和技术领导的顶尖开发者
+//
+// 返回值:
+//   - map[string]LevelRequirement: 以等级名称为键的认证要求映射
+//
+// 设计理念:
+//   - 渐进式难度提升，确保学习者稳步成长
+//   - 考试时长随复杂度增加，反映真实能力要求
+//   - 每个等级的及格分数高于最低准入分数，保证质量
+//   - 阶段覆盖从基础到高级，形成完整知识体系
+//
+// 使用场景:
+//   - 评估系统初始化时加载认证标准
+//   - 学习者查看认证要求和学习路径
+//   - 自动判定学习者当前可申请的认证等级
+//
+// 作者: JIA
 func getDefaultLevelRequirements() map[string]LevelRequirement {
 	return map[string]LevelRequirement{
 		"Bronze": {
 			Level:          "Bronze",
-			MinScore:       70.0,
+			MinScore:       evaluators.PassingScore,
 			RequiredStages: []int{1, 2, 3},
 			ExamRequired:   true,
 			ExamType:       "practical",
-			ExamDuration:   120,
-			PassingScore:   80.0,
+			ExamDuration:   evaluators.ExamDurationBronze,
+			PassingScore:   evaluators.DefaultScore,
 		},
 		"Silver": {
 			Level:          "Silver",
-			MinScore:       80.0,
+			MinScore:       evaluators.DefaultScore,
 			RequiredStages: []int{1, 2, 3, 4, 5, 6},
 			ExamRequired:   true,
 			ExamType:       "comprehensive",
-			ExamDuration:   180,
-			PassingScore:   85.0,
+			ExamDuration:   evaluators.ExamDurationSilver,
+			PassingScore:   evaluators.HighQualityScore,
 		},
 		"Gold": {
 			Level:          "Gold",
-			MinScore:       85.0,
+			MinScore:       evaluators.HighQualityScore,
 			RequiredStages: []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10},
 			ExamRequired:   true,
 			ExamType:       "advanced",
-			ExamDuration:   240,
-			PassingScore:   90.0,
+			ExamDuration:   evaluators.ExamDurationGold,
+			PassingScore:   evaluators.ExcellentScore,
 		},
 		"Platinum": {
 			Level:          "Platinum",
-			MinScore:       90.0,
+			MinScore:       evaluators.ExcellentScore,
 			RequiredStages: []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
 			ExamRequired:   true,
 			ExamType:       "expert",
-			ExamDuration:   300,
-			PassingScore:   95.0,
+			ExamDuration:   evaluators.ExamDurationPlatinum,
+			PassingScore:   evaluators.Score95,
 		},
 	}
 }
 
-// CalculateOverallScore 计算综合得分
+// CalculateOverallScore 计算评估综合得分（加权平均法）
+//
+// 功能说明:
+//
+//	本方法根据评估框架定义的维度权重，对各维度得分进行加权平均计算，
+//	得出最终的综合评分。同时自动计算得分率、判定等级，并更新结果对象。
+//
+// 计算逻辑:
+//  1. 加权求和: 遍历所有维度得分，乘以对应权重后累加
+//     公式: totalScore = Σ(维度得分 × 维度权重)
+//  2. 归一化: 除以总权重得到加权平均分
+//     公式: overallScore = totalScore / totalWeight
+//  3. 得分率: 综合分除以满分，转换为百分比
+//     公式: percentage = (overallScore / maxScore) × 100
+//  4. 等级判定: 根据得分率映射到字母等级（A+/A/A-/B+/B/B-/C+/C/F）
+//
+// 参数:
+//   - framework: 评估框架指针，包含维度定义和权重配置
+//
+// 返回值:
+//   - float64: 计算得出的综合得分（0.0-100.0范围）
+//
+// 副作用:
+//
+//	本方法会修改接收者AssessmentResult的以下字段：
+//	- OverallScore: 更新为计算后的综合得分
+//	- Percentage: 更新为得分率百分比
+//	- Grade: 更新为对应的字母等级
+//
+// 性能优化:
+//   - 使用索引遍历避免大结构体复制（AssessmentDimension为128字节）
+//   - 提前break减少不必要的遍历
+//   - 仅在totalWeight>0时进行除法运算，避免除零
+//
+// 使用示例:
+//
+//	result := &AssessmentResult{
+//	    DimensionScores: map[string]float64{
+//	        "technical": 85.0,
+//	        "practice":  78.0,
+//	    },
+//	    MaxScore: 100.0,
+//	}
+//	finalScore := result.CalculateOverallScore(framework)
+//	// finalScore ≈ 82.2 (假设technical权重0.6, practice权重0.4)
+//	// result.Grade = "B+" (82.2%在B+范围)
+//
+// 注意事项:
+//   - 确保framework.Dimensions包含与DimensionScores匹配的维度ID
+//   - 如果某维度分数缺失，该维度不参与计算（权重相应减少）
+//   - MaxScore应提前设置，否则Percentage计算会错误
+//
+// 作者: JIA
 func (ar *AssessmentResult) CalculateOverallScore(framework *AssessmentFramework) float64 {
 	totalScore := 0.0
 	totalWeight := 0.0
 
 	for dimensionID, score := range ar.DimensionScores {
-		for _, dimension := range framework.Dimensions {
+		// 使用索引遍历避免大结构体复制（128字节）
+		for i := range framework.Dimensions {
+			dimension := &framework.Dimensions[i]
 			if dimension.ID == dimensionID {
 				totalScore += score * dimension.Weight
 				totalWeight += dimension.Weight
@@ -532,36 +760,170 @@ func (ar *AssessmentResult) CalculateOverallScore(framework *AssessmentFramework
 	return ar.OverallScore
 }
 
-// calculateGrade 根据得分率计算等级
+// calculateGrade 根据得分率计算字母等级（九级评分制）
+//
+// 功能说明:
+//
+//	本函数实现标准化的九级字母评分映射，将0-100的百分制得分率转换为
+//	直观的字母等级。等级划分参考国际教育评分标准，适合学术和职业认证场景。
+//
+// 等级划分标准:
+//
+//	A+ : 95分及以上  - 卓越水平，接近完美
+//	A  : 90-94分     - 优秀水平，全面掌握
+//	A- : 85-89分     - 优秀偏下，熟练应用
+//	B+ : 80-84分     - 良好水平，较好掌握
+//	B  : 75-79分     - 良好偏下，基本熟练
+//	B- : 70-74分     - 中等偏上，达到要求
+//	C+ : 65-69分     - 中等水平，部分掌握
+//	C  : 60-64分     - 及格水平，最低达标
+//	F  : 60分以下    - 不及格，需要重修
+//
+// 参数:
+//   - percentage: 得分率百分比（0.0-100.0范围）
+//
+// 返回值:
+//   - string: 对应的字母等级（"A+", "A", "A-", ..., "F"）
+//
+// 设计理念:
+//   - 九级划分提供更细致的能力区分度
+//   - A+设置在95分体现卓越标准的高要求
+//   - 60分及格线符合教育惯例
+//   - switch-case结构清晰，易于理解和维护
+//
+// 使用场景:
+//   - CalculateOverallScore中自动判定等级
+//   - 生成评估报告时展示等级
+//   - 认证系统判定是否达到等级要求
+//
+// 示例:
+//
+//	calculateGrade(97.5)  // 返回 "A+"
+//	calculateGrade(82.0)  // 返回 "B+"
+//	calculateGrade(59.9)  // 返回 "F"
+//
+// 注意事项:
+//   - 边界值采用左闭右开原则（例如90分算A，不算A+）
+//   - 负数或超过100的输入未做防护，调用方需保证输入合法
+//
+// 作者: JIA
 func calculateGrade(percentage float64) string {
 	switch {
-	case percentage >= 95:
+	case percentage >= GradeAPlusThreshold:
 		return "A+"
-	case percentage >= 90:
+	case percentage >= GradeAThreshold:
 		return "A"
-	case percentage >= 85:
+	case percentage >= GradeAMinusThreshold:
 		return "A-"
-	case percentage >= 80:
+	case percentage >= GradeBPlusThreshold:
 		return "B+"
-	case percentage >= 75:
+	case percentage >= GradeBThreshold:
 		return "B"
-	case percentage >= 70:
+	case percentage >= GradeBMinusThreshold:
 		return "B-"
-	case percentage >= 65:
+	case percentage >= GradeCPlusThreshold:
 		return "C+"
-	case percentage >= 60:
+	case percentage >= GradeCThreshold:
 		return "C"
 	default:
 		return "F"
 	}
 }
 
-// ToJSON 序列化为JSON
+// ToJSON 将评估框架序列化为格式化的JSON字符串
+//
+// 功能说明:
+//
+//	本方法将AssessmentFramework对象转换为易读的JSON格式，用于数据持久化、
+//	API响应、配置导出等场景。使用缩进格式化，方便人工阅读和版本控制。
+//
+// 序列化配置:
+//   - 缩进格式: 每级缩进2个空格（Go社区标准）
+//   - 字段顺序: 保持结构体定义顺序
+//   - 空值处理: 空切片序列化为[]，空map序列化为{}
+//   - 时间格式: RFC3339格式（如"2025-10-03T14:30:00Z"）
+//
+// 返回值:
+//   - []byte: JSON字节数组，UTF-8编码
+//   - error: 序列化错误（通常不会发生，除非包含不可序列化类型）
+//
+// 使用场景:
+//   - 保存评估框架配置到文件
+//   - 通过API返回框架定义
+//   - 生成人类可读的配置模板
+//   - 版本控制中跟踪框架变更
+//
+// 示例:
+//
+//	framework := NewAssessmentFramework("1.0.0", "Go评估框架")
+//	jsonData, err := framework.ToJSON()
+//	if err != nil {
+//	    log.Fatal(err)
+//	}
+//	os.WriteFile("framework.json", jsonData, 0644)
+//
+// 性能考量:
+//   - 对于大型框架对象，序列化可能耗时较长
+//   - 如果频繁调用，考虑缓存结果或使用流式编码
+//   - 缩进格式会增加约30%的数据体积
+//
+// 作者: JIA
 func (af *AssessmentFramework) ToJSON() ([]byte, error) {
 	return json.MarshalIndent(af, "", "  ")
 }
 
-// FromJSON 从JSON反序列化
+// FromJSON 从JSON数据反序列化为评估框架对象
+//
+// 功能说明:
+//
+//	本方法将JSON格式的字节数据解析为AssessmentFramework结构体，用于加载
+//	已保存的框架配置、导入外部配置、或处理API请求数据。
+//
+// 反序列化特性:
+//   - 类型安全: 严格按照结构体tag定义解析JSON字段
+//   - 容错处理: 缺失字段使用零值，多余字段被忽略
+//   - 时间解析: 自动识别RFC3339、Unix时间戳等多种时间格式
+//   - 嵌套支持: 正确处理多层嵌套的复杂结构
+//
+// 参数:
+//   - data: JSON格式的字节数组，必须符合AssessmentFramework结构
+//
+// 返回值:
+//   - error: 反序列化错误，可能原因包括：
+//   - JSON格式错误（语法错误、引号不匹配等）
+//   - 类型不匹配（字符串无法转为数字等）
+//   - 数据格式不符合结构体定义
+//
+// 使用场景:
+//   - 从配置文件加载评估框架
+//   - 接收API请求中的框架定义
+//   - 导入其他系统的评估标准
+//   - 恢复备份的框架配置
+//
+// 示例:
+//
+//	jsonData, err := os.ReadFile("framework.json")
+//	if err != nil {
+//	    log.Fatal(err)
+//	}
+//
+//	framework := &AssessmentFramework{}
+//	if err := framework.FromJSON(jsonData); err != nil {
+//	    log.Fatal("解析框架配置失败:", err)
+//	}
+//	// 现在framework包含了JSON中的所有数据
+//
+// 错误处理建议:
+//   - 加载配置文件前先验证JSON格式（可用json.Valid）
+//   - 解析后验证关键字段是否存在（如Version、Dimensions）
+//   - 记录详细错误信息，便于排查配置问题
+//
+// 注意事项:
+//   - 本方法会覆盖接收者的所有字段
+//   - 解析失败时，接收者状态不确定，应避免使用
+//   - 不会验证数据的业务逻辑正确性（如权重总和是否为1）
+//
+// 作者: JIA
 func (af *AssessmentFramework) FromJSON(data []byte) error {
 	return json.Unmarshal(data, af)
 }

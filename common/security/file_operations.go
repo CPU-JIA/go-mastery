@@ -11,19 +11,19 @@ type SecureFileMode fs.FileMode
 
 const (
 	// 安全的文件权限模式，遵循最小权限原则
-	SecureFileMode_ReadOnlyUser    SecureFileMode = 0400 // 仅所有者可读
-	SecureFileMode_ReadWriteUser   SecureFileMode = 0600 // 仅所有者可读写
-	SecureFileMode_ReadOnlyAll     SecureFileMode = 0444 // 所有用户只读
-	SecureFileMode_ReadWriteAll    SecureFileMode = 0666 // 所有用户读写（不推荐）
-	SecureFileMode_ExecutableUser  SecureFileMode = 0700 // 仅所有者可执行
-	SecureFileMode_ExecutableAll   SecureFileMode = 0755 // 所有者可执行，其他用户可读执行
+	SecureFileMode_ReadOnlyUser   SecureFileMode = 0400 // 仅所有者可读
+	SecureFileMode_ReadWriteUser  SecureFileMode = 0600 // 仅所有者可读写
+	SecureFileMode_ReadOnlyAll    SecureFileMode = 0444 // 所有用户只读
+	SecureFileMode_ReadWriteAll   SecureFileMode = 0666 // 所有用户读写（不推荐）
+	SecureFileMode_ExecutableUser SecureFileMode = 0700 // 仅所有者可执行
+	SecureFileMode_ExecutableAll  SecureFileMode = 0755 // 所有者可执行，其他用户可读执行
 
 	// 默认推荐的安全权限
-	DefaultFileMode      = SecureFileMode_ReadWriteUser   // 0600 - 文件默认权限
-	DefaultDirMode       = SecureFileMode_ExecutableUser  // 0700 - 目录默认权限
-	DefaultConfigMode    = SecureFileMode_ReadOnlyUser    // 0400 - 配置文件权限
-	DefaultLogMode       = SecureFileMode_ReadWriteUser   // 0600 - 日志文件权限
-	DefaultTempMode      = SecureFileMode_ReadWriteUser   // 0600 - 临时文件权限
+	DefaultFileMode       = SecureFileMode_ReadWriteUser  // 0600 - 文件默认权限
+	DefaultDirMode        = SecureFileMode_ExecutableUser // 0700 - 目录默认权限
+	DefaultConfigMode     = SecureFileMode_ReadOnlyUser   // 0400 - 配置文件权限
+	DefaultLogMode        = SecureFileMode_ReadWriteUser  // 0600 - 日志文件权限
+	DefaultTempMode       = SecureFileMode_ReadWriteUser  // 0600 - 临时文件权限
 	DefaultExecutableMode = SecureFileMode_ExecutableUser // 0700 - 可执行文件权限
 )
 

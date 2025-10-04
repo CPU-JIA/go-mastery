@@ -112,12 +112,12 @@ func SanitizeHTML(text string) string {
 
 // PaginationInfo represents pagination metadata
 type PaginationInfo struct {
-	Page         int `json:"page"`
-	PerPage      int `json:"per_page"`
-	Total        int `json:"total"`
-	TotalPages   int `json:"total_pages"`
-	HasNext      bool `json:"has_next"`
-	HasPrevious  bool `json:"has_previous"`
+	Page        int  `json:"page"`
+	PerPage     int  `json:"per_page"`
+	Total       int  `json:"total"`
+	TotalPages  int  `json:"total_pages"`
+	HasNext     bool `json:"has_next"`
+	HasPrevious bool `json:"has_previous"`
 }
 
 // CalculatePagination calculates pagination information

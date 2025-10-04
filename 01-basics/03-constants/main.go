@@ -3,7 +3,7 @@ package main
 import "fmt"
 
 /*
-=== Go语言第三课：常量和iota ===
+=== Go语言第三堂课：常量和iota ===
 
 学习目标：
 1. 理解常量的概念和用途

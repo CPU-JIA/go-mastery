@@ -1,13 +1,12 @@
 package tests
 
 import (
+	"assessment-system/evaluators"
+	"assessment-system/models"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-
-	"assessment-system/evaluators"
-	"assessment-system/models"
 )
 
 func TestCodeQualityEvaluator(t *testing.T) {
@@ -75,6 +74,7 @@ func TestAssessmentModel(t *testing.T) {
 
 		assert.Equal(t, "test-1", result.SessionID)
 		assert.Equal(t, 85.5, result.OverallScore)
+		assert.Equal(t, 100.0, result.MaxScore) // 检查MaxScore字段
 		assert.Equal(t, "B", result.Grade)
 		assert.Equal(t, 85.5, result.Percentage)
 	})
@@ -85,6 +85,10 @@ func TestAssessmentModel(t *testing.T) {
 			OverallScore:    80.0,
 			DimensionScores: make(map[string]float64),
 		}
+
+		// 验证初始字段值
+		assert.Equal(t, "test-2", result.SessionID)
+		assert.Equal(t, 80.0, result.OverallScore)
 
 		result.DimensionScores["code_quality"] = 85.0
 		result.DimensionScores["functionality"] = 90.0
@@ -118,6 +122,8 @@ func TestCompetencyModel(t *testing.T) {
 
 		assert.Equal(t, "go-basics", skill.ID)
 		assert.Equal(t, "Go Programming Basics", skill.Name)
+		assert.Equal(t, "Basic understanding of Go syntax and concepts", skill.Description)
+		assert.Equal(t, "programming", skill.Category)
 	})
 
 	t.Run("SkillLevels", func(t *testing.T) {
@@ -140,6 +146,8 @@ func TestStudentModel(t *testing.T) {
 		assert.Equal(t, "John Doe", student.Name)
 		assert.Equal(t, "john.doe@example.com", student.Email)
 		assert.Equal(t, 6, student.CurrentStage)
+		assert.NotNil(t, student.Projects) // 检查Projects字段已初始化
+		assert.Equal(t, 0, len(student.Projects))
 	})
 
 	t.Run("AddProjectRecord", func(t *testing.T) {
@@ -148,6 +156,11 @@ func TestStudentModel(t *testing.T) {
 			Name:     "John Doe",
 			Projects: make([]models.ProjectRecord, 0),
 		}
+
+		// 验证初始状态
+		assert.Equal(t, "student-123", student.ID)
+		assert.Equal(t, "John Doe", student.Name)
+		assert.Equal(t, 0, len(student.Projects))
 
 		project := models.ProjectRecord{
 			ID:           "project-1",
@@ -181,11 +194,17 @@ func TestAssessmentWorkflow(t *testing.T) {
 	t.Run("CompleteAssessmentFlow", func(t *testing.T) {
 		// Create student
 		student := &models.StudentProfile{
-			ID:    "student-123",
-			Name:  "Test Student",
-			Email: "test@example.com",
+			ID:           "student-123",
+			Name:         "Test Student",
+			Email:        "test@example.com",
 			CurrentStage: 1,
 		}
+
+		// 验证学生信息
+		assert.Equal(t, "student-123", student.ID)
+		assert.Equal(t, "Test Student", student.Name)
+		assert.Equal(t, "test@example.com", student.Email)
+		assert.Equal(t, 1, student.CurrentStage)
 
 		// Create assessment result
 		result := &models.AssessmentResult{
@@ -194,6 +213,12 @@ func TestAssessmentWorkflow(t *testing.T) {
 			MaxScore:     100.0,
 			Grade:        "B",
 		}
+
+		// 验证评估结果初始值
+		assert.Equal(t, "assessment-1", result.SessionID)
+		assert.Equal(t, 75.0, result.OverallScore)
+		assert.Equal(t, 100.0, result.MaxScore)
+		assert.Equal(t, "B", result.Grade)
 
 		// Evaluate code quality
 		codeEvaluator := evaluators.NewCodeQualityEvaluator(evaluators.GetDefaultConfig())
@@ -213,6 +238,9 @@ func TestAssessmentWorkflow(t *testing.T) {
 
 		// Calculate overall score
 		result.Percentage = (result.OverallScore / result.MaxScore) * 100
+
+		// 验证计算的百分比
+		assert.Equal(t, 75.0, result.Percentage)
 
 		// Verify results
 		assert.Equal(t, "student-123", student.ID)

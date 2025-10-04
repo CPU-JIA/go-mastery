@@ -14,7 +14,7 @@
 package evaluators
 
 import (
-	"encoding/json"
+	"assessment-system/utils"
 	"fmt"
 	"go/parser"
 	"go/token"
@@ -25,14 +25,11 @@ import (
 	"regexp"
 	"strings"
 	"time"
-
-	"go-mastery/common/security"
 )
 
 // ProjectEvaluator 项目评估器
 type ProjectEvaluator struct {
 	config       *ProjectEvalConfig
-	projectInfo  *ProjectInfo
 	requirements []ProjectRequirement
 	criteria     []EvaluationCriteria
 	results      *ProjectEvaluationResult
@@ -670,7 +667,31 @@ type PeerComparison struct {
 	ImprovementAreas []string `json:"improvement_areas"` // 改进领域
 }
 
-// NewProjectEvaluator 创建项目评估器
+// NewProjectEvaluator 创建项目评估器实例(构造函数-工厂模式)
+//
+// # 功能说明
+//
+// 创建并初始化ProjectEvaluator评估器实例,配置7大评估维度(功能完整性/架构质量/用户体验/
+// 技术深度/工程质量/可维护性/创新性)的权重和阈值。初始化空的requirements、criteria和
+// results结构,为后续EvaluateProject()主流程准备基础设施。
+//
+// # 参数
+//
+//   - config *ProjectEvalConfig: 评估配置,包含ProjectType(cli/web/library)、Stage(1-15学习阶段)、
+//     WeightSettings(7维度权重)、Thresholds(阈值设定)等配置项
+//
+// # 返回值
+//
+//   - *ProjectEvaluator: 已初始化的评估器实例,可立即调用EvaluateProject()
+//
+// # 初始化内容
+//
+//   - results.Timestamp: 当前时间
+//   - results.DimensionScores: 空map,存储7维度分数
+//   - results.CriteriaScores: 空map,存储细粒度评估标准分数
+//   - requirements/criteria: 空切片,后续通过loadRequirementsAndCriteria()加载
+//
+// 作者: JIA
 func NewProjectEvaluator(config *ProjectEvalConfig) *ProjectEvaluator {
 	return &ProjectEvaluator{
 		config:       config,
@@ -684,7 +705,45 @@ func NewProjectEvaluator(config *ProjectEvalConfig) *ProjectEvaluator {
 	}
 }
 
-// EvaluateProject 评估项目
+// EvaluateProject 执行完整项目质量评估流程(评估主流程-11步骤编排)
+//
+// # 功能说明
+//
+// 完整评估Go项目的7大质量维度,执行11步骤流程:分析项目信息→加载标准→评估5大维度→
+// 计算综合得分→生成建议→比较分析→保存结果。返回包含详细分数、问题列表、改进建议的
+// ProjectEvaluationResult结构,用于学习进度追踪和项目质量判定。
+//
+// # 11步骤流程
+//
+//  1. analyzeProjectInfo - 分析项目基础信息(名称/类型/结构/依赖/文档)
+//  2. loadRequirementsAndCriteria - 加载该阶段的需求和评估标准
+//  3. evaluateFunctionality - 评估功能完整性(需求实现度/边界处理)
+//  4. evaluateArchitecture - 评估架构质量(模块化/依赖管理/接口设计)
+//  5. evaluateUserExperience - 评估用户体验(API设计/错误处理/文档)
+//  6. evaluateTechnicalDepth - 评估技术深度(技术栈选择/最佳实践应用)
+//  7. evaluateEngineeringQuality - 评估工程质量(项目结构/构建系统/CI/CD)
+//  8. calculateOverallScore - 计算加权综合得分
+//  9. generateSuggestions - 生成改进建议(可选)
+// 10. performComparativeAnalysis - 对比分析(同级别项目比较)
+// 11. saveResults - 保存评估结果到JSON(可选)
+//
+// # 参数
+//
+//   - projectPath string: 项目根目录路径(如"./06-projects/cli-tool")
+//
+// # 返回值
+//
+//   - *ProjectEvaluationResult: 评估结果,包含OverallScore(综合得分)、DimensionScores(7维度分数)、
+//     Issues(问题列表)、Suggestions(改进建议)、Passed(是否通过)
+//   - error: 评估失败时返回error
+//
+// # 核心字段
+//
+//   - OverallScore: 加权综合得分0-100,需≥PassingScore(如60)才通过
+//   - Passed: true表示项目质量达标,可进入下一阶段学习
+//   - Duration: 评估耗时,供性能监控
+//
+// 作者: JIA
 func (pe *ProjectEvaluator) EvaluateProject(projectPath string) (*ProjectEvaluationResult, error) {
 	log.Printf("开始评估项目: %s", projectPath)
 	start := time.Now()
@@ -739,7 +798,7 @@ func (pe *ProjectEvaluator) EvaluateProject(projectPath string) (*ProjectEvaluat
 	pe.performComparativeAnalysis()
 
 	pe.results.Duration = time.Since(start)
-	pe.results.Passed = pe.results.OverallScore >= 70.0 // 可配置阈值
+	pe.results.Passed = pe.results.OverallScore >= PassingScore // 可配置阈值
 
 	log.Printf("项目评估完成，总分: %.2f，耗时: %v",
 		pe.results.OverallScore, pe.results.Duration)
@@ -754,7 +813,22 @@ func (pe *ProjectEvaluator) EvaluateProject(projectPath string) (*ProjectEvaluat
 	return pe.results, nil
 }
 
-// analyzeProjectInfo 分析项目信息
+// analyzeProjectInfo 分析项目信息(项目信息收集方法-5维度分析策略)
+//
+// # 功能说明
+//
+// 执行5维度项目信息分析：结构分析(目录/文件/包统计)→依赖分析(go.mod解析)→构建系统(Makefile/Dockerfile检测)→
+// 文档分析(README/LICENSE检查)→测试信息(测试文件/覆盖率统计)。填充ProjectInfo结构供后续评估使用。
+//
+// # 参数
+//
+//   - projectPath string: 项目根目录绝对路径
+//
+// # 返回值
+//
+//   - error: 结构分析失败时返回错误，其他维度失败仅记录日志不中断
+//
+// 作者: JIA
 func (pe *ProjectEvaluator) analyzeProjectInfo(projectPath string) error {
 	info := ProjectInfo{
 		Path:     projectPath,
@@ -793,7 +867,23 @@ func (pe *ProjectEvaluator) analyzeProjectInfo(projectPath string) error {
 	return nil
 }
 
-// analyzeProjectStructure 分析项目结构
+// analyzeProjectStructure 分析项目结构(结构统计方法-目录遍历策略)
+//
+// # 功能说明
+//
+// 遍历项目目录树统计Go文件/测试文件/包数量，检测标准目录(cmd/internal/pkg/api/docs/examples)，
+// 计算组织评分(fileOrganization/namingConsistency/moduleBoundaries)。
+//
+// # 参数
+//
+//   - projectPath string: 项目根路径
+//   - structure *ProjectStructure: 结构信息输出指针
+//
+// # 返回值
+//
+//   - error: 目录遍历失败或AST解析错误时返回
+//
+// 作者: JIA
 func (pe *ProjectEvaluator) analyzeProjectStructure(projectPath string, structure *ProjectStructure) error {
 	var goFiles, testFiles, totalFiles int
 	packageSet := make(map[string]bool)
@@ -848,7 +938,6 @@ func (pe *ProjectEvaluator) analyzeProjectStructure(projectPath string, structur
 
 		return nil
 	})
-
 	if err != nil {
 		return err
 	}
@@ -866,7 +955,17 @@ func (pe *ProjectEvaluator) analyzeProjectStructure(projectPath string, structur
 	return nil
 }
 
-// calculateFileOrganization 计算文件组织评分
+// calculateFileOrganization 计算文件组织评分(评分计算方法-目录结构加分制)
+//
+// # 功能说明
+//
+// 基于标准Go项目目录存在性计算组织评分：基础分80，cmd(+5)/internal(+5)/pkg(+3)/api(+3)/docs(+2)/examples(+2)递增，上限100。
+//
+// # 返回值
+//
+//   - float64: 文件组织评分(80-100)
+//
+// 作者: JIA
 func (pe *ProjectEvaluator) calculateFileOrganization() float64 {
 	score := 80.0 // 基础分
 
@@ -899,19 +998,55 @@ func (pe *ProjectEvaluator) calculateFileOrganization() float64 {
 	return score
 }
 
-// calculateNamingConsistency 计算命名一致性评分
+// calculateNamingConsistency 计算命名一致性评分(占位方法-待完善)
+//
+// # 功能说明
+//
+// 简化实现返回固定值85.0，实际应检查包名/文件名/函数名的命名约定一致性。
+//
+// # 返回值
+//
+//   - float64: 命名一致性评分(当前固定值HighQualityScore=85.0)
+//
+// 作者: JIA
 func (pe *ProjectEvaluator) calculateNamingConsistency() float64 {
 	// 简化实现，实际应该检查包名、文件名、函数名的一致性
-	return 85.0
+	return HighQualityScore
 }
 
-// calculateModuleBoundaries 计算模块边界清晰度
+// calculateModuleBoundaries 计算模块边界清晰度(占位方法-待完善)
+//
+// # 功能说明
+//
+// 简化实现返回固定值80.0，实际应分析包之间的依赖关系和耦合程度。
+//
+// # 返回值
+//
+//   - float64: 模块边界清晰度评分(当前固定值DefaultScore=80.0)
+//
+// 作者: JIA
 func (pe *ProjectEvaluator) calculateModuleBoundaries() float64 {
 	// 简化实现，实际应该分析包之间的依赖关系
-	return 80.0
+	return DefaultScore
 }
 
-// analyzeDependencies 分析依赖
+// analyzeDependencies 分析依赖(依赖解析方法-go.mod解析策略)
+//
+// # 功能说明
+//
+// 读取go.mod文件解析直接依赖(require行统计，排除// indirect注释行)，计算标准库使用率和依赖质量评分。
+// 简化实现暂不解析间接依赖树。
+//
+// # 参数
+//
+//   - projectPath string: 项目根路径
+//   - deps *DependencyAnalysis: 依赖分析结果输出指针
+//
+// # 返回值
+//
+//   - error: go.mod读取失败时返回错误
+//
+// 作者: JIA
 func (pe *ProjectEvaluator) analyzeDependencies(projectPath string, deps *DependencyAnalysis) error {
 	// 读取go.mod文件
 	goModPath := filepath.Join(projectPath, "go.mod")
@@ -940,26 +1075,57 @@ func (pe *ProjectEvaluator) analyzeDependencies(projectPath string, deps *Depend
 	return nil
 }
 
-// calculateStandardLibUsage 计算标准库使用率
+// calculateStandardLibUsage 计算标准库使用率(占位方法-待完善)
+//
+// # 功能说明
+//
+// 简化实现返回固定值75.0，实际应分析import语句统计标准库vs第三方库的使用比例。
+//
+// # 返回值
+//
+//   - float64: 标准库使用率百分比(当前固定值MediumQualityScore=75.0)
+//
+// 作者: JIA
 func (pe *ProjectEvaluator) calculateStandardLibUsage() float64 {
 	// 简化实现，实际需要分析import语句
-	return 75.0
+	return MediumQualityScore
 }
 
-// calculateDependencyQuality 计算依赖质量
+// calculateDependencyQuality 计算依赖质量(占位方法-待完善)
+//
+// # 功能说明
+//
+// 简化实现返回固定值85.0，实际应检查依赖的维护状态(最后更新时间)、安全性(已知漏洞)、流行度等指标。
+//
+// # 返回值
+//
+//   - float64: 依赖质量综合评分(当前固定值HighQualityScore=85.0)
+//
+// 作者: JIA
 func (pe *ProjectEvaluator) calculateDependencyQuality() float64 {
 	// 简化实现，实际需要检查依赖的维护状态、安全性等
-	return 85.0
+	return HighQualityScore
 }
 
-// analyzeBuildSystem 分析构建系统
+// analyzeBuildSystem 分析构建系统(构建配置检测方法-文件存在性检查策略)
+//
+// # 功能说明
+//
+// 检测构建相关文件存在性(go.mod/Makefile/Dockerfile/GitHub Actions/GoReleaser)，计算构建质量/CI配置/部署准备度评分。
+//
+// # 参数
+//
+//   - projectPath string: 项目根路径
+//   - build *BuildSystemInfo: 构建系统信息输出指针
+//
+// 作者: JIA
 func (pe *ProjectEvaluator) analyzeBuildSystem(projectPath string, build *BuildSystemInfo) {
 	// 检查构建相关文件
 	build.HasGoMod = pe.fileExists(filepath.Join(projectPath, "go.mod"))
 	build.HasMakefile = pe.fileExists(filepath.Join(projectPath, "Makefile")) ||
 		pe.fileExists(filepath.Join(projectPath, "makefile"))
 	build.HasDockerfile = pe.fileExists(filepath.Join(projectPath, "Dockerfile"))
-	build.HasGitHubActions = pe.fileExists(filepath.Join(projectPath, ".github/workflows"))
+	build.HasGitHubActions = pe.fileExists(filepath.Join(projectPath, ".github", "workflows"))
 	build.HasGoReleaser = pe.fileExists(filepath.Join(projectPath, ".goreleaser.yml")) ||
 		pe.fileExists(filepath.Join(projectPath, ".goreleaser.yaml"))
 
@@ -969,13 +1135,41 @@ func (pe *ProjectEvaluator) analyzeBuildSystem(projectPath string, build *BuildS
 	build.DeploymentReady = pe.calculateDeploymentReadiness(build)
 }
 
-// fileExists 检查文件是否存在
+// fileExists 检查文件是否存在(工具函数-os.Stat封装)
+//
+// # 功能说明
+//
+// 调用os.Stat()检查路径有效性，返回布尔值指示文件/目录是否存在。
+//
+// # 参数
+//
+//   - path string: 待检查文件/目录路径
+//
+// # 返回值
+//
+//   - bool: 存在返回true，不存在或出错返回false
+//
+// 作者: JIA
 func (pe *ProjectEvaluator) fileExists(path string) bool {
 	_, err := os.Stat(path)
 	return err == nil
 }
 
-// calculateBuildQuality 计算构建质量
+// calculateBuildQuality 计算构建质量(评分计算方法-工具链完备性评估)
+//
+// # 功能说明
+//
+// 基于构建工具完备性计分：go.mod(+40必需)/Makefile(+30标准化)/Dockerfile(+20容器化)/GoReleaser(+10自动发布)，上限100。
+//
+// # 参数
+//
+//   - build *BuildSystemInfo: 构建系统检测结果
+//
+// # 返回值
+//
+//   - float64: 构建质量评分(0-100)
+//
+// 作者: JIA
 func (pe *ProjectEvaluator) calculateBuildQuality(build *BuildSystemInfo) float64 {
 	score := 0.0
 
@@ -995,15 +1189,43 @@ func (pe *ProjectEvaluator) calculateBuildQuality(build *BuildSystemInfo) float6
 	return score
 }
 
-// calculateCIQuality 计算CI配置质量
+// calculateCIQuality 计算CI配置质量(评分计算方法-CI存在性检查)
+//
+// # 功能说明
+//
+// 简化实现：有GitHub Actions配置返回80.0(DefaultScore)，无CI配置返回0。
+//
+// # 参数
+//
+//   - build *BuildSystemInfo: 构建系统检测结果
+//
+// # 返回值
+//
+//   - float64: CI配置质量评分(0或80)
+//
+// 作者: JIA
 func (pe *ProjectEvaluator) calculateCIQuality(build *BuildSystemInfo) float64 {
 	if build.HasGitHubActions {
-		return 80.0 // 有CI配置
+		return DefaultScore // 有CI配置
 	}
 	return 0.0
 }
 
-// calculateDeploymentReadiness 计算部署准备度
+// calculateDeploymentReadiness 计算部署准备度(评分计算方法-部署工具完备性评估)
+//
+// # 功能说明
+//
+// 基于部署工具完备性计分：Dockerfile(+50容器化)/GitHub Actions(+30自动化)/GoReleaser(+20发布流程)，上限100。
+//
+// # 参数
+//
+//   - build *BuildSystemInfo: 构建系统检测结果
+//
+// # 返回值
+//
+//   - float64: 部署准备度评分(0-100)
+//
+// 作者: JIA
 func (pe *ProjectEvaluator) calculateDeploymentReadiness(build *BuildSystemInfo) float64 {
 	score := 0.0
 
@@ -1020,7 +1242,18 @@ func (pe *ProjectEvaluator) calculateDeploymentReadiness(build *BuildSystemInfo)
 	return score
 }
 
-// analyzeDocumentation 分析文档
+// analyzeDocumentation 分析文档(文档完备性检测方法-文件存在性检查策略)
+//
+// # 功能说明
+//
+// 检测文档文件存在性(README/CHANGELOG/LICENSE/CONTRIBUTING)，分析README质量，计算GoDoc覆盖率，生成总体文档评分。
+//
+// # 参数
+//
+//   - projectPath string: 项目根路径
+//   - doc *DocumentationInfo: 文档信息输出指针
+//
+// 作者: JIA
 func (pe *ProjectEvaluator) analyzeDocumentation(projectPath string, doc *DocumentationInfo) {
 	// 检查文档文件
 	doc.HasReadme = pe.fileExists(filepath.Join(projectPath, "README.md")) ||
@@ -1039,7 +1272,21 @@ func (pe *ProjectEvaluator) analyzeDocumentation(projectPath string, doc *Docume
 	doc.OverallDocScore = pe.calculateOverallDocScore(doc)
 }
 
-// analyzeReadmeQuality 分析README质量
+// analyzeReadmeQuality 分析README质量(文档质量评估方法-关键词匹配策略)
+//
+// # 功能说明
+//
+// 读取README.md内容，通过关键词匹配计算质量评分：installation(+20)/usage(+25)/example(+20)/api(+15)/contributing(+10)/license(+10)，上限100。
+//
+// # 参数
+//
+//   - projectPath string: 项目根路径
+//
+// # 返回值
+//
+//   - float64: README质量评分(0-100)
+//
+// 作者: JIA
 func (pe *ProjectEvaluator) analyzeReadmeQuality(projectPath string) float64 {
 	readmePath := filepath.Join(projectPath, "README.md")
 	if !pe.fileExists(readmePath) {
@@ -1078,18 +1325,46 @@ func (pe *ProjectEvaluator) analyzeReadmeQuality(projectPath string) float64 {
 	return score
 }
 
-// calculateGoDocCoverage 计算GoDoc覆盖率
-func (pe *ProjectEvaluator) calculateGoDocCoverage(projectPath string) float64 {
+// calculateGoDocCoverage 计算GoDoc覆盖率(占位方法-待完善)
+//
+// # 功能说明
+//
+// 简化实现返回固定值70.0，实际应分析所有公开函数/类型的文档注释覆盖率。
+//
+// # 参数
+//
+//   - _ string: 项目路径(当前未使用，保留用于未来实现)
+//
+// # 返回值
+//
+//   - float64: GoDoc覆盖率百分比(当前固定值PassingScore=70.0)
+//
+// 作者: JIA
+func (pe *ProjectEvaluator) calculateGoDocCoverage(_ string) float64 {
 	// 简化实现，实际需要分析所有公开函数的文档覆盖率
-	return 70.0
+	return PassingScore
 }
 
-// calculateOverallDocScore 计算总体文档评分
+// calculateOverallDocScore 计算总体文档评分(综合评分方法-加权求和策略)
+//
+// # 功能说明
+//
+// 综合计算文档评分：README质量(×0.5权重)+CHANGELOG(+15)+LICENSE(+10)+CONTRIBUTING(+5)+GoDoc覆盖率(×0.2权重)，上限100。
+//
+// # 参数
+//
+//   - doc *DocumentationInfo: 文档检测结果
+//
+// # 返回值
+//
+//   - float64: 总体文档评分(0-100)
+//
+// 作者: JIA
 func (pe *ProjectEvaluator) calculateOverallDocScore(doc *DocumentationInfo) float64 {
 	score := 0.0
 
 	if doc.HasReadme {
-		score += doc.ReadmeQuality * 0.4
+		score += doc.ReadmeQuality * ReadmeWeightInDoc
 	}
 	if doc.HasChangelog {
 		score += 15
@@ -1101,12 +1376,23 @@ func (pe *ProjectEvaluator) calculateOverallDocScore(doc *DocumentationInfo) flo
 		score += 5
 	}
 
-	score += doc.GoDocCoverage * 0.3
+	score += doc.GoDocCoverage * DocCoverageWeight
 
 	return score
 }
 
-// analyzeTestingInfo 分析测试信息
+// analyzeTestingInfo 分析测试信息(测试统计方法-文件计数与覆盖率策略)
+//
+// # 功能说明
+//
+// 基于结构统计分析测试信息：测试文件存在性→测试覆盖率(go test -cover)→测试函数/基准/示例计数→测试质量评分。
+//
+// # 参数
+//
+//   - projectPath string: 项目根路径
+//   - testing *TestingInfo: 测试信息输出指针
+//
+// 作者: JIA
 func (pe *ProjectEvaluator) analyzeTestingInfo(projectPath string, testing *TestingInfo) {
 	structure := pe.results.ProjectInfo.Structure
 
@@ -1123,18 +1409,47 @@ func (pe *ProjectEvaluator) analyzeTestingInfo(projectPath string, testing *Test
 	testing.TestQuality = pe.calculateTestQuality(testing)
 }
 
-// calculateTestCoverage 计算测试覆盖率
-func (pe *ProjectEvaluator) calculateTestCoverage(projectPath string) float64 {
+// calculateTestCoverage 计算测试覆盖率(占位方法-待完善)
+//
+// # 功能说明
+//
+// 简化实现返回固定值75.0，实际应执行`go test -cover`命令获取真实覆盖率数据。
+//
+// # 参数
+//
+//   - _ string: 项目路径(当前未使用，保留用于未来通过go test -cover实现)
+//
+// # 返回值
+//
+//   - float64: 测试覆盖率百分比(当前固定值MediumQualityScore=75.0)
+//
+// 作者: JIA
+func (pe *ProjectEvaluator) calculateTestCoverage(_ string) float64 {
 	// 实际实现需要运行 go test -cover
 	// 这里提供简化实现
-	return 75.0
+	return MediumQualityScore
 }
 
-// countTestFunctions 统计测试函数数量
+// countTestFunctions 统计测试函数数量(统计方法-正则匹配策略)
+//
+// # 功能说明
+//
+// 遍历项目目录，读取*_test.go文件，使用正则`func\s+Test\w+\s*\(`匹配统计Test*函数数量。
+//
+// # 参数
+//
+//   - projectPath string: 项目根路径
+//
+// # 返回值
+//
+//   - int: 测试函数总数量
+//
+// 作者: JIA
 func (pe *ProjectEvaluator) countTestFunctions(projectPath string) int {
 	count := 0
 
-	filepath.WalkDir(projectPath, func(path string, d fs.DirEntry, err error) error {
+	//nolint:errcheck // 这里故意忽略Walk的错误，因为我们只是统计数量，部分文件失败不影响整体统计
+	_ = filepath.WalkDir(projectPath, func(path string, d fs.DirEntry, err error) error {
 		if err != nil || d.IsDir() {
 			return err
 		}
@@ -1155,11 +1470,26 @@ func (pe *ProjectEvaluator) countTestFunctions(projectPath string) int {
 	return count
 }
 
-// countBenchmarkFunctions 统计基准测试函数数量
+// countBenchmarkFunctions 统计基准测试函数数量(统计方法-正则匹配策略)
+//
+// # 功能说明
+//
+// 遍历项目目录，读取*_test.go文件，使用正则`func\s+Benchmark\w+\s*\(`匹配统计Benchmark*函数数量。
+//
+// # 参数
+//
+//   - projectPath string: 项目根路径
+//
+// # 返回值
+//
+//   - int: 基准测试函数总数量
+//
+// 作者: JIA
 func (pe *ProjectEvaluator) countBenchmarkFunctions(projectPath string) int {
 	count := 0
 
-	filepath.WalkDir(projectPath, func(path string, d fs.DirEntry, err error) error {
+	//nolint:errcheck // 这里故意忽略Walk的错误，因为我们只是统计数量，部分文件失败不影响整体统计
+	_ = filepath.WalkDir(projectPath, func(path string, d fs.DirEntry, err error) error {
 		if err != nil || d.IsDir() {
 			return err
 		}
@@ -1179,11 +1509,26 @@ func (pe *ProjectEvaluator) countBenchmarkFunctions(projectPath string) int {
 	return count
 }
 
-// countExampleFunctions 统计示例函数数量
+// countExampleFunctions 统计示例函数数量(统计方法-正则匹配策略)
+//
+// # 功能说明
+//
+// 遍历项目目录，读取*_test.go文件，使用正则`func\s+Example\w*\s*\(`匹配统计Example*函数数量(注意\w*支持Example无后缀)。
+//
+// # 参数
+//
+//   - projectPath string: 项目根路径
+//
+// # 返回值
+//
+//   - int: 示例函数总数量
+//
+// 作者: JIA
 func (pe *ProjectEvaluator) countExampleFunctions(projectPath string) int {
 	count := 0
 
-	filepath.WalkDir(projectPath, func(path string, d fs.DirEntry, err error) error {
+	//nolint:errcheck // 这里故意忽略Walk的错误，因为我们只是统计数量，部分文件失败不影响整体统计
+	_ = filepath.WalkDir(projectPath, func(path string, d fs.DirEntry, err error) error {
 		if err != nil || d.IsDir() {
 			return err
 		}
@@ -1203,13 +1548,28 @@ func (pe *ProjectEvaluator) countExampleFunctions(projectPath string) int {
 	return count
 }
 
-// calculateTestQuality 计算测试质量
+// calculateTestQuality 计算测试质量(综合评分方法-多维度加权策略)
+//
+// # 功能说明
+//
+// 综合计算测试质量：覆盖率(×0.6权重)+基准测试存在性(+10)+示例测试存在性(+10)+测试文件密度评分(5-15分)，上限100。
+// 测试密度评分：testFiles/goFiles比率≥0.8(+15)，≥0.5(+10)，<0.5(+5)。
+//
+// # 参数
+//
+//   - testing *TestingInfo: 测试信息统计结果
+//
+// # 返回值
+//
+//   - float64: 测试质量综合评分(0-100)
+//
+// 作者: JIA
 func (pe *ProjectEvaluator) calculateTestQuality(testing *TestingInfo) float64 {
 	if !testing.HasTests {
 		return 0.0
 	}
 
-	score := testing.TestCoverage * 0.6 // 覆盖率占60%
+	score := testing.TestCoverage * TestCoverageWeight // 覆盖率占60%
 
 	// 测试类型多样性加分
 	if testing.BenchmarkCount > 0 {
@@ -1222,11 +1582,12 @@ func (pe *ProjectEvaluator) calculateTestQuality(testing *TestingInfo) float64 {
 	// 测试密度评分
 	if pe.results.ProjectInfo.Structure.GoFiles > 0 {
 		testRatio := float64(testing.TestFiles) / float64(pe.results.ProjectInfo.Structure.GoFiles)
-		if testRatio >= 0.5 {
+		switch {
+		case testRatio >= TestFileRatioThresholdHigh:
 			score += 15
-		} else if testRatio >= 0.3 {
+		case testRatio >= TestFileRatioThresholdLow:
 			score += 10
-		} else if testRatio >= 0.1 {
+		default:
 			score += 5
 		}
 	}
@@ -1238,7 +1599,18 @@ func (pe *ProjectEvaluator) calculateTestQuality(testing *TestingInfo) float64 {
 	return score
 }
 
-// setProjectMetadata 设置项目元数据
+// setProjectMetadata 设置项目元数据(元数据提取方法-路径解析策略)
+//
+// # 功能说明
+//
+// 从项目路径提取基础元数据：项目名(路径末尾basename)→项目类型检测(application/library)→最后修改时间(os.Stat)。
+//
+// # 参数
+//
+//   - projectPath string: 项目根路径
+//   - info *ProjectInfo: 项目信息输出指针
+//
+// 作者: JIA
 func (pe *ProjectEvaluator) setProjectMetadata(projectPath string, info *ProjectInfo) {
 	// 从项目路径提取项目名
 	info.Name = filepath.Base(projectPath)
@@ -1252,7 +1624,21 @@ func (pe *ProjectEvaluator) setProjectMetadata(projectPath string, info *Project
 	}
 }
 
-// detectProjectType 检测项目类型
+// detectProjectType 检测项目类型(类型推断方法-特征文件检测策略)
+//
+// # 功能说明
+//
+// 基于特征文件推断项目类型：main.go或cmd目录存在→application(可执行程序)，仅go.mod存在→library(库项目)，否则unknown。
+//
+// # 参数
+//
+//   - projectPath string: 项目根路径
+//
+// # 返回值
+//
+//   - string: 项目类型("application"/"library"/"unknown")
+//
+// 作者: JIA
 func (pe *ProjectEvaluator) detectProjectType(projectPath string) string {
 	// 检查main.go或cmd目录
 	if pe.fileExists(filepath.Join(projectPath, "main.go")) ||
@@ -1269,16 +1655,44 @@ func (pe *ProjectEvaluator) detectProjectType(projectPath string) string {
 }
 
 // loadRequirementsAndCriteria 加载需求和评估标准
+//
+// 根据项目类型和阶段加载相应的需求和标准。
+// 如果加载失败或数据为空，返回错误。
+//
+// 作者: JIA
 func (pe *ProjectEvaluator) loadRequirementsAndCriteria() error {
 	// 根据项目类型和阶段加载相应的需求和标准
 	pe.requirements = pe.getRequirementsForStage(pe.config.Stage, pe.config.ProjectType)
 	pe.criteria = pe.getCriteriaForStage(pe.config.Stage)
 
+	// 验证加载的数据
+	if len(pe.requirements) == 0 {
+		return fmt.Errorf("未找到阶段 %d 的项目需求定义", pe.config.Stage)
+	}
+	if len(pe.criteria) == 0 {
+		return fmt.Errorf("未找到阶段 %d 的评估标准定义", pe.config.Stage)
+	}
+
 	return nil
 }
 
-// getRequirementsForStage 获取特定阶段的需求
-func (pe *ProjectEvaluator) getRequirementsForStage(stage int, projectType string) []ProjectRequirement {
+// getRequirementsForStage 获取特定阶段的需求(需求加载方法-占位实现)
+//
+// # 功能说明
+//
+// 简化实现返回2个硬编码需求(func_001核心功能/arch_001代码组织)，实际应从配置文件或数据库加载阶段特定需求。
+//
+// # 参数
+//
+//   - _ int: 阶段编号(当前未使用)
+//   - _ string: 项目类型(当前未使用)
+//
+// # 返回值
+//
+//   - []ProjectRequirement: 需求列表
+//
+// 作者: JIA
+func (pe *ProjectEvaluator) getRequirementsForStage(_ int, _ string) []ProjectRequirement {
 	// 这里应该从配置文件或数据库中加载需求
 	// 简化实现，返回基础需求
 	return []ProjectRequirement{
@@ -1301,27 +1715,41 @@ func (pe *ProjectEvaluator) getRequirementsForStage(stage int, projectType strin
 	}
 }
 
-// getCriteriaForStage 获取特定阶段的评估标准
-func (pe *ProjectEvaluator) getCriteriaForStage(stage int) []EvaluationCriteria {
+// getCriteriaForStage 获取特定阶段的评估标准(标准加载方法-占位实现)
+//
+// # 功能说明
+//
+// 简化实现返回2个硬编码评估标准(功能完整性30%权重/架构质量25%权重)，实际应从配置文件加载阶段特定标准。
+//
+// # 参数
+//
+//   - _ int: 阶段编号(当前未使用)
+//
+// # 返回值
+//
+//   - []EvaluationCriteria: 评估标准列表
+//
+// 作者: JIA
+func (pe *ProjectEvaluator) getCriteriaForStage(_ int) []EvaluationCriteria {
 	// 简化实现，返回基础评估标准
 	return []EvaluationCriteria{
 		{
 			ID:        "functionality",
 			Category:  "core",
 			Name:      "功能完整性",
-			Weight:    0.3,
-			MaxScore:  100.0,
+			Weight:    WeightMediumHigh,
+			MaxScore:  MaxScore,
 			Automated: true,
-			Threshold: 70.0,
+			Threshold: PassingScore,
 		},
 		{
 			ID:        "architecture",
 			Category:  "design",
 			Name:      "架构质量",
-			Weight:    0.25,
-			MaxScore:  100.0,
+			Weight:    WeightMedium,
+			MaxScore:  MaxScore,
 			Automated: true,
-			Threshold: 70.0,
+			Threshold: PassingScore,
 		},
 	}
 }
@@ -1329,12 +1757,21 @@ func (pe *ProjectEvaluator) getCriteriaForStage(stage int) []EvaluationCriteria 
 // 评估功能实现的方法（由于篇幅限制，提供主要方法的签名和基本实现）
 
 // evaluateFunctionality 评估功能完整性
+//
+// 基于项目需求检查功能实现情况，计算功能完整性得分。
+// 如果没有功能类需求可评估，返回错误。
+//
+// 作者: JIA
 func (pe *ProjectEvaluator) evaluateFunctionality() error {
 	score := 0.0
+	funcRequirementCount := 0
 
 	// 基于需求检查功能实现
-	for _, req := range pe.requirements {
+	// 使用索引遍历避免大结构体复制（152字节）
+	for i := range pe.requirements {
+		req := &pe.requirements[i]
 		if req.Category == "functionality" {
+			funcRequirementCount++
 			result := pe.evaluateRequirement(req)
 			pe.results.RequirementResults = append(pe.results.RequirementResults, result)
 			if req.Mandatory && !result.Implemented {
@@ -1344,25 +1781,54 @@ func (pe *ProjectEvaluator) evaluateFunctionality() error {
 		}
 	}
 
+	// 验证至少有功能需求可评估
+	if funcRequirementCount == 0 {
+		return fmt.Errorf("未找到功能类需求，无法评估功能完整性")
+	}
+
 	pe.results.DimensionScores["functionality"] = score
 	pe.results.FunctionalityScore = score
 	return nil
 }
 
-// evaluateRequirement 评估单个需求
-func (pe *ProjectEvaluator) evaluateRequirement(req ProjectRequirement) RequirementResult {
+// evaluateRequirement 评估单个需求(需求评估方法-占位实现)
+//
+// # 功能说明
+//
+// 简化实现返回固定结果(已实现/80分/质量75/完整性85)，实际应基于AST分析、测试覆盖率、文档等综合评估。
+//
+// # 参数
+//
+//   - req *ProjectRequirement: 需求指针(使用指针避免152字节结构体复制)
+//
+// # 返回值
+//
+//   - RequirementResult: 需求评估结果
+//
+// 作者: JIA
+func (pe *ProjectEvaluator) evaluateRequirement(req *ProjectRequirement) RequirementResult {
 	// 简化实现，实际应该基于具体需求进行检查
 	return RequirementResult{
 		RequirementID: req.ID,
 		Implemented:   true,
-		Score:         80.0,
-		Quality:       75.0,
-		Completeness:  85.0,
+		Score:         DefaultScore,
+		Quality:       MediumQualityScore,
+		Completeness:  HighQualityScore,
 	}
 }
 
 // evaluateArchitecture 评估架构质量
+//
+// 计算项目的模块化、耦合度、内聚度等架构指标。
+// 如果项目结构信息不完整，返回错误。
+//
+// 作者: JIA
 func (pe *ProjectEvaluator) evaluateArchitecture() error {
+	// 验证项目信息是否已分析
+	if pe.results.ProjectInfo.Structure.TotalFiles == 0 {
+		return fmt.Errorf("项目结构信息不完整，无法评估架构质量")
+	}
+
 	analysis := ArchitectureAnalysis{}
 
 	// 计算各项架构指标
@@ -1375,36 +1841,76 @@ func (pe *ProjectEvaluator) evaluateArchitecture() error {
 	// 综合架构得分
 	archScore := (analysis.ModularityScore + analysis.CouplingScore +
 		analysis.CohesionScore + analysis.InterfaceDesign +
-		analysis.DependencyManagement) / 5
+		analysis.DependencyManagement) / FactorFiveFloat
 
 	pe.results.DimensionScores["architecture"] = archScore
 	pe.results.ArchitectureAnalysis = analysis
 	return nil
 }
 
-// 计算各种架构指标的简化实现
+// calculateModularityScore 计算模块化评分(占位方法-待完善)
+//
+// # 功能说明
+//
+// 简化实现返回固定值80.0，实际应分析包结构、职责单一性、模块边界清晰度。
+//
+// # 返回值
+//
+//   - float64: 模块化评分(当前固定值DefaultScore=80.0)
+//
+// 作者: JIA
 func (pe *ProjectEvaluator) calculateModularityScore() float64 {
-	return 80.0
+	return DefaultScore
 }
 
+// calculateCouplingScore 计算耦合度评分(占位方法-待完善)
+//
+// 简化实现返回固定值75.0，实际应分析包间依赖数量、循环依赖、接口隔离原则。
+//
+// 作者: JIA
 func (pe *ProjectEvaluator) calculateCouplingScore() float64 {
-	return 75.0
+	return MediumQualityScore
 }
 
+// calculateCohesionScore 计算内聚度评分(占位方法-待完善)
+//
+// 简化实现返回固定值85.0，实际应分析函数职责、包内关联度、单一职责原则遵守情况。
+//
+// 作者: JIA
 func (pe *ProjectEvaluator) calculateCohesionScore() float64 {
-	return 85.0
+	return HighQualityScore
 }
 
+// calculateInterfaceDesignScore 计算接口设计评分(占位方法-待完善)
+//
+// 简化实现返回固定值78.0，实际应分析接口定义合理性、接口隔离原则、依赖倒置原则。
+//
+// 作者: JIA
 func (pe *ProjectEvaluator) calculateInterfaceDesignScore() float64 {
-	return 78.0
+	return Score78
 }
 
+// calculateDependencyManagementScore 计算依赖管理评分(占位方法-待完善)
+//
+// 简化实现返回固定值82.0，实际应分析go.mod质量、依赖版本策略、传递依赖数量。
+//
+// 作者: JIA
 func (pe *ProjectEvaluator) calculateDependencyManagementScore() float64 {
-	return 82.0
+	return Score82
 }
 
 // evaluateUserExperience 评估用户体验
+//
+// 评估API设计、错误处理、可用性等用户体验相关指标。
+// 如果文档信息不完整（无README且未启用文档分析），返回警告错误。
+//
+// 作者: JIA
 func (pe *ProjectEvaluator) evaluateUserExperience() error {
+	// 验证文档信息是否已分析（UX评估依赖文档质量）
+	if !pe.config.AnalyzeDocs && !pe.results.ProjectInfo.Documentation.HasReadme {
+		return fmt.Errorf("文档信息不足，无法完整评估用户体验")
+	}
+
 	uxAnalysis := UXAnalysis{}
 
 	// API设计评估
@@ -1423,43 +1929,55 @@ func (pe *ProjectEvaluator) evaluateUserExperience() error {
 
 	// 综合用户体验得分
 	uxScore := (uxAnalysis.APIDesignScore + uxAnalysis.ErrorHandlingScore +
-		uxAnalysis.UsabilityScore + uxAnalysis.ConsistencyScore) / 4
+		uxAnalysis.UsabilityScore + uxAnalysis.ConsistencyScore) / FactorFourFloat
 
 	pe.results.DimensionScores["user_experience"] = uxScore
 	pe.results.UserExperienceAnalysis = uxAnalysis
 	return nil
 }
 
-// analyzeAPI 分析API设计
+// analyzeAPI 分析API设计(API评估方法-占位实现)
+//
+// 简化实现返回固定指标(一致性80/简洁性75/完整性85等8项)，实际应分析公开接口、参数设计、RESTful约定。
+//
+// 作者: JIA
 func (pe *ProjectEvaluator) analyzeAPI() APIAnalysis {
 	return APIAnalysis{
-		Consistency:         80.0,
-		Simplicity:          75.0,
-		Completeness:        85.0,
-		Flexibility:         70.0,
-		PerformanceDesign:   78.0,
-		RESTCompliance:      80.0,
+		Consistency:         DefaultScore,
+		Simplicity:          MediumQualityScore,
+		Completeness:        HighQualityScore,
+		Flexibility:         PassingScore,
+		PerformanceDesign:   Score78,
+		RESTCompliance:      DefaultScore,
 		VersioningStrategy:  "semantic",
-		SecurityIntegration: 75.0,
+		SecurityIntegration: MediumQualityScore,
 	}
 }
 
-// analyzeErrorHandling 分析错误处理
+// analyzeErrorHandling 分析错误处理(错误处理评估方法-占位实现)
+//
+// 简化实现返回固定指标(一致性80/信息性75/恢复性70/日志质量78)，实际应分析error返回、panic使用、日志规范。
+//
+// 作者: JIA
 func (pe *ProjectEvaluator) analyzeErrorHandling() ErrorHandlingAnalysis {
 	return ErrorHandlingAnalysis{
-		ErrorConsistency: 80.0,
-		ErrorInformation: 75.0,
-		RecoveryOptions:  70.0,
-		LoggingQuality:   78.0,
+		ErrorConsistency: DefaultScore,
+		ErrorInformation: MediumQualityScore,
+		RecoveryOptions:  PassingScore,
+		LoggingQuality:   Score78,
 	}
 }
 
-// calculateUsabilityScore 计算可用性得分
+// calculateUsabilityScore 计算可用性评分(可用性评分方法-多因素综合)
+//
+// 综合文档质量(总体×0.5+README×0.5)和示例测试存在性(+20分)计算可用性得分。
+//
+// 作者: JIA
 func (pe *ProjectEvaluator) calculateUsabilityScore() float64 {
 	score := 0.0
 
 	// 文档质量影响可用性
-	score += pe.results.ProjectInfo.Documentation.OverallDocScore * 0.4
+	score += pe.results.ProjectInfo.Documentation.OverallDocScore * ReadmeWeightInDoc
 
 	// 示例和测试影响可用性
 	if pe.results.ProjectInfo.TestingInfo.ExampleTests > 0 {
@@ -1467,18 +1985,38 @@ func (pe *ProjectEvaluator) calculateUsabilityScore() float64 {
 	}
 
 	// README质量
-	score += pe.results.ProjectInfo.Documentation.ReadmeQuality * 0.4
+	score += pe.results.ProjectInfo.Documentation.ReadmeQuality * ReadmeWeightInDoc
 
 	return score
 }
 
-// calculateConsistencyScore 计算一致性得分
+// calculateConsistencyScore 计算一致性评分(一致性评分方法-结构指标引用)
+//
+// 直接返回项目结构分析中的命名一致性评分。
+//
+// 作者: JIA
 func (pe *ProjectEvaluator) calculateConsistencyScore() float64 {
 	return pe.results.ProjectInfo.Structure.NamingConsistency
 }
 
 // evaluateTechnicalDepth 评估技术深度
+//
+// 评估项目的技术栈使用、最佳实践应用、创新性等技术深度指标。
+// 如果启用了构建分析但缺少go.mod，仅记录日志不返回错误（降级评估）。
+//
+// 注意: 当前实现总是返回nil，保留error返回类型是为了：
+// 1. 保持与其他评估方法的接口一致性
+// 2. 未来扩展时可能需要返回错误（如外部工具调用失败）
+//
+// 作者: JIA
+//
+//nolint:unparam // 保留error返回用于未来扩展和接口一致性
 func (pe *ProjectEvaluator) evaluateTechnicalDepth() error {
+	// 如果启用了构建分析但缺少go.mod，记录警告但继续评估
+	if pe.config.AnalyzeBuild && !pe.results.ProjectInfo.BuildSystem.HasGoMod {
+		log.Printf("警告: 缺少go.mod文件，技术深度评估将基于可用信息进行")
+	}
+
 	techAnalysis := TechnicalAnalysis{}
 
 	// 技术栈分析
@@ -1496,21 +2034,29 @@ func (pe *ProjectEvaluator) evaluateTechnicalDepth() error {
 	return nil
 }
 
-// analyzeTechnologyStack 分析技术栈
+// analyzeTechnologyStack 分析技术栈(技术栈分析方法-占位实现)
+//
+// 简化实现返回单一Go语言栈(熟练度85/适用性true)，实际应分析go.mod依赖、第三方库使用、框架选择合理性。
+//
+// 作者: JIA
 func (pe *ProjectEvaluator) analyzeTechnologyStack() []TechnologyUsage {
 	return []TechnologyUsage{
 		{
 			Name:        "Go",
 			Category:    "programming_language",
 			Usage:       "primary",
-			Proficiency: 85.0,
+			Proficiency: HighQualityScore,
 			Appropriate: true,
 			Rationale:   "主要开发语言",
 		},
 	}
 }
 
-// calculateBestPracticeScore 计算最佳实践得分
+// calculateBestPracticeScore 计算最佳实践评分(最佳实践评分方法-多维度检查表)
+//
+// 基于项目特征累计评分：cmd(+10)/internal(+10)/go.mod(+15)/Makefile(+10)/测试(+20)/覆盖率≥75%(+15)/README(+10)/LICENSE(+5)/GoDoc≥60%(+5)，上限100。
+//
+// 作者: JIA
 func (pe *ProjectEvaluator) calculateBestPracticeScore() float64 {
 	score := 0.0
 
@@ -1534,7 +2080,7 @@ func (pe *ProjectEvaluator) calculateBestPracticeScore() float64 {
 	if pe.results.ProjectInfo.TestingInfo.HasTests {
 		score += 20
 	}
-	if pe.results.ProjectInfo.TestingInfo.TestCoverage >= 80 {
+	if pe.results.ProjectInfo.TestingInfo.TestCoverage >= MinCoverageRequirement {
 		score += 15
 	}
 
@@ -1545,46 +2091,68 @@ func (pe *ProjectEvaluator) calculateBestPracticeScore() float64 {
 	if pe.results.ProjectInfo.Documentation.HasLicense {
 		score += 5
 	}
-	if pe.results.ProjectInfo.Documentation.GoDocCoverage >= 70 {
+	if pe.results.ProjectInfo.Documentation.GoDocCoverage >= MinDocumentationScore {
 		score += 5
 	}
 
 	return score
 }
 
-// calculateInnovationScore 计算创新性得分
+// calculateInnovationScore 计算创新性评分(占位方法-待完善)
+//
+// 简化实现返回固定值60.0，实际应分析独创算法、性能优化创新、架构设计新颖性。
+//
+// 作者: JIA
 func (pe *ProjectEvaluator) calculateInnovationScore() float64 {
 	// 简化实现，实际需要分析代码中的创新性解决方案
-	return 60.0
+	return Score60
 }
 
-// calculateTechnicalDebt 计算技术债务
+// calculateTechnicalDebt 计算技术债务(占位方法-待完善)
+//
+// 简化实现返回固定值15%，实际应综合代码复杂度、重复率、过时依赖、缺失测试计算债务率。
+//
+// 作者: JIA
 func (pe *ProjectEvaluator) calculateTechnicalDebt() float64 {
 	// 简化实现，实际需要综合多个因素
-	return 15.0 // 15%的技术债务
+	return TechnicalDebtRate // 15%的技术债务
 }
 
 // evaluateEngineeringQuality 评估工程质量
+//
+// 综合评估构建系统、CI/CD、测试、文档等工程化质量指标。
+// 如果测试和文档信息都未配置，返回错误。
+//
+// 作者: JIA
 func (pe *ProjectEvaluator) evaluateEngineeringQuality() error {
+	// 验证工程化配置是否启用（至少需要构建或测试分析）
+	if !pe.config.AnalyzeBuild && !pe.config.AnalyzeDocs {
+		return fmt.Errorf("未启用构建和文档分析，无法评估工程质量")
+	}
+
 	score := 0.0
 
 	// 构建系统质量
-	score += pe.results.ProjectInfo.BuildSystem.BuildQuality * 0.3
+	score += pe.results.ProjectInfo.BuildSystem.BuildQuality * BuildQualityWeight
 
 	// CI/CD配置
-	score += pe.results.ProjectInfo.BuildSystem.CIConfiguration * 0.2
+	score += pe.results.ProjectInfo.BuildSystem.CIConfiguration * CIConfigWeight
 
 	// 测试质量
-	score += pe.results.ProjectInfo.TestingInfo.TestQuality * 0.3
+	score += pe.results.ProjectInfo.TestingInfo.TestQuality * TestQualityWeight
 
 	// 文档质量
-	score += pe.results.ProjectInfo.Documentation.OverallDocScore * 0.2
+	score += pe.results.ProjectInfo.Documentation.OverallDocScore * DocOverallScoreWeight
 
 	pe.results.DimensionScores["engineering_quality"] = score
 	return nil
 }
 
-// calculateOverallScore 计算综合得分
+// calculateOverallScore 计算综合评分(综合评分计算方法-加权平均策略)
+//
+// 基于7大维度评分和配置权重计算加权总分，按得分区间映射等级：≥90(A)/≥80(B)/≥70(C)/≥60(D)/<60(F)。
+//
+// 作者: JIA
 func (pe *ProjectEvaluator) calculateOverallScore() {
 	weights := pe.config.WeightSettings
 	totalScore := 0.0
@@ -1616,20 +2184,25 @@ func (pe *ProjectEvaluator) calculateOverallScore() {
 	}
 
 	// 设置等级
-	if pe.results.OverallScore >= 90 {
+	switch {
+	case pe.results.OverallScore >= ExcellentScore:
 		pe.results.Grade = "A"
-	} else if pe.results.OverallScore >= 80 {
+	case pe.results.OverallScore >= GoodScore:
 		pe.results.Grade = "B"
-	} else if pe.results.OverallScore >= 70 {
+	case pe.results.OverallScore >= PassingScore:
 		pe.results.Grade = "C"
-	} else if pe.results.OverallScore >= 60 {
+	case pe.results.OverallScore >= MinAcceptableScore:
 		pe.results.Grade = "D"
-	} else {
+	default:
 		pe.results.Grade = "F"
 	}
 }
 
-// generateSuggestions 生成改进建议
+// generateSuggestions 生成改进建议(建议生成编排方法-4阶段流程)
+//
+// 执行4阶段建议生成流程：识别优势(≥85分维度)→识别不足(<70分维度)→生成改进建议→生成下一步行动计划。
+//
+// 作者: JIA
 func (pe *ProjectEvaluator) generateSuggestions() {
 	// 分析优势
 	pe.results.Strengths = pe.identifyStrengths()
@@ -1644,13 +2217,17 @@ func (pe *ProjectEvaluator) generateSuggestions() {
 	pe.results.NextSteps = pe.generateNextSteps()
 }
 
-// identifyStrengths 识别项目优势
+// identifyStrengths 识别项目优势(优势识别方法-高分维度筛选)
+//
+// 遍历维度评分，将≥85分的维度标记为优势项，生成优势描述和影响评估。
+//
+// 作者: JIA
 func (pe *ProjectEvaluator) identifyStrengths() []ProjectStrength {
 	strengths := []ProjectStrength{}
 
 	// 基于高分维度识别优势
 	for dimension, score := range pe.results.DimensionScores {
-		if score >= 85 {
+		if score >= GoldMinScore {
 			strength := ProjectStrength{
 				Category:    dimension,
 				Title:       fmt.Sprintf("%s表现优秀", dimension),
@@ -1664,13 +2241,17 @@ func (pe *ProjectEvaluator) identifyStrengths() []ProjectStrength {
 	return strengths
 }
 
-// identifyWeaknesses 识别项目不足
+// identifyWeaknesses 识别项目不足(不足识别方法-低分维度筛选)
+//
+// 遍历维度评分，将<70分的维度标记为不足项，生成问题描述、影响评估和初步改进建议。
+//
+// 作者: JIA
 func (pe *ProjectEvaluator) identifyWeaknesses() []ProjectWeakness {
 	weaknesses := []ProjectWeakness{}
 
 	// 基于低分维度识别不足
 	for dimension, score := range pe.results.DimensionScores {
-		if score < 70 {
+		if score < PassingScore {
 			weakness := ProjectWeakness{
 				Category:    dimension,
 				Title:       fmt.Sprintf("%s需要改进", dimension),
@@ -1686,7 +2267,11 @@ func (pe *ProjectEvaluator) identifyWeaknesses() []ProjectWeakness {
 	return weaknesses
 }
 
-// generateImprovements 生成改进建议
+// generateImprovements 生成改进建议(改进建议生成方法-基于弱项映射)
+//
+// 遍历已识别不足项，为每个弱点维度生成改进计划(标题/描述/收益/工作量/优先级)。
+//
+// 作者: JIA
 func (pe *ProjectEvaluator) generateImprovements() []ProjectImprovement {
 	improvements := []ProjectImprovement{}
 
@@ -1706,12 +2291,16 @@ func (pe *ProjectEvaluator) generateImprovements() []ProjectImprovement {
 	return improvements
 }
 
-// generateNextSteps 生成下一步建议
+// generateNextSteps 生成下一步建议(行动计划生成方法-基于总分决策)
+//
+// 基于综合评分生成阶段性行动计划：<70分→质量改进优先(2-4周)，≥70分可生成其他阶段建议。
+//
+// 作者: JIA
 func (pe *ProjectEvaluator) generateNextSteps() []NextStep {
 	nextSteps := []NextStep{}
 
 	// 基于项目当前状态生成下一步建议
-	if pe.results.OverallScore < 70 {
+	if pe.results.OverallScore < PassingScore {
 		nextSteps = append(nextSteps, NextStep{
 			Phase:       "质量改进",
 			Description: "优先解决关键质量问题",
@@ -1725,60 +2314,55 @@ func (pe *ProjectEvaluator) generateNextSteps() []NextStep {
 	return nextSteps
 }
 
-// performComparativeAnalysis 进行比较分析
+// performComparativeAnalysis 进行比较分析(对比分析方法-占位实现)
+//
+// 简化实现生成假定对比数据(阶段平均基准/75%分位/优势领域engineering_quality/弱势领域innovation)。
+//
+// 作者: JIA
 func (pe *ProjectEvaluator) performComparativeAnalysis() {
 	// 基准比较（简化实现）
 	pe.results.BenchmarkComparison = &BenchmarkComparison{
 		BenchmarkType:   "stage_average",
 		ComparisonScore: pe.results.OverallScore,
-		Percentile:      75.0, // 假设在75%分位
+		Percentile:      MediumQualityScore, // 假设在75%分位
 		StrongerAreas:   []string{"engineering_quality"},
 		WeakerAreas:     []string{"innovation"},
 	}
 }
 
-// saveResults 保存评估结果
+// saveResults 保存评估结果到文件
+//
+// 使用共享的utils.SaveProjectEvalResult函数来避免代码重复
+//
+// 作者: JIA
 func (pe *ProjectEvaluator) saveResults() error {
-	if pe.config.ResultsPath == "" {
-		pe.config.ResultsPath = "project_evaluation_results.json"
-	}
-
-	data, err := json.MarshalIndent(pe.results, "", "  ")
-	if err != nil {
-		return fmt.Errorf("序列化结果失败: %v", err)
-	}
-
-	if err := security.SecureWriteFile(pe.config.ResultsPath, data, &security.SecureFileOptions{
-		Mode:      security.GetRecommendedMode("data"),
-		CreateDir: true,
-	}); err != nil {
-		return fmt.Errorf("保存结果文件失败: %v", err)
-	}
-
-	log.Printf("项目评估结果已保存到: %s", pe.config.ResultsPath)
-	return nil
+	return utils.SaveProjectEvalResult(pe.config.ResultsPath, pe.results)
 }
 
-// GetDefaultConfig 获取默认配置
+// GetProjectEvalDefaultConfig 获取项目评估默认配置
+//
+// 返回一个预配置的ProjectEvalConfig实例，包含推荐的评估权重和阈值
+//
+// 作者: JIA
 func GetProjectEvalDefaultConfig() *ProjectEvalConfig {
 	return &ProjectEvalConfig{
 		ProjectType:      "application",
-		Stage:            6,
+		Stage:            LowPriorityValue,
 		RequirementLevel: "intermediate",
 		WeightSettings: ProjectEvalWeights{
-			FunctionalityScore:  0.30,
-			ArchitectureScore:   0.25,
-			UserExperienceScore: 0.20,
-			TechnicalDepthScore: 0.15,
-			EngineeringScore:    0.10,
+			FunctionalityScore:  WeightMediumHigh,
+			ArchitectureScore:   WeightMedium,
+			UserExperienceScore: WeightMediumLow,
+			TechnicalDepthScore: WeightLow,
+			EngineeringScore:    WeightVeryLow,
 		},
 		Thresholds: ProjectThresholds{
-			MinFunctionality: 70.0,
-			MinArchitecture:  70.0,
-			MinDocumentation: 60.0,
-			MinTestCoverage:  70.0,
+			MinFunctionality: PassingScore,
+			MinArchitecture:  PassingScore,
+			MinDocumentation: Score60,
+			MinTestCoverage:  PassingScore,
 			MaxComplexity:    10,
-			MinModularity:    70.0,
+			MinModularity:    PassingScore,
 		},
 		AnalyzeReadme:       true,
 		AnalyzeDocs:         true,

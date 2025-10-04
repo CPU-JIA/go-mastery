@@ -162,7 +162,7 @@ func validatePathCharacters(path string) error {
 	// 检查其他危险字符
 	dangerousChars := []string{
 		"\n", "\r", // 换行符
-		"\t",       // 制表符
+		"\t",          // 制表符
 		"|", "&", ";", // 命令注入字符
 		"<", ">", // 重定向字符
 		"*", "?", // 通配符（在某些场景下危险）

@@ -119,20 +119,62 @@ jobs:
         path: reports/security/
         retention-days: 30
 
+    - name: 🔍 Go官方漏洞数据库扫描 (govulncheck)
+      run: |
+        echo "🔍 执行Go官方漏洞数据库扫描..."
+
+        # 安装govulncheck
+        go install golang.org/x/vuln/cmd/govulncheck@latest
+
+        # 执行漏洞扫描
+        echo "开始扫描依赖漏洞..."
+        if govulncheck ./... > reports/security/govulncheck-report.txt 2>&1; then
+          echo "✅ govulncheck扫描通过: 未发现已知漏洞"
+          echo "GOVULNCHECK_STATUS=PASS" >> $GITHUB_ENV
+        else
+          VULNCHECK_EXIT_CODE=$?
+          echo "⚠️ govulncheck扫描发现潜在问题"
+          echo "=== govulncheck 报告 ==="
+          cat reports/security/govulncheck-report.txt
+          echo "======================="
+
+          # 根据退出码判断严重程度
+          if [ "$VULNCHECK_EXIT_CODE" -eq 3 ]; then
+            echo "❌ 发现影响代码的已知漏洞"
+            echo "GOVULNCHECK_STATUS=FAIL" >> $GITHUB_ENV
+          else
+            echo "⚠️ 发现未使用依赖中的漏洞（影响较低）"
+            echo "GOVULNCHECK_STATUS=WARN" >> $GITHUB_ENV
+          fi
+        fi
+
     - name: 🚨 安全扫描结果验证
       run: |
+        echo "=== 安全扫描汇总 ==="
+        echo "gosec状态: $SECURITY_STATUS"
+        echo "govulncheck状态: $GOVULNCHECK_STATUS"
+        echo "===================="
+
         if [ "$SECURITY_STATUS" = "FAIL" ]; then
-          echo "💥 CI失败: 检测到安全漏洞，违反零安全漏洞要求"
+          echo "💥 CI失败: gosec检测到安全漏洞，违反零安全漏洞要求"
           echo "📋 请立即修复以下安全漏洞:"
           echo "   1. 查看上传的安全扫描报告"
           echo "   2. 参考 COMPREHENSIVE_QUALITY_REPORT.md 中的修复策略"
           echo "   3. 运行 golangci-lint run 进行本地验证"
           exit 1
         elif [ "$SECURITY_STATUS" = "ERROR" ]; then
-          echo "⚠️ CI警告: 安全扫描过程出现错误"
+          echo "⚠️ CI警告: gosec扫描过程出现错误"
           exit 1
+        elif [ "$GOVULNCHECK_STATUS" = "FAIL" ]; then
+          echo "💥 CI失败: govulncheck发现影响代码的已知漏洞"
+          echo "📋 请立即更新受影响的依赖或应用安全补丁"
+          exit 1
+        elif [ "$GOVULNCHECK_STATUS" = "WARN" ]; then
+          echo "⚠️ CI警告: govulncheck发现未使用依赖中的漏洞"
+          echo "💡 建议: 运行 go mod tidy 清理未使用的依赖"
+          # 警告不阻塞CI，允许继续
         else
-          echo "✅ 安全扫描通过: 零安全漏洞状态已维持"
+          echo "✅ 所有安全扫描通过: 零安全漏洞状态已维持"
         fi
 
   # ===== P1级别: Go官方工具验证 =====
