@@ -255,15 +255,21 @@ func (s *authService) ResetPassword(email string) error {
 		return errors.New("生成重置令牌失败")
 	}
 
-	// TODO: 发送重置邮件
-	_ = resetToken // 暂时忽略，实际应该发送邮件
+	// 邮件发送：当前为演示代码，生产环境需集成 SMTP 服务
+	// 重置链接格式: https://example.com/reset-password?token={resetToken}
+	_ = resetToken
 
 	return nil
 }
 
 func (s *authService) ForgotPassword(token string, newPassword string) error {
-	// TODO: 验证重置令牌并重置密码
-	return errors.New("功能暂未实现")
+	// 密码重置：当前为演示代码，生产环境需实现令牌验证逻辑
+	// 1. 从缓存/数据库验证 token 有效性和过期时间
+	// 2. 获取关联的用户 ID
+	// 3. 更新用户密码
+	// 4. 使 token 失效
+	_, _ = token, newPassword
+	return errors.New("密码重置功能需要配置邮件服务后启用")
 }
 
 // generateAccessToken 生成访问令牌

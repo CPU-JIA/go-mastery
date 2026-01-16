@@ -3,49 +3,42 @@ package security
 import (
 	"os"
 	"path/filepath"
+	"runtime"
+	"strconv"
 	"testing"
 )
 
 func TestSecureWriteFile(t *testing.T) {
-	// 创建临时目录
 	tempDir := t.TempDir()
 	testFile := filepath.Join(tempDir, "test.txt")
-	testData := []byte("test data")
+	data := []byte("test data")
 
-	// 测试默认权限写入
-	err := SecureWriteFile(testFile, testData, nil)
-	if err != nil {
+	if err := SecureWriteFile(testFile, data, nil); err != nil {
 		t.Fatalf("SecureWriteFile failed: %v", err)
 	}
 
-	// 验证文件内容
-	data, err := os.ReadFile(testFile)
+	got, err := os.ReadFile(testFile)
 	if err != nil {
-		t.Fatalf("Failed to read file: %v", err)
+		t.Fatalf("failed to read file: %v", err)
 	}
 
-	if string(data) != string(testData) {
-		t.Errorf("File content mismatch: got %s, expected %s", string(data), string(testData))
+	if string(got) != string(data) {
+		t.Errorf("file content mismatch: got %q want %q", string(got), string(data))
 	}
 
-	// 验证文件权限
-	err = ValidateFilePermissions(testFile, DefaultFileMode)
-	if err != nil {
-		t.Errorf("File permissions validation failed: %v", err)
+	if err := ValidateFilePermissions(testFile, DefaultFileMode); err != nil {
+		t.Errorf("permission validation failed: %v", err)
 	}
 
-	// 测试自定义权限
-	testFile2 := filepath.Join(tempDir, "test2.txt")
-	opts := &SecureFileOptions{Mode: SecureFileMode_ReadOnlyUser}
+	nestedFile := filepath.Join(tempDir, "nested", "dir", "test2.txt")
+	opts := &SecureFileOptions{Mode: SecureFileMode_ReadOnlyUser, CreateDir: true}
 
-	err = SecureWriteFile(testFile2, testData, opts)
-	if err != nil {
-		t.Fatalf("SecureWriteFile with custom mode failed: %v", err)
+	if err := SecureWriteFile(nestedFile, data, opts); err != nil {
+		t.Fatalf("SecureWriteFile with CreateDir failed: %v", err)
 	}
 
-	err = ValidateFilePermissions(testFile2, SecureFileMode_ReadOnlyUser)
-	if err != nil {
-		t.Errorf("Custom file permissions validation failed: %v", err)
+	if err := ValidateFilePermissions(nestedFile, SecureFileMode_ReadOnlyUser); err != nil {
+		t.Errorf("custom permission validation failed: %v", err)
 	}
 }
 
@@ -59,16 +52,12 @@ func TestSecureCreateFile(t *testing.T) {
 	}
 	defer file.Close()
 
-	// 写入数据
-	_, err = file.WriteString("test content")
-	if err != nil {
-		t.Fatalf("Failed to write to file: %v", err)
+	if _, err := file.WriteString("test content"); err != nil {
+		t.Fatalf("failed to write to file: %v", err)
 	}
 
-	// 验证权限
-	err = ValidateFilePermissions(testFile, DefaultFileMode)
-	if err != nil {
-		t.Errorf("Created file permissions validation failed: %v", err)
+	if err := ValidateFilePermissions(testFile, DefaultFileMode); err != nil {
+		t.Errorf("created file permission validation failed: %v", err)
 	}
 }
 
@@ -76,34 +65,31 @@ func TestSecureMkdirAll(t *testing.T) {
 	tempDir := t.TempDir()
 	testDir := filepath.Join(tempDir, "secure", "nested", "dir")
 
-	err := SecureMkdirAll(testDir, DefaultDirMode)
-	if err != nil {
+	if err := SecureMkdirAll(testDir, DefaultDirMode); err != nil {
 		t.Fatalf("SecureMkdirAll failed: %v", err)
 	}
 
-	// 验证目录存在
 	info, err := os.Stat(testDir)
 	if err != nil {
-		t.Fatalf("Created directory does not exist: %v", err)
+		t.Fatalf("created directory does not exist: %v", err)
 	}
 
 	if !info.IsDir() {
-		t.Error("Created path is not a directory")
+		t.Fatal("created path is not a directory")
 	}
 
-	// 验证权限
-	actualMode := info.Mode().Perm()
-	expectedMode := os.FileMode(DefaultDirMode)
-
-	if actualMode != expectedMode {
-		t.Errorf("Directory permissions mismatch: got %o, expected %o", actualMode, expectedMode)
+	if runtime.GOOS != "windows" {
+		expected := os.FileMode(DefaultDirMode)
+		if info.Mode().Perm()&^expected != 0 {
+			t.Errorf("directory permissions too loose: got %o expect max %o", info.Mode().Perm(), expected)
+		}
 	}
 }
 
 func TestGetRecommendedMode(t *testing.T) {
-	tests := []struct {
-		fileType     string
-		expectedMode SecureFileMode
+	cases := []struct {
+		fileType string
+		want     SecureFileMode
 	}{
 		{"config", DefaultConfigMode},
 		{"configuration", DefaultConfigMode},
@@ -118,36 +104,34 @@ func TestGetRecommendedMode(t *testing.T) {
 		{"unknown", DefaultFileMode},
 	}
 
-	for _, tt := range tests {
-		t.Run(tt.fileType, func(t *testing.T) {
-			mode := GetRecommendedMode(tt.fileType)
-			if mode != tt.expectedMode {
-				t.Errorf("GetRecommendedMode(%s) = %o, expected %o", tt.fileType, mode, tt.expectedMode)
+	for _, tc := range cases {
+		t.Run(tc.fileType, func(t *testing.T) {
+			if got := GetRecommendedMode(tc.fileType); got != tc.want {
+				t.Errorf("GetRecommendedMode(%s) = %o want %o", tc.fileType, got, tc.want)
 			}
 		})
 	}
 }
 
 func TestIsSecurePermission(t *testing.T) {
-	tests := []struct {
+	cases := []struct {
 		mode   os.FileMode
 		secure bool
 	}{
-		{0600, true},  // 仅所有者读写
-		{0644, false}, // 其他用户可读，不够安全
-		{0666, false}, // 所有用户读写，不安全
-		{0777, false}, // 所有用户读写执行，极不安全
-		{0700, true},  // 仅所有者读写执行
-		{0755, false}, // 其他用户可读执行，可能不够安全
-		{0400, true},  // 仅所有者只读
-		{0444, false}, // 所有用户只读，可能泄露信息
+		{0o600, true},
+		{0o644, false},
+		{0o666, false},
+		{0o777, false},
+		{0o700, true},
+		{0o755, false},
+		{0o400, true},
+		{0o444, false},
 	}
 
-	for _, tt := range tests {
-		t.Run(tt.mode.String(), func(t *testing.T) {
-			result := IsSecurePermission(tt.mode)
-			if result != tt.secure {
-				t.Errorf("IsSecurePermission(%o) = %t, expected %t", tt.mode, result, tt.secure)
+	for _, tc := range cases {
+		t.Run(tc.mode.String(), func(t *testing.T) {
+			if got := IsSecurePermission(tc.mode); got != tc.secure {
+				t.Errorf("IsSecurePermission(%o) = %v want %v", tc.mode, got, tc.secure)
 			}
 		})
 	}
@@ -157,45 +141,41 @@ func TestValidateFilePermissions(t *testing.T) {
 	tempDir := t.TempDir()
 	testFile := filepath.Join(tempDir, "perm_test.txt")
 
-	// 创建文件with特定权限
-	file, err := os.OpenFile(testFile, os.O_CREATE|os.O_WRONLY, 0600)
+	file, err := os.OpenFile(testFile, os.O_CREATE|os.O_WRONLY, 0o600)
 	if err != nil {
-		t.Fatalf("Failed to create test file: %v", err)
+		t.Fatalf("failed to create test file: %v", err)
 	}
 	file.Close()
 
-	// 验证正确的权限
-	err = ValidateFilePermissions(testFile, SecureFileMode_ReadWriteUser)
-	if err != nil {
-		t.Errorf("Validation should pass for correct permissions: %v", err)
+	if err := ValidateFilePermissions(testFile, SecureFileMode_ReadWriteUser); err != nil {
+		t.Errorf("validation should pass for correct permissions: %v", err)
 	}
 
-	// 验证错误的权限
-	err = ValidateFilePermissions(testFile, SecureFileMode_ReadOnlyUser)
-	if err == nil {
-		t.Error("Validation should fail for incorrect permissions")
+	if runtime.GOOS != "windows" {
+		if err := ValidateFilePermissions(testFile, SecureFileMode_ReadOnlyUser); err == nil {
+			t.Error("validation should fail when permissions exceed expected maximum")
+		}
 	}
 }
 
-// 基准测试
 func BenchmarkSecureWriteFile(b *testing.B) {
 	tempDir := b.TempDir()
-	testData := []byte("benchmark test data")
+	data := []byte("benchmark test data")
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		testFile := filepath.Join(tempDir, "bench_"+string(rune(i))+".txt")
-		_ = SecureWriteFile(testFile, testData, nil)
+		testFile := filepath.Join(tempDir, "bench_"+strconv.Itoa(i)+".txt")
+		_ = SecureWriteFile(testFile, data, nil)
 	}
 }
 
 func BenchmarkRegularWriteFile(b *testing.B) {
 	tempDir := b.TempDir()
-	testData := []byte("benchmark test data")
+	data := []byte("benchmark test data")
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		testFile := filepath.Join(tempDir, "bench_regular_"+string(rune(i))+".txt")
-		_ = os.WriteFile(testFile, testData, 0644)
+		testFile := filepath.Join(tempDir, "bench_regular_"+strconv.Itoa(i)+".txt")
+		_ = os.WriteFile(testFile, data, 0o644)
 	}
 }

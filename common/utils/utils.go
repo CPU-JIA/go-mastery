@@ -4,7 +4,6 @@
 package utils
 
 import (
-	"crypto/md5"
 	"crypto/rand"
 	"crypto/sha256"
 	"encoding/hex"
@@ -146,13 +145,6 @@ func GenerateRandomString(length int) (string, error) {
 		bytes[i] = charset[b%byte(len(charset))]
 	}
 	return string(bytes), nil
-}
-
-// HashMD5 generates MD5 hash of a string
-func HashMD5(s string) string {
-	hasher := md5.New()
-	hasher.Write([]byte(s))
-	return hex.EncodeToString(hasher.Sum(nil))
 }
 
 // HashSHA256 generates SHA256 hash of a string

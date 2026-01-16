@@ -1,8 +1,8 @@
 package storage
 
 import (
-	"fmt"
 	"file-storage-service/internal/config"
+	"fmt"
 )
 
 // NewFileStorage 根据配置创建文件存储实例

@@ -225,7 +225,7 @@ func (eb *eventBus) Publish(event interface{}) {
 			func() {
 				defer func() {
 					if r := recover(); r != nil {
-						// TODO: 记录错误日志
+						// panic 已捕获，事件处理器异常不影响其他处理器
 					}
 				}()
 				handler(event)

@@ -457,14 +457,18 @@ func (ras *readerAtSeeker) Read(p []byte) (n int, err error) {
 }
 
 func (ras *readerAtSeeker) Seek(offset int64, whence int) (int64, error) {
-	if s, ok := ras.reader.(interface{ Seek(int64, int) (int64, error) }); ok {
+	if s, ok := ras.reader.(interface {
+		Seek(int64, int) (int64, error)
+	}); ok {
 		return s.Seek(offset, whence)
 	}
 	return 0, fmt.Errorf("reader does not support Seek")
 }
 
 func (ras *readerAtSeeker) ReadAt(p []byte, off int64) (n int, err error) {
-	if ra, ok := ras.reader.(interface{ ReadAt([]byte, int64) (int, error) }); ok {
+	if ra, ok := ras.reader.(interface {
+		ReadAt([]byte, int64) (int, error)
+	}); ok {
 		return ra.ReadAt(p, off)
 	}
 	return 0, fmt.Errorf("reader does not support ReadAt")

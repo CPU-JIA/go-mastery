@@ -340,7 +340,9 @@ func (s *articleService) IncrementView(id uint) error {
 }
 
 func (s *articleService) Like(id uint, userID uint) error {
-	// TODO: 添加点赞记录，避免重复点赞
+	// 点赞功能：当前为简化实现，直接增加计数
+	// 生产环境应添加点赞记录表防止重复点赞
+	_ = userID // 预留参数，用于后续实现点赞记录
 	return s.articleRepo.IncrementLikeCount(id)
 }
 

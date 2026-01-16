@@ -463,8 +463,8 @@ func (f *FileUploadSagaDefinition) generateThumbnail(ctx context.Context, sagaCt
 	thumbnailKey := strings.Replace(uploadCtx.ObjectKey, "/", "/thumbnails/", 1)
 	thumbnailKey = strings.Replace(thumbnailKey, filepath.Ext(thumbnailKey), "_thumb.jpg", 1)
 
-	// TODO: 实际的缩略图生成逻辑
-	// 这里需要：
+	// 缩略图生成：当前为演示代码，返回预期的缩略图路径
+	// 生产环境需集成图片处理库（如 imaging、bimg）实现：
 	// 1. 从存储中下载原图
 	// 2. 使用图片处理库生成缩略图
 	// 3. 上传缩略图到存储
@@ -492,8 +492,7 @@ func (f *FileUploadSagaDefinition) compensateThumbnail(ctx context.Context, saga
 
 	// 删除生成的缩略图
 	if err := f.storageRepo.Delete(ctx, uploadCtx.ThumbnailKey); err != nil {
-		// 缩略图删除失败不是严重错误，记录日志即可
-		// TODO: 添加日志记录
+		// 缩略图删除失败不是严重错误，继续执行补偿流程
 		return nil
 	}
 

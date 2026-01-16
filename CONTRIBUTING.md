@@ -1,6 +1,6 @@
 # Contributing to Go Mastery Project
 
-Welcome to the Go Mastery project! This guide will help you contribute effectively while maintaining our high code quality standards.
+Welcome to the Go Mastery project! This guide will help you contribute effectively while maintaining our high code quality standards. Automation agents and tooling-driven contributors should also review the condensed `AGENTS.md` companion guide for repository conventions.
 
 ## Table of Contents
 
@@ -12,6 +12,7 @@ Welcome to the Go Mastery project! This guide will help you contribute effective
 - [Pull Request Process](#pull-request-process)
 - [CI/CD Pipeline](#cicd-pipeline)
 - [Troubleshooting](#troubleshooting)
+- [Repository Guidelines (Agents)](AGENTS.md)
 
 ## Development Setup
 

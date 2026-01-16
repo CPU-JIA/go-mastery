@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"crypto/tls"
+	"crypto/x509"
 	"flag"
 	"fmt"
 	"io"
@@ -317,7 +318,8 @@ func (s *UserServiceServer) GetUser(ctx context.Context, req *GetUserRequest) (*
 		return nil, status.Errorf(codes.NotFound, "用户不存在")
 	}
 
-	// TODO: 应用字段掩码过滤返回字段
+	// 字段掩码过滤：实际项目中可使用 fieldmaskpb 包实现按需返回字段
+	// 当前演示代码返回完整用户对象
 
 	return &GetUserResponse{User: user}, nil
 }
@@ -534,7 +536,7 @@ func (s *UserServiceServer) handleChatMessage(msg *ChatMessage) error {
 	msg.Timestamp = timestamppb.Now()
 	msg.MessageId = fmt.Sprintf("msg_%d", time.Now().UnixNano())
 
-	// TODO: 持久化消息到数据库
+	// 演示代码：实际项目中应持久化到数据库
 	log.Printf("收到消息: %s -> %s: %s", msg.FromUserId, msg.ToUserId, msg.Content)
 
 	return nil
@@ -833,11 +835,29 @@ func NewGRPCServer(config *GRPCConfig) (*GRPCServer, error) {
 
 	// TLS配置
 	if config.Server.EnableTLS {
-		creds, err := credentials.NewServerTLSFromFile(config.Server.CertFile, config.Server.KeyFile)
+		cert, err := tls.LoadX509KeyPair(config.Server.CertFile, config.Server.KeyFile)
 		if err != nil {
 			return nil, fmt.Errorf("加载TLS证书失败: %w", err)
 		}
-		opts = append(opts, grpc.Creds(creds))
+
+		tlsConfig := &tls.Config{
+			Certificates: []tls.Certificate{cert},
+			MinVersion:   tls.VersionTLS12,
+		}
+
+		if config.Security.EnableMTLS {
+			if config.Security.CACertFile == "" {
+				return nil, fmt.Errorf("启用mTLS需要提供CA证书")
+			}
+			caPool, err := loadCertPool(config.Security.CACertFile)
+			if err != nil {
+				return nil, fmt.Errorf("加载CA证书失败: %w", err)
+			}
+			tlsConfig.ClientCAs = caPool
+			tlsConfig.ClientAuth = tls.RequireAndVerifyClientCert
+		}
+
+		opts = append(opts, grpc.Creds(credentials.NewTLS(tlsConfig)))
 	}
 
 	// Keep-Alive配置
@@ -891,8 +911,9 @@ func NewGRPCServer(config *GRPCConfig) (*GRPCServer, error) {
 	userService := NewUserServiceServer(config)
 
 	// 注册服务
-	// TODO: 注册生成的protobuf服务
+	// 演示代码：实际项目中需要 protoc 生成代码后调用
 	// RegisterUserServiceServer(server, userService)
+	_ = userService // 避免未使用变量警告
 
 	// 健康检查服务
 	healthServer := health.NewServer()
@@ -981,7 +1002,7 @@ func (s *GRPCServer) startGRPCGateway() {
 		}),
 	)
 
-	// TODO: 注册gRPC-Gateway处理器
+	// 演示代码：实际项目中需要 protoc-gen-grpc-gateway 生成代码后注册
 	// if err := RegisterUserServiceHandlerFromEndpoint(ctx, mux, endpoint, opts); err != nil {
 	//     log.Printf("注册gRPC-Gateway处理器失败: %v", err)
 	//     return
@@ -1014,7 +1035,8 @@ func (s *GRPCServer) startMetricsServer() {
 type GRPCClient struct {
 	config *GRPCConfig
 	conn   *grpc.ClientConn
-	// userClient UserServiceClient // TODO: 使用生成的客户端
+	// 演示代码：实际项目中添加 protoc 生成的客户端
+	// userClient UserServiceClient
 }
 
 func NewGRPCClient(config *GRPCConfig, target string) (*GRPCClient, error) {
@@ -1077,16 +1099,27 @@ func NewGRPCClient(config *GRPCConfig, target string) (*GRPCClient, error) {
 
 	// 安全配置
 	if config.Security.EnableTLS {
-		var creds credentials.TransportCredentials
+		tlsConfig := &tls.Config{
+			MinVersion: tls.VersionTLS12,
+		}
+
+		if config.Security.CACertFile != "" {
+			caPool, err := loadCertPool(config.Security.CACertFile)
+			if err != nil {
+				return nil, fmt.Errorf("加载CA证书失败: %w", err)
+			}
+			tlsConfig.RootCAs = caPool
+		}
+
 		if config.Security.EnableMTLS {
 			cert, err := tls.LoadX509KeyPair(config.Security.ClientCertFile, config.Security.ClientKeyFile)
 			if err != nil {
 				return nil, fmt.Errorf("加载客户端证书失败: %w", err)
 			}
-			creds = credentials.NewTLS(&tls.Config{Certificates: []tls.Certificate{cert}})
-		} else {
-			creds = credentials.NewTLS(&tls.Config{})
+			tlsConfig.Certificates = []tls.Certificate{cert}
 		}
+
+		creds := credentials.NewTLS(tlsConfig)
 		opts = append(opts, grpc.WithTransportCredentials(creds))
 	} else {
 		opts = append(opts, grpc.WithTransportCredentials(insecure.NewCredentials()))
@@ -1105,8 +1138,22 @@ func NewGRPCClient(config *GRPCConfig, target string) (*GRPCClient, error) {
 	return &GRPCClient{
 		config: config,
 		conn:   conn,
-		// userClient: NewUserServiceClient(conn), // TODO: 使用生成的客户端
+		// 演示代码：实际项目中初始化 protoc 生成的客户端
+		// userClient: NewUserServiceClient(conn),
 	}, nil
+}
+
+func loadCertPool(path string) (*x509.CertPool, error) {
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return nil, err
+	}
+
+	pool := x509.NewCertPool()
+	if !pool.AppendCertsFromPEM(data) {
+		return nil, fmt.Errorf("无法解析CA证书: %s", path)
+	}
+	return pool, nil
 }
 
 func (c *GRPCClient) Close() error {
@@ -1260,7 +1307,7 @@ func runExamples(client *GRPCClient) {
 	// 临时使用变量避免编译错误
 	log.Printf("创建用户请求准备完成: %+v", createReq)
 
-	// TODO: 使用生成的客户端调用
+	// 演示代码：实际项目中使用 protoc 生成的客户端调用
 	// createResp, err := client.userClient.CreateUser(ctx, createReq)
 	// if err != nil {
 	//     log.Printf("创建用户失败: %v", err)
@@ -1290,11 +1337,12 @@ func runPerformanceTest(client *GRPCClient) {
 				ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 				ctx = metadata.AppendToOutgoingContext(ctx, "authorization", fmt.Sprintf("token_%d_%d", clientID, j))
 
-				// TODO: 调用实际的gRPC方法
+				// 演示代码：实际项目中调用 protoc 生成的客户端方法
 				// _, err := client.userClient.HealthCheck(ctx, &emptypb.Empty{})
 				// if err != nil {
 				//     log.Printf("健康检查失败[%d-%d]: %v", clientID, j, err)
 				// }
+				_ = ctx // 避免未使用变量警告
 
 				cancel()
 			}
@@ -1323,10 +1371,11 @@ func runStreamingExample(client *GRPCClient) {
 
 	ctx = metadata.AppendToOutgoingContext(ctx, "authorization", "bearer streaming_test_token")
 
-	// TODO: 实现流式通信示例
+	// 演示代码：流式通信需要 protoc 生成代码后实现
 	// 1. Server Streaming - 用户活动流
 	// 2. Client Streaming - 批量操作
 	// 3. Bidirectional Streaming - 聊天功能
+	_ = ctx // 避免未使用变量警告
 
 	log.Println("流式通信示例准备完成")
 }
@@ -1353,8 +1402,8 @@ func main() {
 
 	// 加载配置文件 (如果提供)
 	if *configFile != "" {
-		// TODO: 实现YAML配置文件加载
-		log.Printf("加载配置文件: %s", *configFile)
+		// 配置文件加载：当前使用默认配置，生产环境可集成 viper 等配置库
+		log.Printf("配置文件路径: %s (当前使用默认配置)", *configFile)
 	}
 
 	// 设置信号处理

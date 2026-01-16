@@ -155,6 +155,7 @@ func (ls *LocalStorage) Save(filename string, data io.Reader) error {
 	fullPath := filepath.Join(ls.basePath, filename)
 
 	// 确保目录存在
+	// #nosec G301 -- 文件上传服务目录，需要0755权限支持Web服务器访问和静态文件服务
 	if err := os.MkdirAll(filepath.Dir(fullPath), 0755); err != nil {
 		return err
 	}

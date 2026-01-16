@@ -2,10 +2,10 @@ package storage
 
 import (
 	"context"
+	"fmt"
 	"io"
 	"os"
 	"path/filepath"
-	"fmt"
 	"time"
 
 	"file-storage-service/internal/config"
@@ -163,9 +163,9 @@ func (ls *LocalStorage) GetMetadata(ctx context.Context, path string) (map[strin
 	}
 
 	metadata := map[string]string{
-		"size":         fmt.Sprintf("%d", stat.Size()),
+		"size":          fmt.Sprintf("%d", stat.Size()),
 		"last_modified": fmt.Sprintf("%d", stat.ModTime().Unix()),
-		"mode":         stat.Mode().String(),
+		"mode":          stat.Mode().String(),
 	}
 
 	return metadata, nil

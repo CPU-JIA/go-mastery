@@ -131,7 +131,7 @@ func (wp *WorkerPool) worker(id int) {
 				func() {
 					defer func() {
 						if r := recover(); r != nil {
-							// TODO: 记录panic日志
+							// panic 已捕获，任务异常不影响工作池
 						}
 					}()
 					job()

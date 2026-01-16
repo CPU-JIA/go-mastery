@@ -5,11 +5,11 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/gorilla/mux"
 	"file-storage-service/internal/config"
 	"file-storage-service/internal/handlers"
 	"file-storage-service/internal/services"
 	"file-storage-service/internal/storage"
+	"github.com/gorilla/mux"
 )
 
 func main() {

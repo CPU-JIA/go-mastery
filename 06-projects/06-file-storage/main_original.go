@@ -30,7 +30,7 @@ import (
 	"image/jpeg"
 	"io"
 	"log"
-	mathrand "math/rand"
+	"math/big"
 	"mime"
 	"mime/multipart"
 	"net/http"
@@ -1215,7 +1215,10 @@ func (fs *FileServer) handleCompress(w http.ResponseWriter, r *http.Request) {
 	// 创建临时压缩文件
 	tempPath := filepath.Join(fs.storage.baseDir, "temp", req.Name)
 	// #nosec G301 -- 临时文件目录，需要0755权限支持Web服务器写入临时压缩文件
-	os.MkdirAll(filepath.Dir(tempPath), 0755)
+	if err := os.MkdirAll(filepath.Dir(tempPath), 0755); err != nil {
+		fs.sendError(w, "Failed to create temp directory", http.StatusInternalServerError)
+		return
+	}
 
 	if err := fs.processor.CompressFiles(req.FileIDs, tempPath); err != nil {
 		fs.sendError(w, "Failed to create archive", http.StatusInternalServerError)
@@ -1698,17 +1701,39 @@ func (fs *FileServer) sendError(w http.ResponseWriter, message string, statusCod
 // ====================
 
 func generateFileID() string {
-	hash := sha256.Sum256([]byte(fmt.Sprintf("%d-%d", time.Now().UnixNano(), mathrand.Int())))
-	return hex.EncodeToString(hash[:])[:16]
+	return generateRandomString(16)
 }
 
 func generateRandomString(length int) string {
 	const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+	if length <= 0 {
+		return ""
+	}
+
 	b := make([]byte, length)
-	for i := range b {
-		b[i] = charset[mathrand.Intn(len(charset))]
+	for i := 0; i < length; i++ {
+		idx, err := rand.Int(rand.Reader, big.NewInt(int64(len(charset))))
+		if err != nil {
+			log.Printf("generateRandomString fallback: %v", err)
+			return fallbackRandomString(length)
+		}
+		b[i] = charset[idx.Int64()]
 	}
 	return string(b)
+}
+
+func fallbackRandomString(length int) string {
+	hash := sha256.Sum256([]byte(fmt.Sprintf("%d-%d", time.Now().UnixNano(), os.Getpid())))
+	encoded := hex.EncodeToString(hash[:])
+	if length <= len(encoded) {
+		return encoded[:length]
+	}
+
+	result := make([]byte, length)
+	for i := range result {
+		result[i] = encoded[i%len(encoded)]
+	}
+	return string(result)
 }
 
 func getClientIP(r *http.Request) string {

@@ -1,21 +1,21 @@
 package models
 
 import (
-	"time"
 	"gorm.io/gorm"
+	"time"
 )
 
 // File 文件模型
 type File struct {
-	ID           string         `json:"id" gorm:"primaryKey"`
-	Name         string         `json:"name" gorm:"not null"`
-	OriginalName string         `json:"original_name" gorm:"not null"`
-	Path         string         `json:"path" gorm:"not null"`
-	URL          string         `json:"url"`
-	Size         int64          `json:"size" gorm:"not null"`
-	MimeType     string         `json:"mime_type"`
-	Extension    string         `json:"extension"`
-	Checksum     string         `json:"checksum" gorm:"index"`
+	ID           string `json:"id" gorm:"primaryKey"`
+	Name         string `json:"name" gorm:"not null"`
+	OriginalName string `json:"original_name" gorm:"not null"`
+	Path         string `json:"path" gorm:"not null"`
+	URL          string `json:"url"`
+	Size         int64  `json:"size" gorm:"not null"`
+	MimeType     string `json:"mime_type"`
+	Extension    string `json:"extension"`
+	Checksum     string `json:"checksum" gorm:"index"`
 
 	// 所有者和权限
 	OwnerID    string `json:"owner_id" gorm:"index"`
@@ -61,29 +61,29 @@ type FileVersion struct {
 
 // ImageInfo 图片信息
 type ImageInfo struct {
-	ID         uint                     `json:"id" gorm:"primaryKey"`
-	FileID     string                   `json:"file_id" gorm:"not null;uniqueIndex"`
-	Width      int                      `json:"width"`
-	Height     int                      `json:"height"`
-	Format     string                   `json:"format"`
-	ColorModel string                   `json:"color_model"`
-	HasAlpha   bool                     `json:"has_alpha"`
-	Thumbnails []Thumbnail              `json:"thumbnails" gorm:"foreignKey:ImageInfoID"`
-	ExifData   map[string]interface{}   `json:"exif_data" gorm:"serializer:json"`
-	CreatedAt  time.Time                `json:"created_at"`
+	ID         uint                   `json:"id" gorm:"primaryKey"`
+	FileID     string                 `json:"file_id" gorm:"not null;uniqueIndex"`
+	Width      int                    `json:"width"`
+	Height     int                    `json:"height"`
+	Format     string                 `json:"format"`
+	ColorModel string                 `json:"color_model"`
+	HasAlpha   bool                   `json:"has_alpha"`
+	Thumbnails []Thumbnail            `json:"thumbnails" gorm:"foreignKey:ImageInfoID"`
+	ExifData   map[string]interface{} `json:"exif_data" gorm:"serializer:json"`
+	CreatedAt  time.Time              `json:"created_at"`
 }
 
 // Thumbnail 缩略图
 type Thumbnail struct {
-	ID           uint   `json:"id" gorm:"primaryKey"`
-	ImageInfoID  uint   `json:"image_info_id" gorm:"not null;index"`
-	Size         string `json:"size"`         // small, medium, large, custom
-	Width        int    `json:"width"`
-	Height       int    `json:"height"`
-	Path         string `json:"path" gorm:"not null"`
-	URL          string `json:"url"`
-	FileSize     int64  `json:"file_size"`
-	CreatedAt    time.Time `json:"created_at"`
+	ID          uint      `json:"id" gorm:"primaryKey"`
+	ImageInfoID uint      `json:"image_info_id" gorm:"not null;index"`
+	Size        string    `json:"size"` // small, medium, large, custom
+	Width       int       `json:"width"`
+	Height      int       `json:"height"`
+	Path        string    `json:"path" gorm:"not null"`
+	URL         string    `json:"url"`
+	FileSize    int64     `json:"file_size"`
+	CreatedAt   time.Time `json:"created_at"`
 }
 
 // UploadToken 上传令牌
@@ -131,11 +131,11 @@ type ListFilesResponse struct {
 
 // TokenResponse 令牌响应
 type TokenResponse struct {
-	Token         string   `json:"token"`
-	ExpiresIn     int      `json:"expires_in"`
-	MaxSize       int64    `json:"max_size"`
-	AllowedTypes  []string `json:"allowed_types"`
-	MaxUsage      int      `json:"max_usage"`
+	Token        string   `json:"token"`
+	ExpiresIn    int      `json:"expires_in"`
+	MaxSize      int64    `json:"max_size"`
+	AllowedTypes []string `json:"allowed_types"`
+	MaxUsage     int      `json:"max_usage"`
 }
 
 // ErrorResponse 错误响应
